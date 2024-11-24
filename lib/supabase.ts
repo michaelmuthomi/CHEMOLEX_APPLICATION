@@ -258,3 +258,17 @@ export async function fetchProductsFromCart(user_email: string) {
     return data;
   }
 }
+
+// Fetch specific product category
+export async function fetchProductInCategory(category_name: string) {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("category", category_name);
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return data;
+  }
+}

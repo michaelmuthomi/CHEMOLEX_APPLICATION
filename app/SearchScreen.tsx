@@ -12,7 +12,7 @@ import {
 import { Search, Sparkles, DollarSign, ChevronRight } from 'lucide-react-native';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import {P, H3} from "~/components/ui/typography";
+import {P, H3, H4, H2} from "~/components/ui/typography";
 
 const categories = [
   {
@@ -66,7 +66,7 @@ const categories = [
   },
 ];
 
-export default function SearchScreen({ navigation }) {
+export default function SearchScreen({ navigation }:any) {
   return (
     <SafeAreaView className='flex-1 px-4'>
       <View className="flex-row items-center justify-between gap-4 mt-10">
@@ -77,10 +77,10 @@ export default function SearchScreen({ navigation }) {
           />
       </View>
 
-      <ScrollView>
+      <ScrollView className="pt-4">
         <View>
           <TouchableOpacity style={styles.categoryHeader}>
-            <H3 style={styles.categoryHeaderTitle}>Shop by category</H3>
+            <H2 className="uppercase text-xl">Shop by category</H2>
             <ChevronRight size={24} color="#000" />
           </TouchableOpacity>
 
@@ -90,9 +90,9 @@ export default function SearchScreen({ navigation }) {
                 key={category.id}
                 className='h-40 rounded-md flex-row justify-between px-4'
                 style={{ backgroundColor: category.backgroundColor }}
-                onPress={() => navigation.navigate('Category', { category })}
+                onPress={() => navigation.navigate('Products', { category })}
               >
-                <P style={styles.categoryTitle}>{category.title}</P>
+                <H4 className="text-xl mt-4">{category.title}</H4>
                 <Image
                   source={{ uri: category.image }}
                   style={styles.categoryImage}
