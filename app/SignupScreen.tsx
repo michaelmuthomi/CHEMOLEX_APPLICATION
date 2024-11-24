@@ -191,7 +191,7 @@ export default function Screen() {
               </SelectTrigger>
               <SelectContent
                 insets={contentInsets}
-                className="border-0 bg-[#131313] w-full px-4 !h-14 text-white"
+                className="border-0 w-full px-4 !h-14 text-white"
               >
                 <SelectGroup className="text-white bg-[#131313]">
                   <SelectLabel

@@ -272,3 +272,39 @@ export async function fetchProductInCategory(category_name: string) {
     return data;
   }
 }
+
+// Fetch 
+export async function fetchSubmittedRepairs(supervisor_id: number) {
+  const { data, error } = await supabase
+    .from("repairs")
+    .select("*, users(name), services(name, price), technicians(name)")
+    .eq("supervisor_id", supervisor_id);
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return data;
+  }
+}
+
+// Fecth Assigned Repairs
+export async function fetchAssignedRepairs(technician_id: number) {
+  const { data, error } = await supabase
+    .from("assigned_repairs")
+    .select(
+      `
+    *,
+    services (
+      name
+    )
+  `
+    )
+    .eq("technician_id", technician_id);
+
+  if (error) {
+    console.error("Error fetching data:", error);
+  } else {
+    console.log("Data:", data);
+  }
+
+}

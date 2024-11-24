@@ -88,12 +88,12 @@ export default function Screen() {
       />
       <View className="w-full mb-auto mt-auto gap-6">
         <View className="w-full">
-          <H1>Welcome to Refnet</H1>
+          <H1>Forgot password?</H1>
           <P
             className="text-lg color-[#b3b3b3]"
             style={{ fontFamily: "Inter_400Regular" }}
           >
-            We Don’t Promise... We’re Proven!
+            Lets help you get back into your account.
           </P>
         </View>
         <View className="w-full gap-4">
@@ -110,7 +110,7 @@ export default function Screen() {
             autoCapitalize="none"
           />
           <Input
-            placeholder="Password"
+            placeholder="Reset Password"
             value={password}
             onChangeText={onPasswordInput}
             aria-labelledby="inputLabel"
@@ -121,19 +121,9 @@ export default function Screen() {
             secureTextEntry
           />
         </View>
-        <P className="text-right uppercase text-blue-400">
-          <Link href="/ForgotPassword">Forgot Password</Link>
-        </P>
         <Button onPress={handleLogin} className="w-full" size={"lg"}>
-          <P className="text-black uppercase">Login and continue</P>
+          <P className="text-black uppercase">Reset and continue</P>
         </Button>
-        <P
-          className="text-center text-lg pt-4 color-[#b3b3b3]"
-          style={{ fontFamily: "Inter_400Regular" }}
-        >
-          Sign in to access your account and manage your air conditioning
-          solutions
-        </P>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row">
         <Link href="/SignupScreen">

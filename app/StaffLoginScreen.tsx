@@ -88,7 +88,7 @@ export default function Screen() {
       />
       <View className="w-full mb-auto mt-auto gap-6">
         <View className="w-full">
-          <H1>Welcome to Refnet</H1>
+          <H1>Staff Login Page</H1>
           <P
             className="text-lg color-[#b3b3b3]"
             style={{ fontFamily: "Inter_400Regular" }}
@@ -122,7 +122,7 @@ export default function Screen() {
           />
         </View>
         <P className="text-right uppercase text-blue-400">
-          <Link href="/ForgotPassword">Forgot Password</Link>
+          <Link href="/reset-password">Forgot Password</Link>
         </P>
         <Button onPress={handleLogin} className="w-full" size={"lg"}>
           <P className="text-black uppercase">Login and continue</P>
@@ -140,7 +140,7 @@ export default function Screen() {
           <P className="text-blue-400 uppercase">Create an account</P>
         </Link>
         <P>|</P>
-        <Link href="/StaffLoginScreen" className="text-blue-400 ">
+        <Link href="/SignupScreen" className="text-blue-400 ">
           <P className="text-blue-400 uppercase">Staff Login</P>
         </Link>
       </View>
