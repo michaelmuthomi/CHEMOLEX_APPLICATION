@@ -118,27 +118,22 @@ export default function RootLayout({navigation}: any) {
       <StatusBar style={"light"} />
       <EmailProvider>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-            name="SupervisorScreen"
-            component={SupervisorScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-        <Stack.Screen
+          <Stack.Screen
             name="StockManagementScreen"
             component={StockManagementScreen}
             // options={{ headerShown: true, headerTitle: "" }}
           />
-        <Stack.Screen
+          <Stack.Screen
             name="ServiceManagerScreen"
             component={ServiceManagerScreen}
             // options={{ headerShown: true, headerTitle: "" }}
           />
-        <Stack.Screen
+          <Stack.Screen
             name="FinanceControllerScreen"
             component={FinanceControllerScreen}
             // options={{ headerShown: true, headerTitle: "" }}
           />
-        <Stack.Screen
+          <Stack.Screen
             name="DispatcherManagerScreen"
             component={DispatcherManagerScreen}
             // options={{ headerShown: true, headerTitle: "" }}
@@ -148,7 +143,7 @@ export default function RootLayout({navigation}: any) {
             component={LoginScreen}
             // options={{ headerShown: true, headerTitle: "" }}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="StaffLoginScreen"
             component={StaffLoginScreen}
             // options={{ headerShown: true, headerTitle: "" }}
@@ -156,7 +151,7 @@ export default function RootLayout({navigation}: any) {
           <Stack.Screen
             name="ForgotPassword"
             component={ForgotPassword}
-            options={{ headerShown: true, headerTitle: ""}}
+            options={{ headerShown: true, headerTitle: "" }}
           />
           <Stack.Screen
             name="SignupScreen"
@@ -174,12 +169,17 @@ export default function RootLayout({navigation}: any) {
               ),
             }}
           />
-          <Stack.Screen name="MainTabs" component={MainTabs}/>
+          <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="ProductScreen" component={ProductScreen} />
           <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
           <Stack.Screen
             name="TechnicianScreen"
             component={TechnicianScreen}
+            // options={{ headerShown: true, headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="SupervisorScreen"
+            component={SupervisorScreen}
             // options={{ headerShown: true, headerTitle: "" }}
           />
         </Stack.Navigator>

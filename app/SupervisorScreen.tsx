@@ -24,7 +24,7 @@ export default function SupervisorScreen({ navigation }) {
   useEffect(()=> {
     async function fetchRepairs(){
       const response = await fetchSubmittedRepairs(12)
-      console.log(response)
+      console.log("Supervisors Fetched", response)
       setRepairs(response)
     }
     fetchRepairs()
@@ -53,8 +53,8 @@ export default function SupervisorScreen({ navigation }) {
           renderItem={({ item }) => (
             <View style={styles.repairItem}>
               <View>
-                <Text style={styles.deviceName}>{item.services.name}</Text>
-                <Text style={styles.technicianName}>Technician: {item.users.full_name}</Text>
+                {/* <Text style={styles.deviceName}>{item.services.name}</Text> */}
+                {/* <Text style={styles.technicianName}>Technician: {item.users.full_name}</Text> */}
                 <Text style={styles.status}>Status: {item.status}</Text>
               </View>
               {item.status === 'pending' && (

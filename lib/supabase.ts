@@ -277,12 +277,13 @@ export async function fetchProductInCategory(category_name: string) {
 export async function fetchSubmittedRepairs(supervisor_id: number) {
   const { data, error } = await supabase
     .from("repairs")
-    .select("*, users(name), services(name, price), technicians(name)")
+    .select("*, users:technician_id(name), services(name, price)")
     .eq("supervisor_id", supervisor_id);
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
+    console.log(data);
     return data;
   }
 }
@@ -294,9 +295,7 @@ export async function fetchAssignedRepairs(technician_id: number) {
     .select(
       `
     *,
-    services (
-      name
-    )
+    services (name)
   `
     )
     .eq("technician_id", technician_id);
@@ -306,5 +305,18 @@ export async function fetchAssignedRepairs(technician_id: number) {
   } else {
     console.log("Data:", data);
   }
+}
 
+// Fetch productName and quantity in stock
+export async function fetchProductNamesAndQuantity() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*");
+  
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
 }

@@ -9,22 +9,20 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { ArrowLeft, Plus, Minus } from 'lucide-react-native';
-
-const initialProducts = [
-  { id: '1', name: 'Product A', stock: 100 },
-  { id: '2', name: 'Product B', stock: 75 },
-  { id: '3', name: 'Product C', stock: 50 },
-];
+import {fetchProductNamesAndQuantity} from "~/lib/supabase";
 
 export default function StockManagementScreen({ navigation }) {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState('');
 
-  const updateStock = (id, increment) => {
-    setProducts(products.map(product => 
-      product.id === id ? { ...product, stock: product.stock + increment } : product
-    ));
+  const updateStock = () => {
   };
+  async function fetchProducts() {
+    const response = await fetchProductNamesAndQuantity();
+    console.log(response);
+    setProducts(response);
+  }
+  fetchProducts();
 
   const addProduct = () => {
     if (newProduct) {
@@ -46,16 +44,16 @@ export default function StockManagementScreen({ navigation }) {
       <View style={styles.content}>
         <FlatList
           data={products}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.product_id}
           renderItem={({ item }) => (
             <View style={styles.productItem}>
               <Text style={styles.productName}>{item.name}</Text>
               <View style={styles.stockControl}>
-                <TouchableOpacity onPress={() => updateStock(item.id, -1)} style={styles.stockButton}>
+                <TouchableOpacity style={styles.stockButton}>
                   <Minus size={20} color="#fff" />
                 </TouchableOpacity>
-                <Text style={styles.stockCount}>{item.stock}</Text>
-                <TouchableOpacity onPress={() => updateStock(item.id, 1)} style={styles.stockButton}>
+                <Text style={styles.stockCount}>{item.stock_quantity}</Text>
+                <TouchableOpacity style={styles.stockButton}>
                   <Plus size={20} color="#fff" />
                 </TouchableOpacity>
               </View>

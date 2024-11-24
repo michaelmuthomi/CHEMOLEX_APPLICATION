@@ -26,14 +26,6 @@ export default function TechnicianScreen({ navigation }) {
     fetchRepairs()
   }, [])
 
-  const orderTool = () => {
-    if (newTool) {
-      // Here you would typically send an API request to order the tool
-      alert(`Tool "${newTool}" has been ordered.`);
-      setNewTool('');
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
