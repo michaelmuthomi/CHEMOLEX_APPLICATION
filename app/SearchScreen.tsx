@@ -61,14 +61,20 @@ const categories = [
   },
 ];
 
-export default function SearchScreen() {
+export default function SearchScreen({ route }) {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(route.params?.category || null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState('popularity');
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (route.params?.category) {
+      setSelectedCategory(route.params.category);
+    }
+  }, [route.params]);
 
   useEffect(() => {
     if (selectedCategory) {
@@ -128,7 +134,6 @@ export default function SearchScreen() {
           <Image
             source={{ uri: category.image }}
             style={styles.categoryImage}
-            sty
           />
         </TouchableOpacity>
       ))}
