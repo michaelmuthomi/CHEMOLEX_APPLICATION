@@ -8,23 +8,22 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { ArrowLeft, Truck } from 'lucide-react-native';
-
-const initialOrders = [
-  { id: '1', customer: 'John Doe', product: 'Product A', status: 'Ready for Dispatch' },
-  { id: '2', customer: 'Jane Smith', product: 'Product B', status: 'Ready for Dispatch' },
-  { id: '3', customer: 'Bob Johnson', product: 'Product C', status: 'Dispatched' },
-];
+import { fetchOrders } from '~/lib/supabase';
+import { useEffect } from 'react';
 
 const drivers = ['Driver A', 'Driver B', 'Driver C'];
 
 export default function DispatcherManagerScreen({ navigation }) {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
 
-  const assignDriver = (orderId, driver) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, assignedTo: driver, status: 'Dispatched' } : order
-    ));
-  };
+ useEffect(() => {
+   async function fetchCustomerOrders() {
+     const response = await fetchOrders();
+     console.log("Orders Fetched", response);
+     setOrders(response);
+   }
+   fetchCustomerOrders();
+ }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,12 +42,18 @@ export default function DispatcherManagerScreen({ navigation }) {
           renderItem={({ item }) => (
             <View style={styles.orderItem}>
               <View>
-                <Text style={styles.customerName}>{item.customer}</Text>
-                <Text style={styles.productName}>{item.product}</Text>
-                <Text style={styles.status}>Status: {item.status}</Text>
-                {item.assignedTo && <Text style={styles.assignedTo}>Assigned to: {item.assignedTo}</Text>}
+                <Text style={styles.customerName}>{item.users.full_name}</Text>
+                <Text style={styles.productName}>{item.products.name}</Text>
+                <Text style={styles.status}>
+                  Payment Status: {item.payment_status}
+                </Text>
+                {item.assignedTo && (
+                  <Text style={styles.assignedTo}>
+                    Assigned to: {item.assignedTo}
+                  </Text>
+                )}
               </View>
-              {item.status === 'Ready for Dispatch' && (
+              {item.payment_status === "completed" && (
                 <View style={styles.assignSection}>
                   <Text style={styles.assignTitle}>Assign to driver:</Text>
                   {drivers.map((driver) => (

@@ -349,3 +349,17 @@ export async function fetchTechnicians() {
     return data;
   }
 }
+
+// fetch orders
+export async function fetchOrders() {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, users:user_id(full_name), products:product_id(name)");
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}

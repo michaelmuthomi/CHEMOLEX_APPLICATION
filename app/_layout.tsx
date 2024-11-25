@@ -119,16 +119,6 @@ export default function RootLayout({navigation}: any) {
       <EmailProvider>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen
-            name="ServiceManagerScreen"
-            component={ServiceManagerScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="FinanceControllerScreen"
-            component={FinanceControllerScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
             name="DispatcherManagerScreen"
             component={DispatcherManagerScreen}
             // options={{ headerShown: true, headerTitle: "" }}
@@ -180,6 +170,16 @@ export default function RootLayout({navigation}: any) {
           <Stack.Screen
             name="StockManagementScreen"
             component={StockManagementScreen}
+            // options={{ headerShown: true, headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="ServiceManagerScreen"
+            component={ServiceManagerScreen}
+            // options={{ headerShown: true, headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="FinanceControllerScreen"
+            component={FinanceControllerScreen}
             // options={{ headerShown: true, headerTitle: "" }}
           />
         </Stack.Navigator>
