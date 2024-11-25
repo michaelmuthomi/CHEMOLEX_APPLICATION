@@ -80,7 +80,7 @@ export default function ProductScreen({ navigation, route }) {
           variant="outline"
           className="w-3/4 rounded-full"
         >
-          <P style={styles.buttonText}>
+          <P className="text-black">
             Add to Cart - {formatPrice(product.price * quantity)}
           </P>
         </Button>

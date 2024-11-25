@@ -242,7 +242,7 @@ export default function HomeScreen({ navigation }) {
               <H4 numberOfLines={2} className="mb-1">
                 {product.name}
               </H4>
-              <P className="text-sm">{formatPrice(product.price)}</P>
+              <P className="text-sm ">{formatPrice(product.price)}</P>
             </View>
           </TouchableOpacity>
         ))}

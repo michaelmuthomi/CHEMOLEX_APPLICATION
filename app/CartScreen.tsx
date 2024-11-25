@@ -29,7 +29,7 @@ export default function CartScreen({ navigation }) {
                       updateQuantity(item.product_id, item.quantity - 1)
                     }
                   >
-                    <Minus size={20} color="#fff" />
+                    <Minus size={20} color="#000" />
                   </Button>
                   <P style={styles.quantityText}>{item.quantity}</P>
                   <Button
@@ -39,14 +39,14 @@ export default function CartScreen({ navigation }) {
                       updateQuantity(item.product_id, item.quantity + 1)
                     }
                   >
-                    <Plus size={20} color="#fff" />
+                    <Plus size={20} color="#000" />
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onPress={() => removeFromCart(item.product_id)}
                   >
-                    <MoreHorizontal size={20} color="#fff" />
+                    <MoreHorizontal size={20} color="#000" />
                   </Button>
                 </View>
               </View>
@@ -64,19 +64,21 @@ export default function CartScreen({ navigation }) {
             className="p-4 rounded-full flex-row justify-between items-center"
             onPress={() => navigation.navigate("CheckoutScreen")}
           >
-            <P>Continue to checkout</P>
-            <P>{formatPrice(getCartTotal())}</P>
+            <P className="text-black">Continue to checkout</P>
+            <P className="text-black">{formatPrice(getCartTotal())}</P>
           </Button>
         ) : (
           <View className="gap-6">
-              <P className="uppercase text-center text-zinc-400">Your bag is empty</P>
-              <Button
-                variant="outline"
-                className="p-4 rounded-full"
-                onPress={() => navigation.navigate("HomeScreen")}
-              >
-                <P>Start Shopping</P>
-              </Button>
+            <P className="uppercase text-center text-zinc-400">
+              Your bag is empty
+            </P>
+            <Button
+              variant="outline"
+              className="p-4 rounded-full"
+              onPress={() => navigation.navigate("HomeScreen")}
+            >
+              <P className="text-black">Start Shopping</P>
+            </Button>
           </View>
         )}
       </ScrollView>

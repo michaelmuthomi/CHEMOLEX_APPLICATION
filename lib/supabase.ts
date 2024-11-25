@@ -363,3 +363,29 @@ export async function fetchOrders() {
     return data;
   }
 }
+
+// Place user orders
+export async function placeAnOrder(details: any) {
+  const { data, error } = await supabase
+    .from("orders")
+    .insert(details);
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}
+
+// Fetch customers orders
+export async function fetchCustomerOrders(user_id: any) {
+  const { data, error } = await supabase.from("orders").select("*").eq("user_id", user_id);
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}

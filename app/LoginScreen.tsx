@@ -7,6 +7,7 @@ import { Link, router } from "expo-router";
 import { showMessage } from "react-native-flash-message";
 import { checkUser, validateUserCredentials } from "~/lib/supabase";
 import { useEmail } from "~/app/EmailContext";
+import { useNavigation } from "@react-navigation/native";
 
 const displayNotification = (
   message: string,
@@ -26,7 +27,7 @@ const displayNotification = (
 };
 
 export default function Screen() {
-
+  const navigation = useNavigation(); // Use hook to access navigation
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const emailContext = useEmail();
@@ -35,6 +36,7 @@ export default function Screen() {
   const onEmailInput = (text: string) => {
     setEmail(text);
   };
+
   const onPasswordInput = (text: string) => {
     setPassword(text);
   };
@@ -56,12 +58,11 @@ export default function Screen() {
         const user_role = isValid["role"];
         console.log(isValid["role"]);
         if (user_role === "Customer") {
+          console.log("User is a Customer");
           setEmailContext(email);
-          router.push({
-            pathname: "/HomeScreen",
-          });
+          navigation.navigate("MainTabs"); // Navigation should now work
           return;
-        } 
+        }
       }
       displayNotification("Invalid Credentials", "danger");
     } else {
@@ -113,8 +114,13 @@ export default function Screen() {
         <P className="text-right uppercase text-blue-400">
           <Link href="/ForgotPassword">Forgot Password</Link>
         </P>
-        <Button onPress={handleLogin} className="w-full" size={"lg"}>
-          <P className="text-black uppercase">Login and continue</P>
+        <Button
+          onPress={handleLogin}
+          className="w-full"
+          size={"lg"}
+          variant="default"
+        >
+          <P className="uppercase">Login and continue</P>
         </Button>
         <P
           className="text-center text-lg pt-4 color-[#b3b3b3]"

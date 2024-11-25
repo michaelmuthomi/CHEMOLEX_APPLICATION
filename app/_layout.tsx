@@ -32,6 +32,7 @@ import TechnicianScreen from "./TechnicianScreen";
 import SupervisorScreen from "./SupervisorScreen";
 import ForgotPassword from "./ForgotPassword";
 import CartScreen from "./CartScreen";
+import HomeScreen from "./HomeScreen";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -115,7 +116,7 @@ export default function RootLayout({navigation}: any) {
     return null;
   }
 
-  const theme = colorScheme === 'dark' ? DARK_THEME : LIGHT_THEME;
+  const theme = DARK_THEME ;
 
   return (
     <ThemeProvider value={theme}>
@@ -123,12 +124,12 @@ export default function RootLayout({navigation}: any) {
       <EmailProvider>
         <CartProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="LoginScreen"
               component={LoginScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
+            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="StaffLoginScreen"
               component={StaffLoginScreen}
@@ -137,6 +138,11 @@ export default function RootLayout({navigation}: any) {
             <Stack.Screen
               name="ForgotPassword"
               component={ForgotPassword}
+              options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
               options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
@@ -161,8 +167,10 @@ export default function RootLayout({navigation}: any) {
               component={ProductScreen}
               options={{ headerShown: true, headerTitle: "" }}
             />
-            <Stack.Screen name="CheckoutScreen" component={CheckoutScreen}
-            options={{ headerShown: true, headerTitle: "" }}
+            <Stack.Screen
+              name="CheckoutScreen"
+              component={CheckoutScreen}
+              options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="TechnicianScreen"

@@ -5,17 +5,10 @@ import { Button } from "~/components/ui/button";
 import { P, H1 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { showMessage } from "react-native-flash-message";
 import { addUserToDB } from "~/lib/supabase";
+import { Dropdown } from "react-native-element-dropdown";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const displayNotification = (
   message: string,
@@ -49,6 +42,7 @@ export default function Screen() {
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const [userName, setUserName] = React.useState("");
   const [fullName, setFullName] = React.useState("");
+  const [role, setRole] = React.useState("customer");
 
   const onEmailInput = (text: string) => {
     setEmail(text);
@@ -177,59 +171,46 @@ export default function Screen() {
               textContentType="password"
               secureTextEntry
             />
-            <Select defaultValue={{ value: "customer", label: "Customer" }}>
-              <SelectTrigger className="w-full bg-[#131313] border-0 !h-14 text-white">
-                <SelectValue
-                  className="text-white text-sm native:text-lg bg-[#131313]"
-                  placeholder="Select your role"
-                  style={{ fontFamily: "Inter_400Regular" }}
-                />
-              </SelectTrigger>
-              <SelectContent
-                insets={contentInsets}
-                className="border-0 w-full px-4 !h-14 text-white"
-              >
-                <SelectGroup className="text-white bg-[#131313]">
-                  <SelectLabel
-                    className="text-white"
-                    style={{ fontFamily: "Inter_400Regular" }}
-                  >
-                    Role
-                  </SelectLabel>
-                  <SelectItem
-                    label="Customer"
-                    value="customer"
-                    style={{ fontFamily: "Inter_400Regular" }}
-                  >
-                    Customer
-                  </SelectItem>
-                  <SelectItem label="Service Manager" value="service_manager">
-                    Service Manager
-                  </SelectItem>
-                  <SelectItem
-                    label="Finance controller"
-                    value="finance_controller"
-                  >
-                    Finance Controller
-                  </SelectItem>
-                  <SelectItem label="Stock Manager" value="stock_manager">
-                    Stock Manager
-                  </SelectItem>
-                  <SelectItem label="Technician" value="technician">
-                    Technician
-                  </SelectItem>
-                  <SelectItem label="Supervisor" value="supervisor">
-                    Supervisor
-                  </SelectItem>
-                  <SelectItem label="Supplier" value="supplier">
-                    Supplier
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Dropdown
+              style={{
+                height: 56,
+                backgroundColor: "#131313",
+                borderRadius: 8,
+                padding: 12,
+                marginBottom: 16,
+              }}
+              placeholderStyle={{
+                color: "#9ca3af",
+                fontSize: 14,
+                fontFamily: "Inter_400Regular",
+              }}
+              selectedTextStyle={{
+                color: "white",
+                fontSize: 14,
+                fontFamily: "Inter_400Regular",
+              }}
+              data={[
+                { label: "Customer", value: "customer" },
+                { label: "Stock Manager", value: "stock_manager" },
+                { label: "Finance Controller", value: "finance_controller" },
+                { label: "Dispatch Manager", value: "dispatch_manager" },
+                { label: "Service Manager", value: "service_manager" },
+                { label: "Supervisor", value: "supervisor" },
+                { label: "Technician", value: "technician" },
+                
+              ]}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select your role"
+              value={role}
+              onChange={(item) => {
+                setRole(item.value);
+              }}
+            />
           </View>
           <Button onPress={handleSignup} className="w-full" size={"lg"}>
-            <P className="text-black uppercase">Create account</P>
+            <P className="uppercase">Create account</P>
           </Button>
           <P
             className="text-center text-lg pt-4 color-[#b3b3b3]"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -15,6 +15,8 @@ import { Button } from '~/components/ui/button';
 import { ChevronLeft } from 'lucide-react-native';
 import { Input } from '~/components/ui/input';
 import { showMessage } from 'react-native-flash-message';
+import { useEmail } from '~/app/EmailContext';
+import { checkUser, placeAnOrder } from '~/lib/supabase'
 
 interface ValidationError {
   field: string;
@@ -22,7 +24,7 @@ interface ValidationError {
 }
 
 interface ShippingInfo {
-  fullName: string;
+  full_name: string;
   address: string;
   city: string;
   state: string;
@@ -57,47 +59,7 @@ const displayNotification = (
 const validateShippingInfo = (info: ShippingInfo): ValidationError[] => {
   const errors: ValidationError[] = [];
 
-  // Full Name validation
-  if (!info.fullName.trim()) {
-    errors.push({ field: 'fullName', message: 'Full name is required' });
-  } else if (info.fullName.length < 2) {
-    errors.push({ field: 'fullName', message: 'Full name must be at least 2 characters' });
-  }
-
-  // Address validation
-  if (!info.address.trim()) {
-    errors.push({ field: 'address', message: 'Address is required' });
-  } else if (info.address.length < 5) {
-    errors.push({ field: 'address', message: 'Please enter a valid address' });
-  }
-
-  // City validation
-  if (!info.city.trim()) {
-    errors.push({ field: 'city', message: 'City is required' });
-  }
-
-  // State validation
-  if (!info.state.trim()) {
-    errors.push({ field: 'state', message: 'State is required' });
-  } else if (info.state.length !== 2) {
-    errors.push({ field: 'state', message: 'Please enter a valid 2-letter state code' });
-  }
-
-  // ZIP Code validation
-  const zipRegex = /^\d{5}(-\d{4})?$/;
-  if (!info.zipCode.trim()) {
-    errors.push({ field: 'zipCode', message: 'ZIP code is required' });
-  } else if (!zipRegex.test(info.zipCode)) {
-    errors.push({ field: 'zipCode', message: 'Please enter a valid ZIP code' });
-  }
-
-  // Phone validation
-  const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-  if (!info.phone.trim()) {
-    errors.push({ field: 'phone', message: 'Phone number is required' });
-  } else if (!phoneRegex.test(info.phone)) {
-    errors.push({ field: 'phone', message: 'Please enter a valid phone number' });
-  }
+  
 
   return errors;
 };
@@ -141,15 +103,18 @@ const validatePaymentInfo = (info: PaymentInfo): ValidationError[] => {
 };
 
 export default function CheckoutScreen({ navigation }) {
+  const emailContext = useEmail();
+  const [customer, setCustomerDetails] = useState([]);
+  const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
   const { items, getCartTotal, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState<'shipping' | 'payment' | 'review'>('shipping');
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({
-    fullName: '',
+    full_name: '',
     address: '',
     city: '',
     state: '',
-    zipCode: '',
+    zipCode: 30100,
     phone: '',
   });
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
@@ -158,6 +123,15 @@ export default function CheckoutScreen({ navigation }) {
     cvv: '',
     cardHolderName: '',
   });
+
+  useEffect(() => {
+    async function fetchUserDetails(){
+      const response = await checkUser(emailContext?.email);
+      console.log("Username", response.full_name)
+      setCustomerDetails(response)
+    }
+    fetchUserDetails()
+  }, [emailContext])
 
   const handleShippingSubmit = () => {
     const validationErrors = validateShippingInfo(shippingInfo);
@@ -228,21 +202,51 @@ export default function CheckoutScreen({ navigation }) {
   };
 
   const handlePlaceOrder = () => {
-    // Here you would typically make an API call to process the order
-    displayNotification('Order Placed!', 'success');
-    Alert.alert(
-      'Order Placed!',
-      'Thank you for your order. You will receive a confirmation email shortly.',
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            clearCart();
-            navigation.navigate('MainTabs');
+    async function PlaceOrder() {
+      // Calculate total amount as a single value
+      const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      
+      // Create an order for each item
+      for (const item of items) {
+        const details = {
+          total_amount: total,
+          user_id: customer.user_id,
+          payment_method: "credit_card",
+          payment_status: "completed",
+          delivery_address: customer.address,
+          product_id: item.product_id,
+          quantity: item.quantity,
+          unit_price: item.price,
+        };
+
+        try {
+          const response = await placeAnOrder(details);
+          if (typeof response === 'string' && response.startsWith("Error")) {
+            displayNotification(response, "danger");
+            return;
+          }
+        } catch (error) {
+          displayNotification('Failed to place order', "danger");
+          return;
+        }
+      }
+      
+      displayNotification('Order Placed!', 'success');
+      Alert.alert(
+        'Order Placed!',
+        'Thank you for your order. You will receive a confirmation email shortly.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              clearCart();
+              navigation.navigate('MainTabs');
+            },
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
+    PlaceOrder();
   };
 
   const renderShippingForm = () => (
@@ -252,18 +256,18 @@ export default function CheckoutScreen({ navigation }) {
         <Input
           placeholder="Full Name"
           placeholderTextColor="#666"
-          value={shippingInfo.fullName}
+          value={customer.full_name}
           onChangeText={(text) =>
-            setShippingInfo({ ...shippingInfo, fullName: text })
+            setShippingInfo({ ...customer, full_name: text })
           }
-          {...getFieldError('fullName')}
-        />
+          {...getFieldError('full_name')}
+        />  
         <Input
           placeholder="Address"
           placeholderTextColor="#666"
-          value={shippingInfo.address}
+          value={customer.address}
           onChangeText={(text) =>
-            setShippingInfo({ ...shippingInfo, address: text })
+            setShippingInfo({ ...customer, address: text })
           }
           {...getFieldError('address')}
         />
@@ -272,9 +276,9 @@ export default function CheckoutScreen({ navigation }) {
             placeholder="City"
             className="flex-1"
             placeholderTextColor="#666"
-            value={shippingInfo.city}
+            value={customer.city}
             onChangeText={(text) =>
-              setShippingInfo({ ...shippingInfo, city: text })
+              setShippingInfo({ ...customer, city: text })
             }
             {...getFieldError('city')}
           />
@@ -282,33 +286,22 @@ export default function CheckoutScreen({ navigation }) {
             placeholder="State"
             className="flex-1"
             placeholderTextColor="#666"
-            value={shippingInfo.state}
+            value={customer.state}
             onChangeText={(text) =>
-              setShippingInfo({ ...shippingInfo, state: text.toUpperCase().slice(0, 2) })
+              setShippingInfo({ ...customer, state: text.toUpperCase().slice(0, 2) })
             }
             {...getFieldError('state')}
           />
         </View>
         <View className="flex-row gap-2">
           <Input
-            className="w-1/3"
-            placeholder="ZIP Code"
-            placeholderTextColor="#666"
-            keyboardType="numeric"
-            value={shippingInfo.zipCode}
-            onChangeText={(text) =>
-              setShippingInfo({ ...shippingInfo, zipCode: text.slice(0, 10) })
-            }
-            {...getFieldError('zipCode')}
-          />
-          <Input
             className="flex-auto"
             placeholder="Phone"
             placeholderTextColor="#666"
             keyboardType="phone-pad"
-            value={formatPhone(shippingInfo.phone)}
+            value={customer.phone_number}
             onChangeText={(text) =>
-              setShippingInfo({ ...shippingInfo, phone: text })
+              setShippingInfo({ ...customer, phone_number: text })
             }
             {...getFieldError('phone')}
           />
@@ -318,7 +311,7 @@ export default function CheckoutScreen({ navigation }) {
         variant="default"
         onPress={handleShippingSubmit}
       >
-        <P className="uppercase text-black">Continue to Payment</P>
+        <P className="uppercase">Continue to Payment</P>
       </Button>
     </View>
   );
@@ -373,7 +366,7 @@ export default function CheckoutScreen({ navigation }) {
         variant="default"
         onPress={handlePaymentSubmit}
       >
-        <P className="uppercase text-black">Review Order</P>
+        <P className="uppercase">Review Order</P>
       </Button>
     </View>
   );
@@ -384,9 +377,9 @@ export default function CheckoutScreen({ navigation }) {
       <View style={styles.orderReviewFields}>
         <View style={styles.orderReviewSection}>
           <H4>Shipping To</H4>
-          <P>{shippingInfo.fullName}</P>
+          <P>{shippingInfo.full_name}</P>
           <P>{shippingInfo.address}</P>
-          <P>{`${shippingInfo.city}, ${shippingInfo.state} ${shippingInfo.zipCode}`}</P>
+          <P>{`${shippingInfo.city}, ${shippingInfo.state}`}</P>
           <P>{shippingInfo.phone}</P>
         </View>
 
@@ -424,7 +417,7 @@ export default function CheckoutScreen({ navigation }) {
         variant="default"
         onPress={handlePlaceOrder}
       >
-        <P className="uppercase text-black">Place Order</P>
+        <P className="uppercase">Place Order</P>
       </Button>
     </View>
   );

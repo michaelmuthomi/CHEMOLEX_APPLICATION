@@ -161,7 +161,6 @@ export default function SearchScreen({ route }) {
         {["popularity", "price-low", "price-high"].map((sort) => (
           <Button
             key={sort}
-            variant={"outline"}
             onPress={() => setSortBy(sort)}
             className={`${
               sortBy === sort ? "bg-zinc-800 text-white" : " text-zinc-800"

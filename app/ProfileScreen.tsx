@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -25,10 +25,11 @@ import { H2, H3, H4, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { showMessage } from 'react-native-flash-message';
+import { useEmail } from '~/app/EmailContext';
+import { checkUser, fetchCustomerOrders } from '~/lib/supabase';
 
-interface PersonalInfo {
-  firstName: string;
-  lastName: string;
+interface customer {
+  full_name: string;
   email: string;
   phone: string;
   address: string;
@@ -126,23 +127,34 @@ const mockOrders: Order[] = [
 ];
 
 export default function ProfileScreen({ navigation }) {
+  const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '(123) 456-7890',
-    address: '123 Main St, City, State 12345',
-  });
+  const [customer, setCustomerDetails] = useState([]);
+  
+  console.log(customer.full_name);
   const [isEditing, setIsEditing] = useState(false);
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [orders, setOrders] = useState<Order[]>();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const handleMenuPress = (screen: string) => {
     setActiveModal(screen);
   };
 
-  const handleSavePersonalInfo = () => {
+  useEffect(() => {
+    async function fetchUserDetails() {
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
+    }
+    async function fetchOrders() {
+      const response = await fetchCustomerOrders(customer.user_id);
+      console.log("Orders Fetched", response);
+      setOrders(response);
+    }
+    fetchUserDetails();
+    fetchOrders();
+  }, [emailContext]);
+
+  const handleSavecustomer = () => {
     // TODO: Implement API call to save user info
     showMessage({
       message: 'Profile updated successfully',
@@ -186,11 +198,11 @@ export default function ProfileScreen({ navigation }) {
     setSelectedOrder(null);
   };
 
-  const renderPersonalInfoModal = () => (
+  const rendercustomerModal = () => (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={activeModal === 'personal'}
+      visible={activeModal === "personal"}
       onRequestClose={() => setActiveModal(null)}
     >
       <View className="flex-1 bg-black/50">
@@ -207,61 +219,60 @@ export default function ProfileScreen({ navigation }) {
               <View className="space-y-4">
                 <Input
                   placeholder="First Name"
-                  value={personalInfo.firstName}
-                  onChangeText={(text) => setPersonalInfo({ ...personalInfo, firstName: text })}
+                  value={customer.full_name}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, full_name: text })
+                  }
                   editable={isEditing}
-                  className={!isEditing ? 'bg-zinc-950 text-white' : ''}
-                />
-
-                <Input
-                  placeholder="Last Name"
-                  value={personalInfo.lastName}
-                  onChangeText={(text) => setPersonalInfo({ ...personalInfo, lastName: text })}
-                  editable={isEditing}
-                  className={!isEditing ? 'bg-zinc-950 text-white' : ''}
+                  className={!isEditing ? "bg-zinc-950 text-white" : ""}
                 />
 
                 <Input
                   placeholder="Email"
-                  value={personalInfo.email}
-                  onChangeText={(text) => setPersonalInfo({ ...personalInfo, email: text })}
+                  value={customer.email}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, email: text })
+                  }
                   keyboardType="email-address"
                   editable={isEditing}
-                  className={!isEditing ? 'bg-zinc-950 text-white' : ''}
+                  className={!isEditing ? "bg-zinc-950 text-white" : ""}
                 />
 
                 <Input
                   placeholder="Phone"
-                  value={personalInfo.phone}
-                  onChangeText={(text) => setPersonalInfo({ ...personalInfo, phone: text })}
+                  value={customer.phone_number}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, phone_number: text })
+                  }
                   keyboardType="phone-pad"
                   editable={isEditing}
-                  className={!isEditing ? 'bg-zinc-950 text-white' : ''}
+                  className={!isEditing ? "bg-zinc-950 text-white" : ""}
                 />
 
                 <Input
                   placeholder="Address"
-                  value={personalInfo.address}
-                  onChangeText={(text) => setPersonalInfo({ ...personalInfo, address: text })}
+                  value={customer.address}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, address: text })
+                  }
                   editable={isEditing}
-                  className={!isEditing ? 'bg-zinc-950 text-white' : ''}
+                  className={!isEditing ? "bg-zinc-950 text-white" : ""}
                 />
 
                 <View className="space-y-4 pt-4">
                   {isEditing ? (
-                    <View className="space-y-2">
+                    <View className="space-y-2 flex-row justify-between">
                       <Button
-                        variant="default"
-                        onPress={handleSavePersonalInfo}
-                        className="bg-zinc-950"
+                        variant="outline"
+                        onPress={handleSavecustomer}
                       >
-                        <P className="text-white uppercase">Save Changes</P>
+                        <P className="text-black uppercase">Save Changes</P>
                       </Button>
                       <Button
                         variant="outline"
                         onPress={() => setIsEditing(false)}
                       >
-                        <P className="uppercase">Cancel</P>
+                        <P className="uppercase text-black">Cancel</P>
                       </Button>
                     </View>
                   ) : (
@@ -269,7 +280,7 @@ export default function ProfileScreen({ navigation }) {
                       variant="outline"
                       onPress={() => setIsEditing(true)}
                     >
-                      <P className="uppercase">Edit Information</P>
+                      <P className="uppercase text-black">Edit Information</P>
                     </Button>
                   )}
                 </View>
@@ -396,19 +407,15 @@ export default function ProfileScreen({ navigation }) {
         {/* Profile Header */}
         <View className="items-center justify-center py-8 bg-zinc-900">
           <View className="relative">
-            <Image
-              source={{ uri: 'https://i.pravatar.cc/150' }}
-              className="w-24 h-24 rounded-full"
-            />
             <TouchableOpacity 
-              className="absolute bottom-0 right-0 p-2 rounded-full shadow-sm border border-zinc-200"
+              className="p-2 rounded-full shadow-sm border border-zinc-200"
               onPress={() => handleMenuPress('personal')}
             >
-              <User size={16} color="#fff" />
+              <User size={24} color="#fff" />
             </TouchableOpacity>
           </View>
-          <H3 className="mt-4 text-white">{personalInfo.firstName} {personalInfo.lastName}</H3>
-          <P className="text-zinc-500">{personalInfo.email}</P>
+          <H3 className="mt-4 text-white">{customer.full_name}</H3>
+          <P className="text-zinc-500">{customer.email}</P>
         </View>
 
         {/* Menu Items */}
@@ -440,13 +447,13 @@ export default function ProfileScreen({ navigation }) {
               navigation.navigate('LoginScreen');
             }}
           >
-            <P className="uppercase">Log Out Now</P>
+            <P className="uppercase text-black">Log Out Now</P>
           </Button>
         </View>
       </ScrollView>
 
       {/* Modals */}
-      {renderPersonalInfoModal()}
+      {rendercustomerModal()}
       {renderOrdersModal()}
     </SafeAreaView>
   );
