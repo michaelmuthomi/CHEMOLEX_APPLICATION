@@ -8,86 +8,83 @@ import {
   SafeAreaView,
   StyleSheet,
 } from 'react-native';
-import { ChevronLeft, ShoppingCart, ChevronDown, ChevronUp } from 'lucide-react-native';
+import { ChevronLeft, ShoppingCart, ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react-native';
+import { useCart } from '~/lib/cart-context';
+import { formatPrice } from '~/lib/format-price';
+import { H3, H4, P } from '~/components/ui/typography';
+import { Button } from '~/components/ui/button';
 
-export default function ProductScreen({ navigation }) {
+export default function ProductScreen({ navigation, route }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const { product } = route.params;
+  const { addToCart } = useCart();
+
+  const handleQuantityChange = (change: number) => {
+    setQuantity(prev => Math.max(1, prev + change));
+  };
+
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    navigation.navigate('CartScreen');
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <View style={styles.iconButton}>
-            <ChevronLeft size={24} color="#000" />
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>High Tide Hydrating Cleanser</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-          <View style={styles.iconButton}>
-            <ShoppingCart size={24} color="#000" />
-          </View>
-        </TouchableOpacity>
-      </View>
-
+    <SafeAreaView className="flex-1">
       <ScrollView style={styles.content}>
-        <View style={styles.imageContainer}>
+        <View className="w-full bg-[#121212]">
           <Image
-            source={{ uri: '/placeholder.svg?height=600&width=600' }}
-            style={styles.productImage}
+            source={{ uri: product.image_url }}
+            className="w-full h-80 mix-blend-multiply bg-white"
             resizeMode="contain"
           />
         </View>
 
-        <View style={styles.productInfo}>
-          <Text style={styles.subtitle}>One step, multiple benefits</Text>
-          
-          <Text style={styles.title}>High Tide Hydrating Cleanser</Text>
-          
-          <Text style={styles.price}>$15.00</Text>
+        <View className="p-4 gap-6">
+          <View>
+            <P style={styles.subtitle} className="uppercase text-gray-500">
+              {product.category || "Beauty Product"}
+            </P>
 
-          <Text style={styles.description}>
-            This 2-in-1 cleanser removes dirt and grime while hydrating skin at the same time. 
-            With a pH around 5 (which matches skin's natural levels) it cleans without stripping skin. 
-            Talk about a win-win!
-          </Text>
+            <H3 style={styles.title}>{product.name}</H3>
 
-          <TouchableOpacity 
-            style={styles.expandableSection}
-            onPress={() => setIsExpanded(!isExpanded)}
-          >
-            <View style={styles.expandableHeader}>
-              <Text style={styles.expandableTitle}>Why you'll love it</Text>
-              {isExpanded ? (
-                <ChevronUp size={24} color="#000" />
-              ) : (
-                <ChevronDown size={24} color="#000" />
-              )}
+            <View className="flex-row justify-between items-center">
+              <P>{formatPrice(product.price)}</P>
+              <P>{product.stock_quantity || "Not available"} in stock</P>
             </View>
-            {isExpanded && (
-              <View style={styles.expandableContent}>
-                <Text style={styles.expandableText}>
-                  • Gentle yet effective cleansing{'\n'}
-                  • Hydrating formula{'\n'}
-                  • pH balanced{'\n'}
-                  • Suitable for all skin types{'\n'}
-                  • Dermatologist tested
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
+          </View>
+          <View className="gap-2">
+            <P>{product.description || "No description available"}</P>
+          </View>
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.buyNowButton}>
-          <Text style={styles.buttonText}>Buy Now</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addToCartButton}>
-          <Text style={styles.buttonText}>Add to Cart</Text>
-        </TouchableOpacity>
+      <View className="flex-row items-center justify-between p-4 border-t-[1px] border-gray-900">
+        <View className="flex-row w-1/4 items-center">
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={() => handleQuantityChange(-1)}
+          >
+            <Minus size={20} color="#fff" />
+          </TouchableOpacity>
+          <P style={styles.quantityText}>{quantity}</P>
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={() => handleQuantityChange(1)}
+          >
+            <Plus size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <Button
+          onPress={handleAddToCart}
+          variant="outline"
+          className="w-3/4 rounded-full"
+        >
+          <P style={styles.buttonText}>
+            Add to Cart - {formatPrice(product.price * quantity)}
+          </P>
+        </Button>
       </View>
-
-      
     </SafeAreaView>
   );
 }
@@ -182,24 +179,34 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   footer: {
-    flexDirection: 'row',
     padding: 16,
-    gap: 12,
     borderTopWidth: 1,
     borderTopColor: '#f1f1f1',
-  },
-  buyNowButton: {
-    flex: 1,
-    backgroundColor: '#000',
-    borderRadius: 30,
-    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 16,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e1e1e1',
+    borderRadius: 8,
+    padding: 4,
+  },
+  quantityButton: {
+    padding: 8,
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: '600',
+    paddingHorizontal: 12,
   },
   addToCartButton: {
     flex: 1,
     backgroundColor: '#000',
-    borderRadius: 30,
     padding: 16,
+    borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
@@ -234,4 +241,3 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 });
-

@@ -5,9 +5,10 @@ import {
   ScrollView,
   StyleSheet,
   SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import { ChevronLeft, Menu } from 'lucide-react-native';
-import { H1, P } from '~/components/ui/typography';
+import { H1, H2, H3, H4, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { useEffect, useState } from 'react';
 import { fetchProductsFromDB } from '~/lib/supabase';
@@ -26,59 +27,28 @@ export default function HomeScreen({ navigation }) {
     fetchProductsFromDB().then(setProducts);
   }, []);
   return (
-    <SafeAreaView>
+    <SafeAreaView className='flex-1'>
       <ScrollView className='pt-14'>
-        <H1 className="px-6">All Products</H1>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesScroll}
-        >
-          {categories.map((category) => (
-            <Button key={category.id} style={styles.categoryCard}>
-              <Image
-                source={{ uri: category.image }}
-                style={styles.categoryImage}
-              />
-              <P>{category.title}</P>
-            </Button>
-          ))}
-        </ScrollView>
-
-        <View className="px-4 py-2">
-          <View className="flex flex-row gap-2">
-            <Button variant="outline" className="rounded-full">
-              <P>Sort & filter</P>
-            </Button>
-            <Button variant="outline" className="rounded-full">
-              <P>On sale</P>
-            </Button>
-            <Button variant="outline" className="rounded-full">
-              <P>In stock</P>
-            </Button>
-          </View>
-
-          <P >217 products</P>
-        </View>
+        <H3 className="px-6">Discover</H3>
 
         <View style={styles.productsGrid}>
           {products.map((product) => (
-            <View
+            <TouchableOpacity
               key={product.product_id}
               style={styles.productCard}
-              // onPress={() => navigation.navigate('ProductScreen')}
+              onPress={() => navigation.navigate('ProductScreen', { product })}
             >
               <Image
                 source={{ uri: product.image_url }}
                 style={styles.productImage}
               />
               <View style={styles.productInfo}>
-                <P style={styles.productTitle} numberOfLines={2}>
+                <H3 className="text-lg leading-5" numberOfLines={2}>
                   {product.name}
-                </P>
-                <P style={styles.productPrice}>{formatPrice(product.price)}</P>
+                </H3>
+                <P className="text-sm">{formatPrice(product.price)}</P>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
@@ -226,4 +196,3 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
-

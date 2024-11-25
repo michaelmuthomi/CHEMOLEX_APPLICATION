@@ -14,6 +14,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FlashMessage from "react-native-flash-message";
 import { EmailProvider } from "./EmailContext"; 
+import { CartProvider } from "~/lib/cart-context";
 import { P } from "~/components/ui/typography";
 import { router } from "expo-router";
 
@@ -30,6 +31,7 @@ import StockManagementScreen from "./StockManagementScreen";
 import TechnicianScreen from "./TechnicianScreen";
 import SupervisorScreen from "./SupervisorScreen";
 import ForgotPassword from "./ForgotPassword";
+import CartScreen from "./CartScreen";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -113,79 +115,95 @@ export default function RootLayout({navigation}: any) {
     return null;
   }
 
+  const theme = colorScheme === 'dark' ? DARK_THEME : LIGHT_THEME;
+
   return (
-    <ThemeProvider value={DARK_THEME}>
-      <StatusBar style={"light"} />
+    <ThemeProvider value={theme}>
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <EmailProvider>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="DispatcherManagerScreen"
-            component={DispatcherManagerScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="StaffLoginScreen"
-            component={StaffLoginScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPassword}
+        <CartProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            <Stack.Screen
+              name="LoginScreen"
+              component={LoginScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="StaffLoginScreen"
+              component={StaffLoginScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="SignupScreen"
+              component={SignupScreen}
+              options={{
+                headerShown: true,
+                headerTitleAlign: "left",
+                headerTitle: () => (
+                  <P
+                    onPress={() => router.push("/LoginScreen")}
+                    className="text-white"
+                  >
+                    Back
+                  </P>
+                ),
+              }}
+            />
+
+            <Stack.Screen
+              name="ProductScreen"
+              component={ProductScreen}
+              options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen name="CheckoutScreen" component={CheckoutScreen}
             options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="SignupScreen"
-            component={SignupScreen}
-            options={{
-              headerShown: true,
-              headerTitleAlign: "left",
-              headerTitle: () => (
-                <P
-                  onPress={() => router.push("/LoginScreen")}
-                  className="text-white"
-                >
-                  Back
-                </P>
-              ),
-            }}
-          />
-          <Stack.Screen name="MainTabs" component={MainTabs} />
-          <Stack.Screen name="ProductScreen" component={ProductScreen} />
-          <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
-          <Stack.Screen
-            name="TechnicianScreen"
-            component={TechnicianScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="SupervisorScreen"
-            component={SupervisorScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="StockManagementScreen"
-            component={StockManagementScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="ServiceManagerScreen"
-            component={ServiceManagerScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="FinanceControllerScreen"
-            component={FinanceControllerScreen}
-            // options={{ headerShown: true, headerTitle: "" }}
-          />
-        </Stack.Navigator>
+            />
+            <Stack.Screen
+              name="TechnicianScreen"
+              component={TechnicianScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="SupervisorScreen"
+              component={SupervisorScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="StockManagementScreen"
+              component={StockManagementScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="ServiceManagerScreen"
+              component={ServiceManagerScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="FinanceControllerScreen"
+              component={FinanceControllerScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="DispatcherManagerScreen"
+              component={DispatcherManagerScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+            <Stack.Screen
+              name="CartScreen"
+              component={CartScreen}
+              // options={{ headerShown: true, headerTitle: "" }}
+            />
+          </Stack.Navigator>
+          <FlashMessage position="top" />
+          <PortalHost />
+        </CartProvider>
       </EmailProvider>
-      <PortalHost />
-      <FlashMessage position="top" />
     </ThemeProvider>
   );
 }

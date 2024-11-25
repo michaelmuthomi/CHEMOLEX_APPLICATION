@@ -56,24 +56,12 @@ export default function Screen() {
         const user_role = isValid["role"];
         console.log(isValid["role"]);
         if (user_role === "Customer") {
+          setEmailContext(email);
           router.push({
             pathname: "/HomeScreen",
-            params: { email: email },
           });
-        } else if (user_role === "Finance Manager") {
-          router.push({
-            pathname: "../finance_manager_dashboard",
-            params: { email: email },
-          });
-        } else if (user_role === "Dispatch Manager") {
-          router.push({
-            pathname: "../dispatch_manager_dashboard",
-            params: { email: email },
-          });
-        }
-
-        setEmailContext(email);
-        return;
+          return;
+        } 
       }
       displayNotification("Invalid Credentials", "danger");
     } else {
@@ -84,7 +72,8 @@ export default function Screen() {
     <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
-        className="mt-14 w-full h-32 scale-100 mx-auto absolute top-0 left-0 object-cover"
+        className="mt-14 w-screen h-32 scale-50 mx-auto absolute top-0 left-0"
+        resizeMode="contain"
       />
       <View className="w-full mb-auto mt-auto gap-6">
         <View className="w-full">

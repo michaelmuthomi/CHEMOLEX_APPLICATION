@@ -109,10 +109,6 @@ export default function Screen() {
   };
   return (
     <View className="flex-1 justify-between items-center gap-5 px-6 pt-6">
-      <Image
-        source={require("../assets/images/Texture.jpg")}
-        className="w-screen h-1/4 mx-auto absolute top-0 left-0 opacity-30"
-      />
       <ScrollView>
         <View className="w-full mb-4">
           <H1>Create an account</H1>

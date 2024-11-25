@@ -84,7 +84,8 @@ export default function Screen() {
     <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
-        className="mt-14 w-full h-32 scale-100 mx-auto absolute top-0 left-0 object-cover"
+        className="mt-14 w-screen h-32 scale-50 mx-auto absolute top-0 left-0"
+        resizeMode="contain"
       />
       <View className="w-full mb-auto mt-auto gap-6">
         <View className="w-full">

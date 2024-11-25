@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   View,
-  Text,
   Image,
   TouchableOpacity,
   ScrollView,
-  StyleSheet,
   SafeAreaView,
 } from 'react-native';
 import {
@@ -17,206 +15,124 @@ import {
   ChevronRight,
   Home,
   DollarSign,
+  LogOut,
+  Settings,
+  ShoppingBag,
 } from 'lucide-react-native';
+import { H2, H3, H4, P } from '~/components/ui/typography';
+import { Button } from '~/components/ui/button';
 
 const menuItems = [
   {
-    id: 1,
-    title: 'Personal information',
+    id: 'personal',
+    title: 'Personal Information',
+    description: 'Update your profile details and preferences',
     icon: User,
+    screen: 'PersonalInfoScreen',
   },
   {
-    id: 2,
-    title: 'Payments and payouts',
+    id: 'orders',
+    title: 'Orders & Returns',
+    description: 'Track orders and manage returns',
+    icon: ShoppingBag,
+    screen: 'OrdersScreen',
+  },
+  {
+    id: 'payments',
+    title: 'Payments & Payouts',
+    description: 'Manage payment methods and transactions',
     icon: Wallet,
+    screen: 'PaymentsScreen',
   },
   {
-    id: 3,
-    title: 'Translation',
-    icon: Languages,
-  },
-  {
-    id: 4,
+    id: 'notifications',
     title: 'Notifications',
+    description: 'Control your notification preferences',
     icon: Bell,
+    screen: 'NotificationsScreen',
   },
   {
-    id: 5,
-    title: 'Privacy and sharing',
+    id: 'privacy',
+    title: 'Privacy & Security',
+    description: 'Manage your account security and privacy',
     icon: Lock,
+    screen: 'PrivacyScreen',
+  },
+  {
+    id: 'settings',
+    title: 'App Settings',
+    description: 'Language, currency, and other preferences',
+    icon: Settings,
+    screen: 'SettingsScreen',
   },
 ];
 
 export default function ProfileScreen({ navigation }) {
+  const handleMenuPress = (screen: string) => {
+    // TODO: Implement actual navigation when screens are ready
+    console.log(`Navigating to ${screen}`);
+  };
+
+  const handleLogout = () => {
+    // TODO: Implement logout functionality
+    console.log('Logging out...');
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.content}>
-        <View style={styles.profileSection}>
-          <Image
-            source={{ uri: '/placeholder.svg?height=100&width=100' }}
-            style={styles.profileImage}
-          />
-          <Text style={styles.name}>John</Text>
-          <TouchableOpacity>
-            <Text style={styles.showProfile}>Show profile</Text>
-          </TouchableOpacity>
+    <SafeAreaView className="flex-1 ">
+      <ScrollView className="flex-1">
+        {/* Profile Header */}
+        <View className="items-center justify-center py-8 bg-zinc-900">
+          <View className="relative">
+            <Image
+              source={{ uri: 'https://i.pravatar.cc/150' }}
+              className="w-24 h-24 rounded-full"
+            />
+            <TouchableOpacity 
+              className="absolute bottom-0 right-0  p-2 rounded-full shadow-sm border border-zinc-200"
+              onPress={() => handleMenuPress('EditProfileScreen')}
+            >
+              <User size={16} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <H3 className="mt-4">John Doe</H3>
+          <P className="text-zinc-500">john.doe@example.com</P>
         </View>
 
-        <TouchableOpacity style={styles.promotionCard}>
-          <View style={styles.promotionIcon}>
-            <DollarSign size={24} color="#FF385C" />
-          </View>
-          <View style={styles.promotionContent}>
-            <Text style={styles.promotionTitle}>
-              Earn money from your extra space
-            </Text>
-            <Text style={styles.learnMore}>Learn more</Text>
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account settings</Text>
+        {/* Menu Items */}
+        <View className="p-4 space-y-4">
           {menuItems.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.menuItem}>
-              <View style={styles.menuItemContent}>
-                <item.icon size={24} color="#000" />
-                <Text style={styles.menuItemText}>{item.title}</Text>
+            <TouchableOpacity
+              key={item.id}
+              className="flex-row items-center p-4 bg-zinc-950 rounded-2xl"
+              onPress={() => handleMenuPress(item.screen)}
+            >
+              <View className=" p-3 rounded-full">
+                <item.icon size={20} color="#fff" />
               </View>
-              <ChevronRight size={24} color="#000" />
+              <View className="flex-1 ml-4">
+                <H4>{item.title}</H4>
+                <P className="text-sm text-zinc-500">{item.description}</P>
+              </View>
+              <ChevronRight size={20} color="#fff" />
             </TouchableOpacity>
           ))}
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Hosting</Text>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuItemContent}>
-              <Home size={24} color="#000" />
-              <Text style={styles.menuItemText}>List your space</Text>
-            </View>
-            <ChevronRight size={24} color="#000" />
-          </TouchableOpacity>
+        {/* Logout Button */}
+        <View className="p-4 pt-8">
+          <Button
+            variant="outline"
+            className="flex-row items-center justify-center space-x-2 p-4 gap-4"
+            onPress={() => {
+              navigation.navigate('LoginScreen');
+            }}
+          >
+            <P className="uppercase">Log Out Now</P>
+            {/* <LogOut size={20} color="#fff" /> */}
+          </Button>
         </View>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <Image
-          source={{ uri: '/placeholder.svg?height=40&width=40' }}
-          style={styles.footerLogo}
-        />
-        <Text style={styles.footerText}>curated by</Text>
-        <Image
-          source={{ uri: '/placeholder.svg?height=80&width=80' }}
-          style={styles.mobbinLogo}
-        />
-      </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
-  },
-  profileSection: {
-    alignItems: 'center',
-    padding: 24,
-  },
-  profileImage: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    marginBottom: 16,
-  },
-  name: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  showProfile: {
-    fontSize: 16,
-    textDecorationLine: 'underline',
-    color: '#000',
-  },
-  promotionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 24,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#f1f1f1',
-    gap: 16,
-  },
-  promotionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: '#FFE1E8',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  promotionContent: {
-    flex: 1,
-  },
-  promotionTitle: {
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  learnMore: {
-    fontSize: 16,
-    textDecorationLine: 'underline',
-    color: '#000',
-  },
-  section: {
-    paddingTop: 32,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    paddingHorizontal: 24,
-    marginBottom: 16,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f1f1',
-  },
-  menuItemContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  menuItemText: {
-    fontSize: 18,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#f1f1f1',
-    gap: 8,
-  },
-  footerLogo: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
-  },
-  footerText: {
-    color: '#666',
-  },
-  mobbinLogo: {
-    width: 80,
-    height: 20,
-    resizeMode: 'contain',
-  },
-});
-

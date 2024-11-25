@@ -1,91 +1,85 @@
 import React from 'react';
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Minus, Plus, MoreHorizontal } from 'lucide-react-native';
+import { useCart } from '~/lib/cart-context';
+import { formatPrice } from '~/lib/format-price';
+import { H3, H4, P } from '~/components/ui/typography';
+import { Button } from '~/components/ui/button';
 
 export default function CartScreen({ navigation }) {
+  const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 pt-14 p-4">
       <ScrollView>
-        <Text style={styles.title}>Bag</Text>
-        
-        {/* Almina Product */}
-        <View style={styles.productCard}>
-          <View style={styles.brandHeader}>
-            <Text style={styles.brandName}>Almina Concept</Text>
-            <Image 
-              source={{ uri: '/placeholder.svg' }}
-              style={styles.brandLogo}
-            />
-          </View>
-          
-          <View style={styles.productDetails}>
-            <Image
-              source={{ uri: '/placeholder.svg' }}
-              style={styles.productImage}
-            />
-            <View style={styles.productInfo}>
-              <Text style={styles.productName}>Mohair Cardigan</Text>
-              <Text style={styles.productVariant}>S / Off White</Text>
-              <Text style={styles.price}>$148.00</Text>
-              
-              <View style={styles.quantitySelector}>
-                <TouchableOpacity style={styles.quantityButton}>
-                  <Minus size={20} color="#000" />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>1</Text>
-                <TouchableOpacity style={styles.quantityButton}>
-                  <Plus size={20} color="#000" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.moreButton}>
-                  <MoreHorizontal size={20} color="#000" />
-                </TouchableOpacity>
+        <H3>Cart</H3>
+
+        {items.map((item) => (
+          <View key={item.product_id}>
+            <View className="flex-row items-center gap-4 py-4">
+              <View className="flex-1 h-28">
+                <H4 style={styles.productName}>{item.name}</H4>
+                <P style={styles.price}>{formatPrice(item.price)}</P>
+
+                <View className="flex-row items-center gap-2 mt-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onPress={() =>
+                      updateQuantity(item.product_id, item.quantity - 1)
+                    }
+                  >
+                    <Minus size={20} color="#fff" />
+                  </Button>
+                  <P style={styles.quantityText}>{item.quantity}</P>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onPress={() =>
+                      updateQuantity(item.product_id, item.quantity + 1)
+                    }
+                  >
+                    <Plus size={20} color="#fff" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onPress={() => removeFromCart(item.product_id)}
+                  >
+                    <MoreHorizontal size={20} color="#fff" />
+                  </Button>
+                </View>
               </View>
+              <Image
+                source={{ uri: item.image_url }}
+                style={styles.productImage}
+              />
             </View>
           </View>
-        </View>
+        ))}
 
-        {/* Kith Product */}
-        <View style={styles.productCard}>
-          <View style={styles.brandHeader}>
-            <Text style={styles.brandName}>Kith</Text>
-            <Image 
-              source={{ uri: '/placeholder.svg' }}
-              style={styles.brandLogo}
-            />
+        {items.length > 0 ? (
+          <Button
+            variant="outline"
+            className="p-4 rounded-full flex-row justify-between items-center"
+            onPress={() => navigation.navigate("CheckoutScreen")}
+          >
+            <P>Continue to checkout</P>
+            <P>{formatPrice(getCartTotal())}</P>
+          </Button>
+        ) : (
+          <View className="gap-6">
+              <P className="uppercase text-center text-zinc-400">Your bag is empty</P>
+              <Button
+                variant="outline"
+                className="p-4 rounded-full"
+                onPress={() => navigation.navigate("HomeScreen")}
+              >
+                <P>Start Shopping</P>
+              </Button>
           </View>
-          
-          <View style={styles.productDetails}>
-            <Image
-              source={{ uri: '/placeholder.svg' }}
-              style={styles.productImage}
-            />
-            <View style={styles.productInfo}>
-              <Text style={styles.productName}>Kith for MEDICOM TOY BE@RBRICK 100% &</Text>
-              <Text style={styles.price}>$210.00</Text>
-              
-              <View style={styles.quantitySelector}>
-                <TouchableOpacity style={styles.quantityButton}>
-                  <Minus size={20} color="#000" />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>2</Text>
-                <TouchableOpacity style={styles.quantityButton}>
-                  <Plus size={20} color="#000" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.moreButton}>
-                  <MoreHorizontal size={20} color="#000" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.checkoutButton}
-        onPress={() => navigation.navigate('CheckoutScreen')}>
-          <Text style={styles.checkoutButtonText}>Continue to checkout</Text>
-          <Text style={styles.checkoutButtonPrice}>$148.00</Text>
-        </TouchableOpacity>
+        )}
       </ScrollView>
-
     </SafeAreaView>
   );
 }
@@ -105,21 +99,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f1f1f1',
   },
-  brandHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  brandName: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  brandLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
   productDetails: {
     flexDirection: 'row',
     gap: 16,
@@ -135,10 +114,6 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     marginBottom: 4,
-  },
-  productVariant: {
-    color: '#666',
-    marginBottom: 8,
   },
   price: {
     fontSize: 16,
@@ -183,22 +158,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  footer: {
-    flexDirection: 'row',
+  emptyCart: {
+    padding: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#f1f1f1',
   },
-  footerText: {
+  emptyCartText: {
+    fontSize: 16,
     color: '#666',
-    marginHorizontal: 8,
-  },
-  footerLogo: {
-    width: 80,
-    height: 20,
-    resizeMode: 'contain',
   },
 });
-
