@@ -8,6 +8,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { ArrowLeft, User } from 'lucide-react-native';
+import { useEffect } from 'react';
+import { fetchServiceRequests } from '~/lib/supabase';
 
 const initialOrders = [
   { id: '1', customer: 'John Doe', service: 'Repair', status: 'Pending' },
@@ -18,13 +20,17 @@ const initialOrders = [
 const technicians = ['Tech A', 'Tech B', 'Tech C'];
 
 export default function ServiceManagerScreen({ navigation }) {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
+  
 
-  const assignTechnician = (orderId, technician) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, assignedTo: technician, status: 'Assigned' } : order
-    ));
-  };
+  useEffect(() => {
+    async function fetchRepairs() {
+      const response = await fetchServiceRequests();
+      console.log("Supervisors Fetched", response);
+      setOrders(response);
+    }
+    fetchRepairs();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,10 +49,14 @@ export default function ServiceManagerScreen({ navigation }) {
           renderItem={({ item }) => (
             <View style={styles.orderItem}>
               <View>
-                <Text style={styles.customerName}>{item.customer}</Text>
-                <Text style={styles.serviceType}>{item.service}</Text>
+                <Text style={styles.customerName}>{item.users.full_name}</Text>
+                <Text style={styles.serviceType}>{item.services.service_type}</Text>
                 <Text style={styles.status}>Status: {item.status}</Text>
-                {item.assignedTo && <Text style={styles.assignedTo}>Assigned to: {item.assignedTo}</Text>}
+                {item.assignedTo && (
+                  <Text style={styles.assignedTo}>
+                    Assigned to: {item.assignedTo}
+                  </Text>
+                )}
               </View>
               {!item.assignedTo && (
                 <View style={styles.assignSection}>

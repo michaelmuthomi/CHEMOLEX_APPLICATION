@@ -320,3 +320,32 @@ export async function fetchProductNamesAndQuantity() {
     return data;
   }
 }
+
+// Fetch service requests
+export async function fetchServiceRequests() {
+  const { data, error } = await supabase
+    .from("repairs")
+    .select("*, users:customer_id(full_name), services(name, price, service_type)");
+  
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}
+
+// Fetch technicians
+export async function fetchTechnicians() {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+  .eq("role", "technician");
+  
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}
