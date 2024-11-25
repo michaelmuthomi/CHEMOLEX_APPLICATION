@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { Home, Search, ShoppingBag, User } from 'lucide-react-native';
+import { useCart } from '~/lib/cart-context';
 
 import SignupScreen from './SignupScreen';
 import LoginScreen from './LoginScreen';
@@ -17,6 +18,9 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
+  const { getCartQuantity } = useCart();
+  const cartQuantity = getCartQuantity();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -63,9 +67,13 @@ export default function MainTabs() {
         component={CartScreen}
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons name="bag-remove-outline" size={28} color={color} />
+            <Ionicons 
+              name={cartQuantity > 0 ? "bag" : "bag-outline"} 
+              size={28} 
+              color={color} 
+            />
           ),
-          tabBarBadge: 6,
+          tabBarBadge: cartQuantity || undefined,
           tabBarBadgeStyle: { backgroundColor: "#6366f1" },
         }}
       />
