@@ -377,10 +377,10 @@ export default function CheckoutScreen({ navigation }) {
       <View style={styles.orderReviewFields}>
         <View style={styles.orderReviewSection}>
           <H4>Shipping To</H4>
-          <P>{shippingInfo.full_name}</P>
-          <P>{shippingInfo.address}</P>
-          <P>{`${shippingInfo.city}, ${shippingInfo.state}`}</P>
-          <P>{shippingInfo.phone}</P>
+          <P>{customer.full_name}</P>
+          <P>{customer.address}</P>
+          <P>{`${customer.city}, ${customer.state}`}</P>
+          <P>{customer.phone}</P>
         </View>
 
         <View style={styles.orderReviewSection}>

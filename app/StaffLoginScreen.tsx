@@ -54,28 +54,65 @@ export default function Screen() {
       const isValid = await validateUserCredentials(email, password);
       if (isValid["role"]) {
         const user_role = isValid["role"];
-        console.log(isValid["role"]);
-        if (user_role === "Customer") {
-          router.push({
-            pathname: "/HomeScreen",
-            params: { email: email },
-          });
-        } else if (user_role === "Finance Manager") {
-          router.push({
-            pathname: "../finance_manager_dashboard",
-            params: { email: email },
-          });
-        } else if (user_role === "Dispatch Manager") {
-          router.push({
-            pathname: "../dispatch_manager_dashboard",
-            params: { email: email },
-          });
+        console.log("Role:", user_role);
+        
+        // Route to appropriate screen based on role
+        switch (user_role) {
+          case "customer":
+            router.push({
+              pathname: "/HomeScreen",
+              params: { email: email },
+            });
+            break;
+          case "stock_manager":
+            router.push({
+              pathname: "./StockManagementScreen",
+              params: { email: email },
+            });
+            break;
+          case "finance_controller":
+            router.push({
+              pathname: "./FinanceControllerScreen",
+              params: { email: email },
+            });
+            break;
+          case "dispatch_manager":
+            router.push({
+              pathname: "./DispatcherManagerScreen",
+              params: { email: email },
+            });
+            break;
+          case "service_manager":
+            router.push({
+              pathname: "./ServiceManagerScreen",
+              params: { email: email },
+            });
+            break;
+          case "supervisor":
+            router.push({
+              pathname: "./SupervisorScreen",
+              params: { email: email },
+            });
+            break;
+          case "technician":
+            router.push({
+              pathname: "./TechnicianScreen",
+              params: { email: email },
+            });
+            break;
+          default:
+            showMessage({
+              message: "Invalid role or access denied",
+              type: "danger",
+              style: { paddingTop: 40 },
+            });
+            return;
         }
 
         setEmailContext(email);
-        return;
+      } else {
+        displayNotification("Invalid Credentials", "danger");
       }
-      displayNotification("Invalid Credentials", "danger");
     } else {
       displayNotification("Please fill all the fields", "warning");
     }
@@ -126,7 +163,7 @@ export default function Screen() {
           <Link href="/reset-password">Forgot Password</Link>
         </P>
         <Button onPress={handleLogin} className="w-full" size={"lg"}>
-          <P className="text-black uppercase">Login and continue</P>
+          <P className="uppercase text-white">Login and continue</P>
         </Button>
         <P
           className="text-center text-lg pt-4 color-[#b3b3b3]"

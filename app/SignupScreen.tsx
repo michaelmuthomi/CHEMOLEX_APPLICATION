@@ -81,13 +81,14 @@ export default function Screen() {
       displayNotification(validationError, "warning");
       return;
     }
-    if (userName && fullName && email && phoneNumber && password) {
+    if (userName && fullName && email && phoneNumber && password && role) {
       const response = await addUserToDB(
         userName,
         fullName,
         email,
         password,
-        Number(phoneNumber)
+        Number(phoneNumber),
+        role
       );
       if (response.startsWith("Success")) {
         router.push({
@@ -197,7 +198,6 @@ export default function Screen() {
                 { label: "Service Manager", value: "service_manager" },
                 { label: "Supervisor", value: "supervisor" },
                 { label: "Technician", value: "technician" },
-                
               ]}
               maxHeight={300}
               labelField="label"

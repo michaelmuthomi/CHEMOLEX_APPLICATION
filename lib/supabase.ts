@@ -53,14 +53,14 @@ export async function addUserToDB(
   full_name: string,
   email: string,
   password_hash: string,
-  phone_number: number
+  phone_number: number,
+  role: string
 ) {
   // Check If user is in the databse
   const user = await checkUser(email);
   if (user["email"]) {
     return "Exists: User already exists";
   }
-  const role = "Customer";
   const { data, error } = await supabase
     .from("users")
     .insert([{ username, full_name, email, password_hash, phone_number, role }])
@@ -125,6 +125,33 @@ export async function resetUserPassword(email: string, password_hash: string) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
     return `Success: ${JSON.stringify(data)}`;
+  }
+}
+
+// Reset password for a user
+export async function resetPassword(email: string, newPassword: string) {
+  try {
+    // First check if user exists
+    const user = await checkUser(email);
+    if (!user["email"]) {
+      return "Error: User not found";
+    }
+
+    // Update the password
+    const { data, error } = await supabase
+      .from("users")
+      .update({ password_hash: newPassword })
+      .eq("email", email);
+
+    if (error) {
+      console.error("Error resetting password:", error);
+      return `Error: ${error.message}`;
+    }
+
+    return "Success: Password reset successfully";
+  } catch (error) {
+    console.error("Error in resetPassword:", error);
+    return "Error: Failed to reset password";
   }
 }
 
@@ -380,12 +407,35 @@ export async function placeAnOrder(details: any) {
 
 // Fetch customers orders
 export async function fetchCustomerOrders(user_id: any) {
-  const { data, error } = await supabase.from("orders").select("*").eq("user_id", user_id);
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, products:product_id(*)")
+    .eq("user_id", user_id);
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
     console.log(data);
+    return data;
+  }
+}
+
+// Submit product feedback
+export async function submitFeedback(feedback: {
+  user_id: number;
+  // service_id: number;
+  order_id: number;
+  rating: number;
+  comments: string;
+}) {
+  const { data, error } = await supabase
+    .from("feedback")
+    .insert([feedback]);
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log("Feedback submitted:", data);
     return data;
   }
 }

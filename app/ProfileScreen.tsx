@@ -20,13 +20,15 @@ import {
   Settings,
   ShoppingBag,
   X,
+  Star,
 } from 'lucide-react-native';
 import { H2, H3, H4, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { showMessage } from 'react-native-flash-message';
 import { useEmail } from '~/app/EmailContext';
-import { checkUser, fetchCustomerOrders } from '~/lib/supabase';
+import { checkUser, fetchCustomerOrders, submitFeedback } from '~/lib/supabase';
+import { formatPrice } from '~/lib/format-price';
 
 interface customer {
   full_name: string;
@@ -54,18 +56,25 @@ interface Order {
 
 const menuItems = [
   {
-    id: 'personal',
-    title: 'Personal Information',
-    description: 'Update your profile details and preferences',
+    id: "personal",
+    title: "Personal Information",
+    description: "Update your profile details and preferences",
     icon: User,
-    screen: 'personal',
+    screen: "personal",
   },
   {
-    id: 'orders',
-    title: 'Orders & Returns',
-    description: 'Track orders and manage returns',
+    id: "orders",
+    title: "Orders & Returns",
+    description: "Track orders and manage returns",
     icon: ShoppingBag,
-    screen: 'orders',
+    screen: "orders",
+  },
+  {
+    id: "review",
+    title: "Products review",
+    description: "Tell us about your experience with our products",
+    icon: DollarSign,
+    screen: "review",
   },
 ];
 
@@ -130,13 +139,14 @@ export default function ProfileScreen({ navigation }) {
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [customer, setCustomerDetails] = useState([]);
-  
-  console.log(customer.full_name);
   const [isEditing, setIsEditing] = useState(false);
-  const [orders, setOrders] = useState<Order[]>();
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
-  const handleMenuPress = (screen: string) => {
+  const handleMenuPress = (screen) => {
     setActiveModal(screen);
   };
 
@@ -145,14 +155,19 @@ export default function ProfileScreen({ navigation }) {
       const response = await checkUser(emailContext?.email);
       setCustomerDetails(response);
     }
-    async function fetchOrders() {
-      const response = await fetchCustomerOrders(customer.user_id);
-      console.log("Orders Fetched", response);
-      setOrders(response);
-    }
     fetchUserDetails();
-    fetchOrders();
   }, [emailContext]);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      if (customer.user_id) {
+        const response = await fetchCustomerOrders(customer.user_id);
+        console.log("Orders Fetched", response);
+        setOrders(response);
+      }
+    }
+    fetchOrders()
+  }, [customer])
 
   const handleSavecustomer = () => {
     // TODO: Implement API call to save user info
@@ -197,6 +212,51 @@ export default function ProfileScreen({ navigation }) {
     });
     setSelectedOrder(null);
   };
+
+  const handleSubmitReview = async (order) => {
+    const feedback = {
+      user_id: customer.user_id,
+      // service_id: order.product_id,
+      order_id: order.order_id,
+      rating: rating,
+      comments: comment
+    };
+
+    const response = await submitFeedback(feedback);
+    if (typeof response === 'string' && response.startsWith('Error')) {
+      showMessage({
+        message: response,
+        type: 'danger',
+        style: { paddingTop: 40 },
+      });
+    } else {
+      showMessage({
+        message: 'Review submitted successfully',
+        type: 'success',
+        style: { paddingTop: 40 },
+      });
+      setSelectedProduct(null);
+      setRating(0);
+      setComment('');
+    }
+  };
+
+  const renderStars = () => (
+    <View className="flex-row justify-center space-x-2 py-4">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <TouchableOpacity
+          key={star}
+          onPress={() => setRating(star)}
+        >
+          <Star
+            size={32}
+            color={star <= rating ? '#FCD34D' : '#374151'}
+            fill={star <= rating ? '#FCD34D' : 'none'}
+          />
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
 
   const rendercustomerModal = () => (
     <Modal
@@ -296,7 +356,7 @@ export default function ProfileScreen({ navigation }) {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={activeModal === 'orders'}
+      visible={activeModal === "orders"}
       onRequestClose={() => setActiveModal(null)}
     >
       <View className="flex-1 bg-black/50">
@@ -304,10 +364,12 @@ export default function ProfileScreen({ navigation }) {
           <SafeAreaView className="flex-1">
             <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
               <H3 className="text-white">Orders & Returns</H3>
-              <TouchableOpacity onPress={() => {
-                setActiveModal(null);
-                setSelectedOrder(null);
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveModal(null);
+                  setSelectedOrder(null);
+                }}
+              >
                 <X size={24} color="#fff" />
               </TouchableOpacity>
             </View>
@@ -318,10 +380,16 @@ export default function ProfileScreen({ navigation }) {
                   <View className="flex-row justify-between items-center">
                     <View>
                       <H4 className="text-white">Order #{selectedOrder.id}</H4>
-                      <P className="text-zinc-500">{formatDate(selectedOrder.date)}</P>
+                      <P className="text-zinc-500">
+                        {formatDate(selectedOrder.date)}
+                      </P>
                     </View>
                     <View>
-                      <P className={`uppercase ${getStatusColor(selectedOrder.status)}`}>
+                      <P
+                        className={`uppercase ${getStatusColor(
+                          selectedOrder.status
+                        )}`}
+                      >
                         {selectedOrder.status}
                       </P>
                     </View>
@@ -330,20 +398,27 @@ export default function ProfileScreen({ navigation }) {
                   {selectedOrder.trackingNumber && (
                     <View className="bg-zinc-950 p-4 rounded-xl">
                       <P className="text-zinc-500">Tracking Number</P>
-                      <P className="text-white">{selectedOrder.trackingNumber}</P>
+                      <P className="text-white">
+                        {selectedOrder.trackingNumber}
+                      </P>
                     </View>
                   )}
 
                   <View className="space-y-4">
                     {selectedOrder.items.map((item) => (
-                      <View key={item.id} className="flex-row bg-zinc-950 p-4 rounded-xl">
+                      <View
+                        key={item.id}
+                        className="flex-row bg-zinc-950 p-4 rounded-xl"
+                      >
                         <Image
                           source={{ uri: item.image }}
                           className="w-20 h-20 rounded-lg"
                         />
                         <View className="flex-1 ml-4">
                           <H4 className="text-white">{item.name}</H4>
-                          <P className="text-zinc-500">Quantity: {item.quantity}</P>
+                          <P className="text-zinc-500">
+                            Quantity: {item.quantity}
+                          </P>
                           <P className="text-white">${item.price.toFixed(2)}</P>
                         </View>
                       </View>
@@ -353,11 +428,13 @@ export default function ProfileScreen({ navigation }) {
                   <View className="bg-zinc-950 p-4 rounded-xl">
                     <View className="flex-row justify-between">
                       <P className="text-zinc-500">Total</P>
-                      <P className="text-white">${selectedOrder.total.toFixed(2)}</P>
+                      <P className="text-white">
+                        ${selectedOrder.total.toFixed(2)}
+                      </P>
                     </View>
                   </View>
 
-                  {selectedOrder.status === 'delivered' && (
+                  {selectedOrder.status === "delivered" && (
                     <Button
                       variant="outline"
                       className="mt-4"
@@ -371,24 +448,134 @@ export default function ProfileScreen({ navigation }) {
                 <View className="p-4 space-y-4">
                   {orders.map((order) => (
                     <TouchableOpacity
-                      key={order.id}
+                      key={order.order_id}
                       className="bg-zinc-950 p-4 rounded-xl"
                       onPress={() => setSelectedOrder(order)}
                     >
                       <View className="flex-row justify-between items-center">
                         <View>
-                          <H4 className="text-white">Order #{order.id}</H4>
-                          <P className="text-zinc-500">{formatDate(order.date)}</P>
+                          <H4 className="text-white">
+                            Order #{order.order_id}
+                          </H4>
+                          <P className="text-zinc-500">
+                            {formatDate(order.created_at)}
+                          </P>
                         </View>
                         <View>
-                          <P className={`uppercase ${getStatusColor(order.status)}`}>
-                            {order.status}
+                          <P
+                            className={`uppercase ${getStatusColor(
+                              order.payment_status
+                            )}`}
+                          >
+                            {order.payment_status}
                           </P>
                         </View>
                       </View>
-                      <View className="mt-4">
-                        <P className="text-zinc-500">{order.items.length} items</P>
-                        <P className="text-white">${order.total.toFixed(2)}</P>
+                      <View className="mt-4 flex-row items-center">
+                        <Image
+                          source={{
+                            uri:
+                              order.products?.image_url ||
+                              "https://placeholder.com/150",
+                          }}
+                          className="w-16 h-16 rounded-lg mr-4"
+                        />
+                        <View>
+                          <P className="text-white">{order.products?.name}</P>
+                          <P className="text-zinc-500">
+                            Quantity: {order.quantity}
+                          </P>
+                          <P className="text-white">
+                            {formatPrice(order.unit_price)}
+                          </P>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </ScrollView>
+          </SafeAreaView>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const renderReviewsModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={activeModal === 'review'}
+      onRequestClose={() => setActiveModal(null)}
+    >
+      <View className="flex-1 bg-black/50">
+        <View className="flex-1 mt-20 bg-zinc-900 rounded-t-3xl">
+          <SafeAreaView className="flex-1">
+            <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
+              <H3 className="text-white">Product Reviews</H3>
+              <TouchableOpacity onPress={() => {
+                setActiveModal(null);
+                setSelectedProduct(null);
+                setRating(0);
+                setComment('');
+              }}>
+                <X size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView className="flex-1">
+              {selectedProduct ? (
+                <View className="p-4 space-y-4">
+                  <View className="flex-row items-center space-x-4">
+                    <Image
+                      source={{ uri: selectedProduct.products?.image_url || 'https://placeholder.com/150' }}
+                      className="w-20 h-20 rounded-lg"
+                    />
+                    <View>
+                      <H4 className="text-white">{selectedProduct.products?.name}</H4>
+                      <P className="text-zinc-500">Order #{selectedProduct.order_id}</P>
+                    </View>
+                  </View>
+
+                  {renderStars()}
+
+                  <Input
+                    placeholder="Write your review here..."
+                    value={comment}
+                    onChangeText={setComment}
+                    multiline
+                    numberOfLines={4}
+                    className="bg-zinc-950 text-white h-32 p-2"
+                  />
+
+                  <Button
+                    variant="outline"
+                    onPress={() => handleSubmitReview(selectedProduct)}
+                    className="mt-4"
+                  >
+                    <P className="uppercase text-black">Submit Review</P>
+                  </Button>
+                </View>
+              ) : (
+                <View className="p-4 space-y-4">
+                  {orders.map((order) => (
+                    <TouchableOpacity
+                      key={order.order_id}
+                      className="bg-zinc-950 p-4 rounded-xl"
+                      onPress={() => setSelectedProduct(order)}
+                    >
+                      <View className="flex-row items-center justify-between">
+                        <View className="flex-row items-center flex-1">
+                          <Image
+                            source={{ uri: order.products?.image_url || 'https://placeholder.com/150' }}
+                            className="w-16 h-16 rounded-lg mr-4"
+                          />
+                          <View>
+                            <P className="text-white">{order.products?.name}</P>
+                            <P className="text-zinc-500">Order #{order.order_id}</P>
+                          </View>
+                        </View>
+                        <ChevronRight size={20} color="#fff" />
                       </View>
                     </TouchableOpacity>
                   ))}
@@ -455,6 +642,7 @@ export default function ProfileScreen({ navigation }) {
       {/* Modals */}
       {rendercustomerModal()}
       {renderOrdersModal()}
+      {renderReviewsModal()}
     </SafeAreaView>
   );
 }
