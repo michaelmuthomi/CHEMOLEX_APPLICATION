@@ -15,6 +15,7 @@ import { Button } from '~/components/ui/button';
 import { useEffect, useState } from 'react';
 import { fetchProductsFromDB } from '~/lib/supabase';
 import { formatPrice } from "~/lib/format-price";
+import {Ionicons} from "@expo/vector-icons";
 
 const { width } = Dimensions.get('window');
 
@@ -73,17 +74,17 @@ export default function HomeScreen({ navigation }) {
   const renderFeaturedCategories = () => (
     <View className="mt-6">
       <View className="flex-row items-center justify-between px-6 mb-4">
-        <H3>Featured Categories</H3>
-        <TouchableOpacity 
-          className="flex-row items-center" 
-          onPress={() => navigation.navigate('SearchScreen')}
+        <H3 className="uppercase text-lg">Featured Categories</H3>
+        <TouchableOpacity
+          className="flex-row items-center"
+          onPress={() => navigation.navigate("SearchScreen")}
         >
-          <P className="mr-1">View All</P>
-          <ChevronRight size={20} color="#fff" />
+          <P className="text-sm text-zinc-500 uppercase">View All</P>
+          <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
         </TouchableOpacity>
       </View>
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         className="pl-6"
       >
@@ -92,7 +93,7 @@ export default function HomeScreen({ navigation }) {
             key={category.id}
             className="mr-4 rounded-xl overflow-hidden"
             style={{ width: width * 0.7, height: 160 }}
-            onPress={() => navigation.navigate('SearchScreen', { category })}
+            onPress={() => navigation.navigate("SearchScreen", { category })}
           >
             <ImageBackground
               source={{ uri: category.image }}
@@ -111,7 +112,7 @@ export default function HomeScreen({ navigation }) {
 
   const renderPromotions = () => (
     <View className="mt-8">
-      <H3 className="px-6 mb-4">Special Offers</H3>
+      <H3 className="px-6 mb-4 uppercase text-lg">Special Offers</H3>
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
@@ -181,31 +182,68 @@ export default function HomeScreen({ navigation }) {
   );
 
   const renderProducts = () => (
-    <View className="px-6 mt-4">
+    <View className="px-6 mt-4 bg-[#111] py-14">
       <View className="flex-row items-center justify-between mb-4">
-        <H3>Popular Products</H3>
-        <TouchableOpacity 
-          className="flex-row items-center" 
-          onPress={() => navigation.navigate('Search')}
+        <H3 className="uppercase text-lg">Popular Products</H3>
+        <TouchableOpacity
+          className="flex-row items-center"
+          onPress={() => navigation.navigate("SearchScreen")}
         >
-          <P className="mr-1">View All</P>
-          <ChevronRight size={20} color="#fff" />
+          <P className="text-sm text-zinc-500 uppercase">View All</P>
+          <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
         </TouchableOpacity>
       </View>
-      <View className="flex-row flex-wrap gap-4">
+      <View className="flex-row flex-wrap">
         {products.slice(0, 4).map((product) => (
           <TouchableOpacity
             key={product.product_id}
-            className="w-[48%] bg-[#111] rounded-lg shadow p-2"
-            onPress={() => navigation.navigate('ProductScreen', { product })}
+            className="w-1/2 bg-[#111] rounded-lg shadow p-2"
+            onPress={() => navigation.navigate("ProductScreen", { product })}
           >
             <Image
               source={{ uri: product.image_url }}
               className="w-full h-32 rounded-lg mb-2"
-              resizeMode="contain"
+              resizeMode="cover"
             />
-            <H4 numberOfLines={2} className="mb-1">{product.name}</H4>
+            <H4 numberOfLines={2} className="mb-1 text-lg">
+              {product.name}
+            </H4>
             <P className="text-sm">{formatPrice(product.price)}</P>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+  const renderAllProducts = () => (
+    <View className="px-6 mt-14">
+      <View className="flex-row items-center justify-between mb-4">
+        <H3 className="uppercase text-lg">All Products</H3>
+        <TouchableOpacity
+          className="flex-row items-center gap-2"
+          onPress={() => navigation.navigate("SearchScreen")}
+        >
+          <P className="text-sm text-zinc-500 uppercase">View All</P>
+          <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
+        </TouchableOpacity>
+      </View>
+      <View className="grid grid-cols-2 gap-x-6 gap-y-4">
+        {products.map((product) => (
+          <TouchableOpacity
+            key={product.product_id}
+            className="rounded-lg shadow"
+            onPress={() => navigation.navigate("ProductScreen", { product })}
+          >
+            <Image
+              source={{ uri: product.image_url }}
+              className="w-full h-48 rounded-t-lg"
+              resizeMode="cover"
+            />
+            <View className="p-4">
+              <H4 numberOfLines={2} className="mb-1">
+                {product.name}
+              </H4>
+              <P className="text-sm">{formatPrice(product.price)}</P>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -215,13 +253,14 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView className="flex-1">
-        <View className="pt-4">
+        <View className="pt-14">
           <H2 className="px-6 text-2xl">Welcome to RefNet</H2>
           <P className="px-6 mt-1 opacity-60">Discover Professional HVAC Solutions</P>
           {renderQuickLinks()}
           {renderFeaturedCategories()}
           {renderPromotions()}
           {renderProducts()}
+          {renderAllProducts()}
           <View className="h-20" />
         </View>
       </ScrollView>
