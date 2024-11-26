@@ -98,7 +98,7 @@ export default function RootLayout({navigation}: any) {
         return;
       }
 
-      const colorTheme = theme === "dark" ? "dark" : "light";
+      const colorTheme = "light";
       if (colorTheme !== colorScheme) {
         setColorScheme(colorTheme);
         setAndroidNavigationBar(colorTheme);
@@ -120,7 +120,7 @@ export default function RootLayout({navigation}: any) {
 
   return (
     <ThemeProvider value={theme}>
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      <StatusBar style={"light"} />
       <EmailProvider>
         <CartProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
