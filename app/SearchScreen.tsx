@@ -163,7 +163,7 @@ export default function SearchScreen({ route }) {
             key={sort}
             onPress={() => setSortBy(sort)}
             className={`${
-              sortBy === sort ? "bg-zinc-800 text-white" : " text-zinc-800"
+              sortBy === sort ? "bg-zinc-700 text-white" : " bg-zinc-900 text-black"
             }`}
           >
             <P className="capitalize">{sort.replace("-", " ")}</P>

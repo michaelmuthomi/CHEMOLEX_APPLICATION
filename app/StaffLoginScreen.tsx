@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, View } from "react-native";
+import { ActivityIndicator, Image, View } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1 } from "~/components/ui/typography";
@@ -30,7 +30,8 @@ export default function Screen() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const emailContext = useEmail();
-  const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
+  const { setEmail: setEmailContext } = emailContext || { setEmail: () => { } };
+  const [loading, setLoading] = React.useState(false)
 
   const onEmailInput = (text: string) => {
     setEmail(text);
@@ -40,15 +41,18 @@ export default function Screen() {
   };
 
   const handleLogin = async () => {
+    setLoading(true)
     if (email && password) {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) {
         displayNotification("Invalid Email", "warning");
+        setLoading(false)
         return;
       }
       const UserAvailable = await checkUser(email);
       if (!UserAvailable) {
         displayNotification("User does not exist", "danger");
+        setLoading(false);
         return;
       }
       const isValid = await validateUserCredentials(email, password);
@@ -112,9 +116,11 @@ export default function Screen() {
         setEmailContext(email);
       } else {
         displayNotification("Invalid Credentials", "danger");
+        setLoading(false);
       }
     } else {
       displayNotification("Please fill all the fields", "warning");
+      setLoading(false);
     }
   };
   return (
@@ -162,8 +168,20 @@ export default function Screen() {
         <P className="text-right uppercase text-blue-400">
           <Link href="/reset-password">Forgot Password</Link>
         </P>
-        <Button onPress={handleLogin} className="w-full" size={"lg"}>
-          <P className="uppercase text-black">Login and continue</P>
+        <Button
+          onPress={handleLogin}
+          className="w-full flex"
+          size={"lg"}
+          variant="default"
+        >
+          {loading ? (
+            <View className="flex flex-row items-center gap-2">
+              <ActivityIndicator size="small" color="#000" />
+              <P className="uppercase text-black">Login and continue</P>
+            </View>
+          ) : (
+            <P className="uppercase text-black">Login and continue</P>
+          )}
         </Button>
         <P
           className="text-center text-lg pt-4 color-[#b3b3b3]"

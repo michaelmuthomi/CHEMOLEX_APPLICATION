@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, ScrollView, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, View } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1 } from "~/components/ui/typography";
@@ -43,6 +43,7 @@ export default function Screen() {
   const [userName, setUserName] = React.useState("");
   const [fullName, setFullName] = React.useState("");
   const [role, setRole] = React.useState("customer");
+  const [loading, setLoading] = React.useState(false);
 
   const onEmailInput = (text: string) => {
     setEmail(text);
@@ -76,6 +77,7 @@ export default function Screen() {
   };
 
   const handleSignup = async () => {
+    setLoading(true);
     const validationError = validateInputs();
     if (validationError) {
       displayNotification(validationError, "warning");
@@ -98,8 +100,10 @@ export default function Screen() {
         return;
       }
       displayNotification("User already exists", "danger");
+      setLoading(false);
     } else {
       displayNotification("Please fill all the fields", "warning");
+      setLoading(false);
     }
   };
   return (
@@ -209,8 +213,20 @@ export default function Screen() {
               }}
             />
           </View>
-          <Button onPress={handleSignup} className="w-full" size={"lg"}>
-            <P className="uppercase">Create account</P>
+          <Button
+            onPress={handleSignup}
+            className="w-full flex"
+            size={"lg"}
+            variant="default"
+          >
+            {loading ? (
+              <View className="flex flex-row items-center gap-2">
+                <ActivityIndicator size="small" color="#000" />
+                <P className="uppercase text-black">Create account</P>
+              </View>
+            ) : (
+              <P className="uppercase text-black">Create account</P>
+            )}
           </Button>
           <P
             className="text-center text-lg pt-4 color-[#b3b3b3]"
