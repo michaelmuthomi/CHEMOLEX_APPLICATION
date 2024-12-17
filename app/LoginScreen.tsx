@@ -2,7 +2,7 @@ import * as React from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { P, H1 } from "~/components/ui/typography";
+import { P, H1, H2, H4, H5 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
 import { showMessage } from "react-native-flash-message";
 import { checkUser, validateUserCredentials } from "~/lib/supabase";
@@ -76,72 +76,72 @@ export default function Screen() {
     }
   };
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
+    <View className="flex-1 justify-between items-center px-6 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
-        className="mt-14 w-screen h-32 scale-50 mx-auto absolute top-0 left-0"
-        resizeMode="contain"
+        className="mt-14 w-1/3 h-8 absolute top-4 left-6"
+        resizeMode="cover"
       />
-      <View className="w-full mb-auto mt-auto gap-6">
-        <View className="w-full">
-          <H1>Welcome to Refnet</H1>
+      <View className="w-full mb-auto mt-auto gap-10">
+        <View className="gap-2">
+          <H1 className="text-3xl">Sign in to your Account</H1>
           <P
-            className="text-lg color-[#b3b3b3]"
-            style={{ fontFamily: "Inter_400Regular" }}
+            className=" color-[#b3b3b3] pr-6"
+            style={{ fontFamily: "Inter_500Medium" }}
           >
-            We Don’t Promise... We’re Proven!
+            Enter your email and password to login to your account
           </P>
         </View>
-        <View className="w-full gap-4">
-          <Input
-            placeholder="Email address"
-            value={email}
-            onChangeText={onEmailInput}
-            aria-labelledby="inputLabel"
-            aria-errormessage="inputError"
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <Input
-            placeholder="Password"
-            value={password}
-            onChangeText={onPasswordInput}
-            aria-labelledby="inputLabel"
-            aria-errormessage="inputError"
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="password"
-            textContentType="password"
-            secureTextEntry
-          />
+        <View className="w-full gap-6">
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">Email Address</H5>
+            <Input
+              placeholder="example@gmail.com"
+              value={email}
+              onChangeText={onEmailInput}
+              aria-labelledby="inputLabel"
+              aria-errormessage="inputError"
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="email"
+              textContentType="emailAddress"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">Password</H5>
+            <Input
+              placeholder="password123"
+              value={password}
+              onChangeText={onPasswordInput}
+              aria-labelledby="inputLabel"
+              aria-errormessage="inputError"
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="password"
+              textContentType="password"
+              secureTextEntry
+            />
+          </View>
         </View>
         <P className="text-right uppercase text-blue-400">
-          <Link href="/ForgotPassword">Forgot Password</Link>
+          <Link href="/ForgotPassword">Forgot Password ?</Link>
         </P>
         <Button
           onPress={handleLogin}
           className="w-full flex"
           size={"lg"}
           variant="default"
+          disabled={loading}
         >
           {loading ? (
             <View className="flex flex-row items-center gap-2">
               <ActivityIndicator size="small" color="#000" />
-              <P className="uppercase text-black">Login and continue</P>
+              <H4 className="uppercase text-black">Log in</H4>
             </View>
           ) : (
-            <P className="uppercase text-black">Login and continue</P>
+            <H4 className="text-base text-black uppercase">Log In</H4>
           )}
         </Button>
-        <P
-          className="text-center text-lg pt-4 color-[#b3b3b3]"
-          style={{ fontFamily: "Inter_400Regular" }}
-        >
-          Sign in to access your account and manage your air conditioning
-          solutions
-        </P>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row">
         <Link href="/SignupScreen">

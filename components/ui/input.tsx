@@ -12,9 +12,9 @@ const Input = React.forwardRef<React.ElementRef<typeof TextInput>, TextInputProp
           props.editable === false && "opacity-50 web:cursor-not-allowed",
           className
         )}
-        placeholderClassName={cn("text-muted-foreground", placeholderClassName)}
+        placeholderClassName={cn("text-zinc-800", placeholderClassName)}
         {...props}
-        style={{ fontFamily: "Inter_500Medium" }}
+        style={{ fontFamily: "Inter_400Regular" }}
       />
     );
   }

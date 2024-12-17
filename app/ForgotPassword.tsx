@@ -75,14 +75,17 @@ export default function Screen() {
     <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
-        className="mt-14 w-screen h-32 scale-50 mx-auto absolute top-0 left-0"
+        className="w-screen h-20 scale-75 mx-auto absolute top-0 left-0"
+        resizeMode="contain"
       />
-      <View className="w-full space-y-4 mt-20">
-        <H1 className="text-center">Reset Password</H1>
-        <P className="text-center text-muted-foreground">
-          Enter your email and new password
-        </P>
-        <View className="space-y-4">
+      <View className="w-full space-y-4 mt-20 gap-6">
+        <View>
+          <H1 className="text-center">Reset Password</H1>
+          <P className="text-center text-muted-foreground">
+            Enter your email and new password
+          </P>
+        </View>
+        <View className="space-y-4 gap-4">
           <Input
             placeholder="Email"
             value={email}
@@ -117,7 +120,7 @@ export default function Screen() {
             size={"lg"}
             disabled={isLoading}
           >
-            <P className="text-white uppercase">
+            <P className="text-black uppercase">
               {isLoading ? "Resetting..." : "Reset Password"}
             </P>
           </Button>

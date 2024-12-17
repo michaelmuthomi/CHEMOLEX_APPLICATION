@@ -127,17 +127,17 @@ export default function Screen() {
     <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
-        className="mt-14 w-screen h-32 scale-50 mx-auto absolute top-0 left-0"
-        resizeMode="contain"
+        className="mt-14 w-1/3 h-8 absolute top-4 left-6"
+        resizeMode="cover"
       />
       <View className="w-full mb-auto mt-auto gap-6">
-        <View className="w-full">
-          <H1>Staff Login Page</H1>
+        <View className="gap-2">
+          <H1 className="text-3xl">Staff Login Page</H1>
           <P
-            className="text-lg color-[#b3b3b3]"
-            style={{ fontFamily: "Inter_400Regular" }}
+            className=" color-[#b3b3b3] pr-6"
+            style={{ fontFamily: "Inter_500Medium" }}
           >
-            We Don’t Promise... We’re Proven!
+            Enter your email and password to login to your account
           </P>
         </View>
         <View className="w-full gap-4">
@@ -166,7 +166,7 @@ export default function Screen() {
           />
         </View>
         <P className="text-right uppercase text-blue-400">
-          <Link href="/reset-password">Forgot Password</Link>
+          <Link href="/reset-password">Forgot Password ?</Link>
         </P>
         <Button
           onPress={handleLogin}
@@ -183,13 +183,6 @@ export default function Screen() {
             <P className="uppercase text-black">Login and continue</P>
           )}
         </Button>
-        <P
-          className="text-center text-lg pt-4 color-[#b3b3b3]"
-          style={{ fontFamily: "Inter_400Regular" }}
-        >
-          Sign in to access your account and manage your air conditioning
-          solutions
-        </P>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row">
         <Link href="/SignupScreen">

@@ -12,12 +12,12 @@ const H1 = React.forwardRef<TextRef, SlottableTextProps>(
         role="heading"
         aria-level="1"
         className={cn(
-          "web:scroll-m-20 text-4xl text-white tracking-tight lg:text-5xl web:select-text",
+          "web:scroll-m-20 text-3xl text-white tracking-tight lg:text-5xl web:select-text",
           className
         )}
         ref={ref}
         {...props}
-        style={{ fontFamily: "Inter_900Black" }}
+        style={{ fontFamily: "Inter_700Bold" }}
       />
     );
   }
@@ -87,6 +87,27 @@ const H4 = React.forwardRef<TextRef, SlottableTextProps>(
 );
 
 H4.displayName = 'H4';
+
+const H5 = React.forwardRef<TextRef, SlottableTextProps>(
+  ({ className, asChild = false, ...props }, ref) => {
+    const Component = asChild ? Slot.Text : RNText;
+    return (
+      <Component
+        role="heading"
+        aria-level="4"
+        className={cn(
+          "web:scroll-m-20 text-base text-white tracking-normal leading-4 web:select-text",
+          className
+        )}
+        ref={ref}
+        {...props}
+        style={{ fontFamily: "Inter_600SemiBold" }}
+      />
+    );
+  }
+);
+
+H5.displayName = "H5";
 
 const P = React.forwardRef<TextRef, SlottableTextProps>(
   ({ className, asChild = false, ...props }, ref) => {
@@ -209,4 +230,4 @@ const Muted = React.forwardRef<TextRef, SlottableTextProps>(
 
 Muted.displayName = 'Muted';
 
-export { BlockQuote, Code, H1, H2, H3, H4, Large, Lead, Muted, P, Small };
+export { BlockQuote, Code, H1, H2, H3, H4, H5, Large, Lead, Muted, P, Small };

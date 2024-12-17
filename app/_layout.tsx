@@ -124,7 +124,6 @@ export default function RootLayout({navigation}: any) {
       <EmailProvider>
         <CartProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="LoginScreen"
               component={LoginScreen}
@@ -140,6 +139,7 @@ export default function RootLayout({navigation}: any) {
               component={ForgotPassword}
               options={{ headerShown: true, headerTitle: "" }}
             />
+            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="HomeScreen"
               component={HomeScreen}
