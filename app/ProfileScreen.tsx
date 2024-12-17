@@ -322,17 +322,14 @@ export default function ProfileScreen({ navigation }) {
                 <View className="space-y-4 pt-4">
                   {isEditing ? (
                     <View className="space-y-2 flex-row justify-between">
-                      <Button
-                        variant="outline"
-                        onPress={handleSavecustomer}
-                      >
-                        <P className="text-black uppercase">Save Changes</P>
+                      <Button variant="outline" onPress={handleSavecustomer}>
+                        <P className="text-white uppercase">Save Changes</P>
                       </Button>
                       <Button
                         variant="outline"
                         onPress={() => setIsEditing(false)}
                       >
-                        <P className="uppercase text-black">Cancel</P>
+                        <P className="uppercase text-white">Cancel</P>
                       </Button>
                     </View>
                   ) : (
@@ -340,7 +337,7 @@ export default function ProfileScreen({ navigation }) {
                       variant="outline"
                       onPress={() => setIsEditing(true)}
                     >
-                      <P className="uppercase text-black">Edit Information</P>
+                      <P className="uppercase text-white">Edit Information</P>
                     </Button>
                   )}
                 </View>
@@ -505,7 +502,7 @@ export default function ProfileScreen({ navigation }) {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={activeModal === 'review'}
+      visible={activeModal === "review"}
       onRequestClose={() => setActiveModal(null)}
     >
       <View className="flex-1 bg-black/50">
@@ -513,12 +510,14 @@ export default function ProfileScreen({ navigation }) {
           <SafeAreaView className="flex-1">
             <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
               <H3 className="text-white">Product Reviews</H3>
-              <TouchableOpacity onPress={() => {
-                setActiveModal(null);
-                setSelectedProduct(null);
-                setRating(0);
-                setComment('');
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveModal(null);
+                  setSelectedProduct(null);
+                  setRating(0);
+                  setComment("");
+                }}
+              >
                 <X size={24} color="#fff" />
               </TouchableOpacity>
             </View>
@@ -528,12 +527,20 @@ export default function ProfileScreen({ navigation }) {
                 <View className="p-4 space-y-4">
                   <View className="flex-row items-center space-x-4">
                     <Image
-                      source={{ uri: selectedProduct.products?.image_url || 'https://placeholder.com/150' }}
+                      source={{
+                        uri:
+                          selectedProduct.products?.image_url ||
+                          "https://placeholder.com/150",
+                      }}
                       className="w-20 h-20 rounded-lg"
                     />
                     <View>
-                      <H4 className="text-white">{selectedProduct.products?.name}</H4>
-                      <P className="text-zinc-500">Order #{selectedProduct.order_id}</P>
+                      <H4 className="text-white">
+                        {selectedProduct.products?.name}
+                      </H4>
+                      <P className="text-zinc-500">
+                        Order #{selectedProduct.order_id}
+                      </P>
                     </View>
                   </View>
 
@@ -553,7 +560,7 @@ export default function ProfileScreen({ navigation }) {
                     onPress={() => handleSubmitReview(selectedProduct)}
                     className="mt-4"
                   >
-                    <P className="uppercase text-black">Submit Review</P>
+                    <P className="uppercase text-white">Submit Review</P>
                   </Button>
                 </View>
               ) : (
@@ -567,12 +574,18 @@ export default function ProfileScreen({ navigation }) {
                       <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center flex-1">
                           <Image
-                            source={{ uri: order.products?.image_url || 'https://placeholder.com/150' }}
+                            source={{
+                              uri:
+                                order.products?.image_url ||
+                                "https://placeholder.com/150",
+                            }}
                             className="w-16 h-16 rounded-lg mr-4"
                           />
                           <View>
                             <P className="text-white">{order.products?.name}</P>
-                            <P className="text-zinc-500">Order #{order.order_id}</P>
+                            <P className="text-zinc-500">
+                              Order #{order.order_id}
+                            </P>
                           </View>
                         </View>
                         <ChevronRight size={20} color="#fff" />
@@ -592,16 +605,18 @@ export default function ProfileScreen({ navigation }) {
     <SafeAreaView className="flex-1">
       <ScrollView className="flex-1">
         {/* Profile Header */}
-        <View className="items-center justify-center py-8 bg-zinc-900">
+        <View className="items-center justify-center py-8 bg-zinc-900 pt-16">
           <View className="relative">
-            <TouchableOpacity 
+            <TouchableOpacity
               className="p-2 rounded-full shadow-sm border border-zinc-200"
-              onPress={() => handleMenuPress('personal')}
+              onPress={() => handleMenuPress("personal")}
             >
               <User size={24} color="#fff" />
             </TouchableOpacity>
           </View>
-          <H3 className="mt-4 text-white">{customer.full_name}</H3>
+          <H3 className="mt-4 text-white">
+            {customer === "" ? <View className="animate-pulse w-10 h-10 bg-slate-900" /> : customer.full_name}
+          </H3>
           <P className="text-zinc-500">{customer.email}</P>
         </View>
 
@@ -631,10 +646,10 @@ export default function ProfileScreen({ navigation }) {
             variant="outline"
             className="flex-row items-center justify-center space-x-2 p-4 gap-4"
             onPress={() => {
-              navigation.navigate('LoginScreen');
+              navigation.navigate("LoginScreen");
             }}
           >
-            <P className="uppercase text-black">Log Out Now</P>
+            <P className="uppercase text-white">Log Out Now</P>
           </Button>
         </View>
       </ScrollView>

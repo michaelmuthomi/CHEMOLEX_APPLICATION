@@ -57,7 +57,7 @@ export default function Screen() {
       if (isValid["role"]) {
         const user_role = isValid["role"];
         console.log(isValid["role"]);
-        if (user_role === "Customer") {
+        if (user_role === "customer") {
           console.log("User is a Customer");
           setEmailContext(email);
           navigation.navigate("MainTabs"); // Navigation should now work
@@ -120,10 +120,10 @@ export default function Screen() {
           size={"lg"}
           variant="default"
         >
-          <P className="uppercase">Login and continue</P>
+          <P className="uppercase text-black">Login and continue</P>
         </Button>
         <P
-          className="text-center text-lg pt-4 color-[#b3b3b3]"
+          className="text-center text-lg pt-4 color-[#b3b3b3]" 
           style={{ fontFamily: "Inter_400Regular" }}
         >
           Sign in to access your account and manage your air conditioning

@@ -79,7 +79,7 @@ export default function HomeScreen({ navigation }) {
           className="flex-row items-center"
           onPress={() => navigation.navigate("SearchScreen")}
         >
-          <P className="text-sm text-zinc-500 uppercase">View All</P>
+          <H3 className="text-sm text-zinc-500 uppercase">View All</H3>
           <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
         </TouchableOpacity>
       </View>
@@ -182,14 +182,14 @@ export default function HomeScreen({ navigation }) {
   );
 
   const renderProducts = () => (
-    <View className="px-6 mt-4 bg-[#111] py-14">
+    <View className="px-6 mt-10 bg-[#111] py-4">
       <View className="flex-row items-center justify-between mb-4">
         <H3 className="uppercase text-lg">Popular Products</H3>
         <TouchableOpacity
-          className="flex-row items-center"
+          className="flex-row items-center gap-2"
           onPress={() => navigation.navigate("SearchScreen")}
         >
-          <P className="text-sm text-zinc-500 uppercase">View All</P>
+          <H3 className="text-sm text-zinc-500 uppercase">View All</H3>
           <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
         </TouchableOpacity>
       </View>
@@ -214,41 +214,43 @@ export default function HomeScreen({ navigation }) {
       </View>
     </View>
   );
-  const renderAllProducts = () => (
-    <View className="px-6 mt-14">
-      <View className="flex-row items-center justify-between mb-4">
-        <H3 className="uppercase text-lg">All Products</H3>
-        <TouchableOpacity
-          className="flex-row items-center gap-2"
-          onPress={() => navigation.navigate("SearchScreen")}
-        >
-          <P className="text-sm text-zinc-500 uppercase">View All</P>
-          <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
-        </TouchableOpacity>
-      </View>
-      <View className="grid grid-cols-2 gap-x-6 gap-y-4">
-        {products.map((product) => (
+  const renderAllProducts = () => {
+    return (
+      <View className="px-6 mt-14">
+        <View className="flex-row items-center justify-between mb-4">
+          <H3 className="text-lg w-max">All Products</H3>
           <TouchableOpacity
-            key={product.product_id}
-            className="rounded-lg shadow"
-            onPress={() => navigation.navigate("ProductScreen", { product })}
+            className="flex-row items-center gap-2"
+            onPress={() => navigation.navigate("SearchScreen")}
           >
-            <Image
-              source={{ uri: product.image_url }}
-              className="w-full h-48 rounded-t-lg"
-              resizeMode="cover"
-            />
-            <View className="p-4">
-              <H4 numberOfLines={2} className="mb-1">
-                {product.name}
-              </H4>
-              <P className="text-sm ">{formatPrice(product.price)}</P>
-            </View>
+            <H3 className="text-sm text-zinc-500 uppercase">View All</H3>
+            <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
           </TouchableOpacity>
-        ))}
+        </View>
+        <View className="grid grid-cols-2 gap-x-6 gap-y-4">
+          {products.slice(0, 6).map((product) => (
+            <TouchableOpacity
+              key={product.product_id}
+              className="rounded-lg shadow"
+              onPress={() => navigation.navigate("ProductScreen", { product })}
+            >
+              <Image
+                source={{ uri: product.image_url }}
+                className="w-full h-48 rounded-t-lg"
+                resizeMode="cover"
+              />
+              <View className="p-4">
+                <H4 numberOfLines={2} className="mb-1">
+                  {product.name}
+                </H4>
+                <P className="text-sm ">{formatPrice(product.price)}</P>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-black">

@@ -98,7 +98,7 @@ export default function RootLayout({navigation}: any) {
         return;
       }
 
-      const colorTheme = "light";
+      const colorTheme = "dark";
       if (colorTheme !== colorScheme) {
         setColorScheme(colorTheme);
         setAndroidNavigationBar(colorTheme);
@@ -124,12 +124,12 @@ export default function RootLayout({navigation}: any) {
       <EmailProvider>
         <CartProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="LoginScreen"
               component={LoginScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
-            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="StaffLoginScreen"
               component={StaffLoginScreen}

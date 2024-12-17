@@ -111,13 +111,13 @@ export default function Screen() {
             textContentType="password"
             secureTextEntry
           />
-          <Button 
-            onPress={handleResetPassword} 
-            className="w-full" 
+          <Button
+            onPress={handleResetPassword}
+            className="w-full"
             size={"lg"}
             disabled={isLoading}
           >
-            <P className="text-black uppercase">
+            <P className="text-white uppercase">
               {isLoading ? "Resetting..." : "Reset Password"}
             </P>
           </Button>

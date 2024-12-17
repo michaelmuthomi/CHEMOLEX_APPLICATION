@@ -29,7 +29,7 @@ export default function CartScreen({ navigation }) {
                       updateQuantity(item.product_id, item.quantity - 1)
                     }
                   >
-                    <Minus size={20} color="#000" />
+                    <Minus size={20} color="#fff" />
                   </Button>
                   <P style={styles.quantityText}>{item.quantity}</P>
                   <Button
@@ -39,14 +39,14 @@ export default function CartScreen({ navigation }) {
                       updateQuantity(item.product_id, item.quantity + 1)
                     }
                   >
-                    <Plus size={20} color="#000" />
+                    <Plus size={20} color="#fff" />
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onPress={() => removeFromCart(item.product_id)}
                   >
-                    <MoreHorizontal size={20} color="#000" />
+                    <MoreHorizontal size={20} color="#fff" />
                   </Button>
                 </View>
               </View>
@@ -64,8 +64,8 @@ export default function CartScreen({ navigation }) {
             className="p-4 rounded-full flex-row justify-between items-center"
             onPress={() => navigation.navigate("CheckoutScreen")}
           >
-            <P className="text-black">Continue to checkout</P>
-            <P className="text-black">{formatPrice(getCartTotal())}</P>
+            <P className="text-white">Continue to checkout</P>
+            <P className="text-white">{formatPrice(getCartTotal())}</P>
           </Button>
         ) : (
           <View className="gap-6">
@@ -77,7 +77,7 @@ export default function CartScreen({ navigation }) {
               className="p-4 rounded-full"
               onPress={() => navigation.navigate("HomeScreen")}
             >
-              <P className="text-black">Start Shopping</P>
+              <P className="text-white">Start Shopping</P>
             </Button>
           </View>
         )}

@@ -163,7 +163,7 @@ export default function Screen() {
           <Link href="/reset-password">Forgot Password</Link>
         </P>
         <Button onPress={handleLogin} className="w-full" size={"lg"}>
-          <P className="uppercase text-white">Login and continue</P>
+          <P className="uppercase text-black">Login and continue</P>
         </Button>
         <P
           className="text-center text-lg pt-4 color-[#b3b3b3]"
