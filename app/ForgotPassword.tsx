@@ -72,62 +72,52 @@ export default function Screen() {
   };
 
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-6">
-      <View className="w-full space-y-4 mt-20 gap-8">
-        <View className="gap-2">
-          <H1 className="text-3xl">Reset password</H1>
-          <P
-            className=" color-[#b3b3b3] pr-6"
-            style={{ fontFamily: "Inter_500Medium" }}
-          >
-            Enter your email and your new password.
-          </P>
-        </View>
-        <View className="space-y-4 gap-6">
-          <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Email</H5>
-            <Input
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              className="bg-[#131313] border-0 !h-14 text-white"
-              autoComplete="email"
-              textContentType="emailAddress"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
-          <View className="gap-2">
-            <H5 className="color-[#888888] px-2">New Password</H5>
-            <Input
-              placeholder="password123"
-              value={newPassword}
-              onChangeText={setNewPassword}
-              className="bg-[#131313] border-0 !h-14 text-white"
-              autoComplete="password"
-              textContentType="password"
-              secureTextEntry
-            />
-          </View>
-          <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Confirm Password</H5>
-            <Input
-              placeholder="password123"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              className="bg-[#131313] border-0 !h-14 text-white"
-              autoComplete="password"
-              textContentType="password"
-              secureTextEntry
-            />
-          </View>
+    <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
+      <Image
+        source={require("../assets/images/RefnetLogo.png")}
+        className="mt-14 w-screen h-32 scale-50 mx-auto absolute top-0 left-0"
+      />
+      <View className="w-full space-y-4 mt-20">
+        <H1 className="text-center">Reset Password</H1>
+        <P className="text-center text-muted-foreground">
+          Enter your email and new password
+        </P>
+        <View className="space-y-4">
+          <Input
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            className="bg-[#131313] border-0 !h-14 text-white"
+            autoComplete="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <Input
+            placeholder="New Password"
+            value={newPassword}
+            onChangeText={setNewPassword}
+            className="bg-[#131313] border-0 !h-14 text-white"
+            autoComplete="password"
+            textContentType="password"
+            secureTextEntry
+          />
+          <Input
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            className="bg-[#131313] border-0 !h-14 text-white"
+            autoComplete="password"
+            textContentType="password"
+            secureTextEntry
+          />
           <Button
             onPress={handleResetPassword}
             className="w-full"
             size={"lg"}
             disabled={isLoading}
           >
-            <P className="text-black uppercase">
+            <P className="text-white uppercase">
               {isLoading ? "Resetting..." : "Reset Password"}
             </P>
           </Button>

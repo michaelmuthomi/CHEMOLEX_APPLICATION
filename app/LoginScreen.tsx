@@ -62,6 +62,7 @@ export default function Screen() {
         const user_role = isValid["role"];
         console.log(isValid["role"]);
         if (user_role === "customer") {
+        if (user_role === "customer") {
           console.log("User is a Customer");
           setEmailContext(email);
           setLoading(false);
@@ -134,15 +135,15 @@ export default function Screen() {
           variant="default"
           disabled={loading}
         >
-          {loading ? (
-            <View className="flex flex-row items-center gap-2">
-              <ActivityIndicator size="small" color="#000" />
-              <P className="uppercase text-black">Login and continue</P>
-            </View>
-          ) : (
-            <P className="uppercase text-black">Login and continue</P>
-          )}
+          <P className="uppercase text-black">Login and continue</P>
         </Button>
+        <P
+          className="text-center text-lg pt-4 color-[#b3b3b3]" 
+          style={{ fontFamily: "Inter_400Regular" }}
+        >
+          Sign in to access your account and manage your air conditioning
+          solutions
+        </P>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row">
         <Link href="/SignupScreen">

@@ -175,20 +175,8 @@ export default function Screen() {
         <P className="text-right uppercase text-blue-400">
           <Link href="/ForgotPassword">Forgot Password ?</Link>
         </P>
-        <Button
-          onPress={handleLogin}
-          className="w-full flex"
-          size={"lg"}
-          variant="default"
-        >
-          {loading ? (
-            <View className="flex flex-row items-center gap-2">
-              <ActivityIndicator size="small" color="#000" />
-              <P className="uppercase text-black">Login and continue</P>
-            </View>
-          ) : (
-            <P className="uppercase text-black">Login and continue</P>
-          )}
+        <Button onPress={handleLogin} className="w-full" size={"lg"}>
+          <P className="uppercase text-black">Login and continue</P>
         </Button>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row">
