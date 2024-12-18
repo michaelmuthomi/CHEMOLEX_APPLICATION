@@ -2,7 +2,7 @@ import * as React from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { P, H1 } from "~/components/ui/typography";
+import { P, H1, H5 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
 import { showMessage } from "react-native-flash-message";
 import { checkUser, validateUserCredentials } from "~/lib/supabase";
@@ -59,6 +59,7 @@ export default function Screen() {
       if (isValid["role"]) {
         const user_role = isValid["role"];
         console.log("Role:", user_role);
+        setLoading(false);
         
         // Route to appropriate screen based on role
         switch (user_role) {
@@ -141,32 +142,38 @@ export default function Screen() {
           </P>
         </View>
         <View className="w-full gap-4">
-          <Input
-            placeholder="Email address"
-            value={email}
-            onChangeText={onEmailInput}
-            aria-labelledby="inputLabel"
-            aria-errormessage="inputError"
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <Input
-            placeholder="Password"
-            value={password}
-            onChangeText={onPasswordInput}
-            aria-labelledby="inputLabel"
-            aria-errormessage="inputError"
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="password"
-            textContentType="password"
-            secureTextEntry
-          />
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">Email Address</H5>
+            <Input
+              placeholder="Email address"
+              value={email}
+              onChangeText={onEmailInput}
+              aria-labelledby="inputLabel"
+              aria-errormessage="inputError"
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="email"
+              textContentType="emailAddress"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">Password</H5>
+            <Input
+              placeholder="Password"
+              value={password}
+              onChangeText={onPasswordInput}
+              aria-labelledby="inputLabel"
+              aria-errormessage="inputError"
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="password"
+              textContentType="password"
+              secureTextEntry
+            />
+          </View>
         </View>
         <P className="text-right uppercase text-blue-400">
-          <Link href="/reset-password">Forgot Password ?</Link>
+          <Link href="/ForgotPassword">Forgot Password ?</Link>
         </P>
         <Button
           onPress={handleLogin}

@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import { ArrowLeft, Truck } from 'lucide-react-native';
+import { ArrowLeft, BedDoubleIcon, Check, CircleDollarSign, HandCoins, Truck } from 'lucide-react-native';
 import { fetchOrders } from '~/lib/supabase';
 import { useEffect } from 'react';
+import { H3, H4, P } from '~/components/ui/typography';
 
 const drivers = ['Driver A', 'Driver B', 'Driver C'];
 
@@ -26,36 +27,50 @@ export default function DispatcherManagerScreen({ navigation }) {
  }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView>
+      <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#000" />
+          <ArrowLeft size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Dispatcher Manager</Text>
+        <P className="ml-auto mr-auto">Dispatch Manager</P>
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
+      <View className="p-4 divide-y-4 flex gap-4">
         <FlatList
           data={orders}
           keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           renderItem={({ item }) => (
-            <View style={styles.orderItem}>
-              <View>
-                <Text style={styles.customerName}>{item.users.full_name}</Text>
-                <Text style={styles.productName}>{item.products.name}</Text>
-                <Text style={styles.status}>
-                  Payment Status: {item.payment_status}
-                </Text>
-                {item.assignedTo && (
-                  <Text style={styles.assignedTo}>
-                    Assigned to: {item.assignedTo}
-                  </Text>
-                )}
+            <View
+              className="flex rounded-lg border-[1px] border-zinc-800"
+              key={item.id}
+            >
+              <View className="p-2 flex-row items-center justify-between">
+                <H3 className="text-xl">{item.users.full_name}</H3>
+                <View className="flex-row items-center gap-2">
+                  {item.payment_status === "completed" ? (
+                    <>
+                      <CircleDollarSign size={16} color="#00a800" />
+                      <P className="text-[#00a800]">Successful</P>
+                    </>
+                  ) : (
+                    <P className="text-red-700">Pending</P>
+                  )}
+                </View>
               </View>
+              <View
+                style={{
+                  borderBottomColor: "#bac4c8",
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  padding: 2,
+                }}
+              />
+              <P className="p-2">{item.products.name}</P>
+              {item.assignedTo && <P>Assigned to: {item.assignedTo}</P>}
               {item.payment_status === "completed" && (
-                <View style={styles.assignSection}>
-                  <Text style={styles.assignTitle}>Assign to driver:</Text>
+                <View className="p-2">
+                  <P>Assign to driver:</P>
                   {drivers.map((driver) => (
                     <TouchableOpacity
                       key={driver}
@@ -63,7 +78,7 @@ export default function DispatcherManagerScreen({ navigation }) {
                       onPress={() => assignDriver(item.id, driver)}
                     >
                       <Truck size={16} color="#fff" />
-                      <Text style={styles.driverButtonText}>{driver}</Text>
+                      <P>{driver}</P>
                     </TouchableOpacity>
                   ))}
                 </View>

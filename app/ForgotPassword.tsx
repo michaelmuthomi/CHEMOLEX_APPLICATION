@@ -2,7 +2,7 @@ import { Image, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { H1, P } from "~/components/ui/typography";
+import { H1, H5, P } from "~/components/ui/typography";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { showMessage } from "react-native-flash-message";
@@ -72,48 +72,55 @@ export default function Screen() {
   };
 
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
-      <Image
-        source={require("../assets/images/RefnetLogo.png")}
-        className="w-screen h-20 scale-75 mx-auto absolute top-0 left-0"
-        resizeMode="contain"
-      />
-      <View className="w-full space-y-4 mt-20 gap-6">
-        <View>
-          <H1 className="text-center">Reset Password</H1>
-          <P className="text-center text-muted-foreground">
-            Enter your email and new password
+    <View className="flex-1 justify-between items-center gap-5 px-6">
+      <View className="w-full space-y-4 mt-20 gap-8">
+        <View className="gap-2">
+          <H1 className="text-3xl">Reset password</H1>
+          <P
+            className=" color-[#b3b3b3] pr-6"
+            style={{ fontFamily: "Inter_500Medium" }}
+          >
+            Enter your email and your new password.
           </P>
         </View>
-        <View className="space-y-4 gap-4">
-          <Input
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <Input
-            placeholder="New Password"
-            value={newPassword}
-            onChangeText={setNewPassword}
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="password"
-            textContentType="password"
-            secureTextEntry
-          />
-          <Input
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            className="bg-[#131313] border-0 !h-14 text-white"
-            autoComplete="password"
-            textContentType="password"
-            secureTextEntry
-          />
+        <View className="space-y-4 gap-6">
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">Email</H5>
+            <Input
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="email"
+              textContentType="emailAddress"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">New Password</H5>
+            <Input
+              placeholder="password123"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="password"
+              textContentType="password"
+              secureTextEntry
+            />
+          </View>
+          <View className="gap-2">
+            <H5 className="color-[#888888] px-2">Confirm Password</H5>
+            <Input
+              placeholder="password123"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              className="bg-[#131313] border-0 !h-14 text-white"
+              autoComplete="password"
+              textContentType="password"
+              secureTextEntry
+            />
+          </View>
           <Button
             onPress={handleResetPassword}
             className="w-full"
@@ -125,11 +132,6 @@ export default function Screen() {
             </P>
           </Button>
         </View>
-      </View>
-      <View className="gap-4 divide-x-2 flex flex-row">
-        <Link href="/LoginScreen">
-          <P className="text-blue-400 uppercase">Back to Login</P>
-        </Link>
       </View>
     </View>
   );

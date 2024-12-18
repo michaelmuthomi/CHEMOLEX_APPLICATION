@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ActivityIndicator, Image, View } from "react-native";
+import { ActivityIndicator, Image, SafeAreaView, View } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1, H2, H4, H5 } from "~/components/ui/typography";
@@ -64,6 +64,7 @@ export default function Screen() {
         if (user_role === "customer") {
           console.log("User is a Customer");
           setEmailContext(email);
+          setLoading(false);
           navigation.navigate("MainTabs"); // Navigation should now work
           return;
         }
@@ -76,7 +77,7 @@ export default function Screen() {
     }
   };
   return (
-    <View className="flex-1 justify-between items-center px-6 py-14">
+    <SafeAreaView className="flex-1 justify-between items-center px-6 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
         className="mt-14 w-1/3 h-8 absolute top-4 left-6"
@@ -136,10 +137,10 @@ export default function Screen() {
           {loading ? (
             <View className="flex flex-row items-center gap-2">
               <ActivityIndicator size="small" color="#000" />
-              <H4 className="uppercase text-black">Log in</H4>
+              <P className="uppercase text-black">Login and continue</P>
             </View>
           ) : (
-            <H4 className="text-base text-black uppercase">Log In</H4>
+            <P className="uppercase text-black">Login and continue</P>
           )}
         </Button>
       </View>
@@ -152,6 +153,6 @@ export default function Screen() {
           <P className="text-blue-400 uppercase">Staff Login</P>
         </Link>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
