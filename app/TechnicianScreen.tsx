@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { ArrowLeft, Tool, ShoppingCart } from 'lucide-react-native';
 import { fetchAssignedRepairs } from '~/lib/supabase';
+import { P } from '~/components/ui/typography';
 
 const initialRepairs =  [{"created_at": "2024-11-24T14:19:18+00:00", "id": 1, "service_id": 3, "services": {"description": "Professional installation of domestic and commercial air conditioning systems, including LG, Samsung, and Carrier models.", "name": "Air Conditioner Installation", "price": 200, "service_type": "installation"}, "status": "pending", "technician_id": 22}, {"created_at": "2024-11-24T14:20:39+00:00", "id": 2, "service_id": 4, "services": {"description": "Regular servicing and maintenance of air conditioning units to ensure optimal performance and longevity.", "name": "Air Conditioner Maintenance", "price": 100, "service_type": "maintenance"}, "status": "complete", "technician_id": 22}]
 
@@ -27,34 +28,39 @@ export default function TechnicianScreen({ navigation }) {
   }, [])
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView>
+      <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#000" />
+          <ArrowLeft size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Technician Dashboard</Text>
+        <P className="ml-auto mr-auto">Technician Dashboard</P>
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Assigned Repairs</Text>
-        {repairs && repairs.map(repair => (
-          <View style={styles.repairItem} key={repair.service_id}>
-          <View>
-            <Text style={styles.deviceName}>{repair.services.name}</Text>
-            <Text style={styles.issueText}>{repair.services.price}</Text>
-            <Text style={styles.status}>Status: {repair.status}</Text>
-          </View>
-          {repair.status !== 'complete' && (
-            <TouchableOpacity
-              style={styles.completeButton}
-              onPress={() => updateRepairStatus(repair.service_id, 'Completed')}
-            >
-              <Text style={styles.completeButtonText}>Mark as Completed</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        ))}
+      <View className='p-4'>
+        <P>Assigned Repairs</P>
+        {repairs &&
+          repairs.map((repair) => (
+            <View style={styles.repairItem} key={repair.service_id}>
+              <View>
+                <Text style={styles.deviceName}>{repair.services.name}</Text>
+                <Text style={styles.issueText}>{repair.services.price}</Text>
+                <Text style={styles.status}>Status: {repair.status}</Text>
+              </View>
+              {repair.status !== "complete" && (
+                <TouchableOpacity
+                  style={styles.completeButton}
+                  onPress={() =>
+                    updateRepairStatus(repair.service_id, "Completed")
+                  }
+                >
+                  <Text style={styles.completeButtonText}>
+                    Mark as Completed
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
 
         {/* <View style={styles.orderSection}>
           <Text style={styles.sectionTitle}>Order Repair Tools</Text>

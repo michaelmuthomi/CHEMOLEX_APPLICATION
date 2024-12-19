@@ -10,6 +10,7 @@ import {
 import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { fetchSubmittedRepairs } from '~/lib/supabase';
+import { P } from '~/components/ui/typography';
 
 const initialRepairs = [
   { id: '1', device: 'Laptop', technician: 'Tech A', status: 'Pending Approval' },
@@ -37,16 +38,16 @@ export default function SupervisorScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView>
+      <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#000" />
+          <ArrowLeft size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Supervisor Dashboard</Text>
+        <P className="ml-auto mr-auto">Supervisor Dashboard</P>
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
+      <View className='p-2'>
         <FlatList
           data={repairs}
           keyExtractor={(item) => item.id}
@@ -57,7 +58,7 @@ export default function SupervisorScreen({ navigation }) {
                 {/* <Text style={styles.technicianName}>Technician: {item.users.full_name}</Text> */}
                 <Text style={styles.status}>Status: {item.status}</Text>
               </View>
-              {item.status === 'pending' && (
+              {item.status === "pending" && (
                 <View style={styles.actionButtons}>
                   <TouchableOpacity
                     style={[styles.actionButton, styles.approveButton]}

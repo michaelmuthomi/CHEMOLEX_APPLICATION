@@ -6,10 +6,14 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
+  ScrollView,
+} from "react-native";
 import { ArrowLeft, User } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { fetchServiceRequests } from '~/lib/supabase';
+import { H1, H2, P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
+import { Badge } from '~/components/ui/badge';
 
 const initialOrders = [
   { id: '1', customer: 'John Doe', service: 'Repair', status: 'Pending' },
@@ -33,44 +37,74 @@ export default function ServiceManagerScreen({ navigation }) {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView>
+      <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#000" />
+          <ArrowLeft size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Service Manager</Text>
+        <P className="ml-auto mr-auto">Service Manager</P>
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
+      <View>
         <FlatList
           data={orders}
           keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                borderBottomColor: "#bac4c8",
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                padding: 2,
+              }}
+            />
+          )}
+          className="divide-x-2"
           renderItem={({ item }) => (
-            <View style={styles.orderItem}>
-              <View>
-                <Text style={styles.customerName}>{item.users.full_name}</Text>
-                <Text style={styles.serviceType}>{item.services.service_type}</Text>
-                <Text style={styles.status}>Status: {item.status}</Text>
-                {item.assignedTo && (
-                  <Text style={styles.assignedTo}>
-                    Assigned to: {item.assignedTo}
-                  </Text>
+            <View className="p-4 gap-4">
+              <View className='gap-4'>
+                <View>
+                  <H1 className="capitalize text-xl border-b-0">
+                    {item.services.name}
+                  </H1>
+                  <P className="line-clamp-1">{item.services.description}</P>
+                </View>
+                {item.status === "pending" ? (
+                  <Badge variant={"destructive"} className="w-1/4">
+                    <P>Pending</P>
+                  </Badge>
+                ) : (
+                  <Badge variant={"outline"} className="w-1/4">
+                    <P>Assigned</P>
+                  </Badge>
                 )}
               </View>
+              {item.assignedTo && <P>Assigned to: {item.assignedTo}</P>}
+              {/* <View
+                style={{
+                  borderBottomColor: "#bac4c8",
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  padding: 2,
+                }}
+              /> */}
               {!item.assignedTo && (
                 <View style={styles.assignSection}>
-                  <Text style={styles.assignTitle}>Assign to:</Text>
-                  {technicians.map((tech) => (
-                    <TouchableOpacity
-                      key={tech}
-                      style={styles.techButton}
-                      onPress={() => assignTechnician(item.id, tech)}
-                    >
-                      <User size={16} color="#fff" />
-                      <Text style={styles.techButtonText}>{tech}</Text>
-                    </TouchableOpacity>
-                  ))}
+                  <P>Assign to:</P>
+                  <ScrollView horizontal={true}>
+                    <View className="flex-row py-4 gap-2">
+                      {technicians.map((tech) => (
+                        <Button
+                          key={tech}
+                          variant={"outline"}
+                          className="flex-row"
+                          onPress={() => assignTechnician(item.id, tech)}
+                        >
+                          <User size={16} color="#fff" />
+                          <P>{tech}</P>
+                        </Button>
+                      ))}
+                    </View>
+                  </ScrollView>
                 </View>
               )}
             </View>

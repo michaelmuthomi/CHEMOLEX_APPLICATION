@@ -6,25 +6,43 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
-import { ArrowLeft, BedDoubleIcon, Check, CircleDollarSign, HandCoins, Truck } from 'lucide-react-native';
-import { fetchOrders } from '~/lib/supabase';
-import { useEffect } from 'react';
-import { H3, H4, P } from '~/components/ui/typography';
+  ScrollView,
+  Image,
+} from "react-native";
+import {
+  ArrowLeft,
+  BedDoubleIcon,
+  Check,
+  CircleDollarSign,
+  HandCoins,
+  Truck,
+} from "lucide-react-native";
+import { fetchOrders, fetchDrivers } from "~/lib/supabase";
+import { useEffect } from "react";
+import { H3, H4, P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
 
-const drivers = ['Driver A', 'Driver B', 'Driver C'];
+const drivers = ["Driver A", "Driver B", "Driver C"];
 
 export default function DispatcherManagerScreen({ navigation }) {
   const [orders, setOrders] = useState([]);
+  const [sortBy, setSortBy] = useState("all-orders");
+  const [availableDrivers, setAvailableDrivers] = useState([])
 
- useEffect(() => {
-   async function fetchCustomerOrders() {
-     const response = await fetchOrders();
-     console.log("Orders Fetched", response);
-     setOrders(response);
-   }
-   fetchCustomerOrders();
- }, []);
+  useEffect(() => {
+    async function fetchCustomerOrders() {
+      const response = await fetchOrders();
+      // console.log("Orders Fetched", response);
+      setOrders(response);
+    }
+    async function fetchAvailableDrivers() {
+      const response = await fetchDrivers();
+      console.log("Available Drivers", response);
+      setAvailableDrivers(response)
+    }
+    fetchCustomerOrders();
+    fetchAvailableDrivers()
+  }, []);
 
   return (
     <SafeAreaView>
@@ -37,6 +55,25 @@ export default function DispatcherManagerScreen({ navigation }) {
       </View>
 
       <View className="p-4 divide-y-4 flex gap-4">
+        <ScrollView horizontal={true}>
+          <View className="flex-row py-4 gap-2">
+            {["all-orders", "dispatched", "pending", "assigned"].map((sort) => (
+              <Button
+                key={sort}
+                onPress={() => setSortBy(sort)}
+                className={`${sortBy === sort ? "bg-white" : " bg-zinc-900"}`}
+              >
+                <P
+                  className={`capitalize ${
+                    sortBy === sort ? "bg-white text-black" : " bg-zinc-900"
+                  }`}
+                >
+                  {sort.replace("-", " ")}
+                </P>
+              </Button>
+            ))}
+          </View>
+        </ScrollView>
         <FlatList
           data={orders}
           keyExtractor={(item) => item.id}
@@ -46,18 +83,15 @@ export default function DispatcherManagerScreen({ navigation }) {
               className="flex rounded-lg border-[1px] border-zinc-800"
               key={item.id}
             >
-              <View className="p-2 flex-row items-center justify-between">
-                <H3 className="text-xl">{item.users.full_name}</H3>
-                <View className="flex-row items-center gap-2">
-                  {item.payment_status === "completed" ? (
-                    <>
-                      <CircleDollarSign size={16} color="#00a800" />
-                      <P className="text-[#00a800]">Successful</P>
-                    </>
-                  ) : (
-                    <P className="text-red-700">Pending</P>
-                  )}
-                </View>
+              <Image
+                source={{
+                  uri: item.products.image_url,
+                }}
+                className="w-full h-24 rounded-t-lg"
+              />
+              <View className="p-2">
+                <H3 className="text-xl">{item.products.name}</H3>
+                <P className="capitalize">{item.payment_status}</P>
               </View>
               <View
                 style={{
@@ -66,21 +100,25 @@ export default function DispatcherManagerScreen({ navigation }) {
                   padding: 2,
                 }}
               />
-              <P className="p-2">{item.products.name}</P>
               {item.assignedTo && <P>Assigned to: {item.assignedTo}</P>}
               {item.payment_status === "completed" && (
                 <View className="p-2">
-                  <P>Assign to driver:</P>
-                  {drivers.map((driver) => (
-                    <TouchableOpacity
-                      key={driver}
-                      style={styles.driverButton}
-                      onPress={() => assignDriver(item.id, driver)}
-                    >
-                      <Truck size={16} color="#fff" />
-                      <P>{driver}</P>
-                    </TouchableOpacity>
-                  ))}
+                  <H4 className='text-base'>Assign to Driver</H4>
+                  <ScrollView horizontal={true}>
+                    <View className="flex-row py-4 gap-2">
+                      {drivers.map((driver) => (
+                        <Button
+                          key={driver}
+                          variant={'outline'}
+                          className='flex-row'
+                          onPress={() => assignDriver(item.id, driver)}
+                        >
+                          <Truck size={16} color="#fff" />
+                          <P>{driver}</P>
+                        </Button>
+                      ))}
+                    </View>
+                  </ScrollView>
                 </View>
               )}
             </View>

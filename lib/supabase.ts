@@ -352,7 +352,7 @@ export async function fetchProductNamesAndQuantity() {
 export async function fetchServiceRequests() {
   const { data, error } = await supabase
     .from("repairs")
-    .select("*, users:customer_id(full_name), services(name, price, service_type)");
+    .select("*, users:customer_id(full_name), services(name, description, service_type)");
   
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
@@ -381,12 +381,11 @@ export async function fetchTechnicians() {
 export async function fetchOrders() {
   const { data, error } = await supabase
     .from("orders")
-    .select("*, users:user_id(full_name), products:product_id(name)");
+    .select("*, users:user_id(full_name), products:product_id(name, image_url, description)");
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
-    console.log(data);
     return data;
   }
 }
@@ -436,6 +435,20 @@ export async function submitFeedback(feedback: {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
     console.log("Feedback submitted:", data);
+    return data;
+  }
+}
+
+// Fetch available drivers
+export async function fetchDrivers() {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
     return data;
   }
 }
