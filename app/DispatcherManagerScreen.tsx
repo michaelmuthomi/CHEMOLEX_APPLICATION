@@ -17,17 +17,21 @@ import {
   HandCoins,
   Truck,
 } from "lucide-react-native";
-import { fetchOrders, fetchDrivers } from "~/lib/supabase";
+import { fetchOrders, fetchDrivers, checkUser } from "~/lib/supabase";
 import { useEffect } from "react";
-import { H3, H4, P } from "~/components/ui/typography";
+import { H1, H3, H4, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
+import { useEmail } from './EmailContext';
+import { Card, CardHeader } from '~/components/ui/card';
 
 const drivers = ["Driver A", "Driver B", "Driver C"];
 
-export default function DispatcherManagerScreen({ navigation }) {
+export default function DispatcherManagerScreen({ navigation }:{navigation: any}) {
+  const emailContext = useEmail();
   const [orders, setOrders] = useState([]);
   const [sortBy, setSortBy] = useState("all-orders");
   const [availableDrivers, setAvailableDrivers] = useState([])
+  const [customer, setCustomerDetails] = useState([]);
 
   useEffect(() => {
     async function fetchCustomerOrders() {
@@ -40,6 +44,11 @@ export default function DispatcherManagerScreen({ navigation }) {
       console.log("Available Drivers", response);
       setAvailableDrivers(response)
     }
+     async function fetchUserDetails() {
+        const response = await checkUser(emailContext?.email);
+        setCustomerDetails(response);
+      }
+      fetchUserDetails();
     fetchCustomerOrders();
     fetchAvailableDrivers()
   }, []);
@@ -55,6 +64,13 @@ export default function DispatcherManagerScreen({ navigation }) {
       </View>
 
       <View className="p-4 divide-y-4 flex gap-4">
+        <H1 className='text-2xl'>Overview</H1>
+        <Card>
+          <CardHeader>
+            
+          </CardHeader>
+        </Card>
+        {/* <H1 className='text-xl'>Hi there, {customer.username} 👋</H1> */}
         <ScrollView horizontal={true}>
           <View className="flex-row py-4 gap-2">
             {["all-orders", "dispatched", "pending", "assigned"].map((sort) => (
@@ -103,18 +119,18 @@ export default function DispatcherManagerScreen({ navigation }) {
               {item.assignedTo && <P>Assigned to: {item.assignedTo}</P>}
               {item.payment_status === "completed" && (
                 <View className="p-2">
-                  <H4 className='text-base'>Assign to Driver</H4>
+                  <H4 className="text-base">Assign to Driver</H4>
                   <ScrollView horizontal={true}>
                     <View className="flex-row py-4 gap-2">
-                      {drivers.map((driver) => (
+                      {availableDrivers.map((driver) => (
                         <Button
-                          key={driver}
-                          variant={'outline'}
-                          className='flex-row'
+                          key={driver.id}
+                          variant={"outline"}
+                          className="flex-row"
                           onPress={() => assignDriver(item.id, driver)}
                         >
                           <Truck size={16} color="#fff" />
-                          <P>{driver}</P>
+                          <P>{driver.full_name}</P>
                         </Button>
                       ))}
                     </View>

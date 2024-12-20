@@ -441,14 +441,33 @@ export async function submitFeedback(feedback: {
 
 // Fetch available drivers
 export async function fetchDrivers() {
-  const { data, error } = await supabase
+  // Fetch user IDs from dispatches
+  const { data: dispatches, error: dispatchesError } = await supabase
+    .from("dispatches")
+    .select("user_id");
+
+  if (dispatchesError) {
+    console.error(dispatchesError);
+    return;
+  }
+
+  const assignedUserIds = dispatches.map((assignment) => assignment.user_id);
+
+  // Fetch all drivers
+  const { data: allDrivers, error: driversError } = await supabase
     .from("users")
     .select("*")
+    .eq("role", "driver");
 
-  if (error) {
-    return `Error: ${error.message || JSON.stringify(error)}`;
-  } else {
-    console.log(data);
-    return data;
+  if (driversError) {
+    console.error(driversError);
+    return;
   }
+
+  // Filter drivers to exclude those in assignedUserIds
+  const availableDrivers = allDrivers.filter(
+    (driver) => !assignedUserIds.includes(driver.user_id)
+  );
+
+  return availableDrivers;
 }
