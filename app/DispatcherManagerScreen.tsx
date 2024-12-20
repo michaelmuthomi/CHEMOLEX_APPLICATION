@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import { H1, H3, H4, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useEmail } from './EmailContext';
-import { Card, CardHeader } from '~/components/ui/card';
+import { Card, CardContent, CardHeader } from '~/components/ui/card';
 
 const drivers = ["Driver A", "Driver B", "Driver C"];
 
@@ -53,6 +53,24 @@ export default function DispatcherManagerScreen({ navigation }:{navigation: any}
     fetchAvailableDrivers()
   }, []);
 
+  const cardContents = [
+    {
+      id: 1,
+      title: "Total Orders",
+      content: orders.length,
+    },
+    {
+      id: 2,
+      title: "Available Drivers",
+      content: availableDrivers.length,
+    },
+    {
+      id: 3,
+      title: "Dispatched Drivers",
+      content: availableDrivers.length,
+    },
+  ];
+
   return (
     <SafeAreaView>
       <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
@@ -63,13 +81,28 @@ export default function DispatcherManagerScreen({ navigation }:{navigation: any}
         <View style={styles.placeholder} />
       </View>
 
-      <View className="p-4 divide-y-4 flex gap-4">
-        <H1 className='text-2xl'>Overview</H1>
-        <Card>
-          <CardHeader>
-            
-          </CardHeader>
-        </Card>
+      <ScrollView className="p-4 divide-y-4 flex gap-4">
+        <H1 className="text-2xl">Overview</H1>
+        <ScrollView horizontal={true}>
+          <View className="flex-row py-4 gap-2">
+            {cardContents.map((card) => (
+              <Card key={card.id} className="col-span-1 ">
+                <CardHeader className="pb-2">
+                  <P className="text-sm">
+                    {card.title ? (
+                      card.title
+                    ) : (
+                      <View className="animate-pulse w-full h-20" />
+                    )}
+                  </P>
+                </CardHeader>
+                <CardContent>
+                  <H1 className="text-4xl">{card.content}</H1>
+                </CardContent>
+              </Card>
+            ))}
+          </View>
+        </ScrollView>
         {/* <H1 className='text-xl'>Hi there, {customer.username} 👋</H1> */}
         <ScrollView horizontal={true}>
           <View className="flex-row py-4 gap-2">
@@ -140,7 +173,7 @@ export default function DispatcherManagerScreen({ navigation }:{navigation: any}
             </View>
           )}
         />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
