@@ -78,7 +78,7 @@ export default function Screen() {
         className="w-1/3 h-8 absolute top-4 left-6"
         resizeMode="cover"
       />
-      <View className="w-full space-y-4 mt-20 gap-6">
+      <View className="w-full space-y-4 mt-20 gap-6 bg-zinc-950">
         <View className="gap-2">
           <H1 className="">Reset Password</H1>
           <P className=" text-muted-foreground">

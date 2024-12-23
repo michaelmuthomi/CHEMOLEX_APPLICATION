@@ -131,7 +131,7 @@ export default function Screen() {
         className="mt-14 w-1/3 h-8 absolute top-4 left-6"
         resizeMode="cover"
       />
-      <View className="w-full mb-auto mt-auto gap-6">
+      <View className="w-full mb-auto mt-auto gap-6 bg-zinc-950">
         <View className="gap-2">
           <H1 className="text-3xl">Staff Login Page</H1>
           <P
@@ -175,7 +175,12 @@ export default function Screen() {
         <P className="text-right uppercase text-blue-400">
           <Link href="/ForgotPassword">Forgot Password ?</Link>
         </P>
-        <Button onPress={handleLogin} className="w-full" size={"lg"} disabled={loading}>
+        <Button
+          onPress={handleLogin}
+          className="w-full"
+          size={"lg"}
+          disabled={loading}
+        >
           <P className="uppercase text-black">
             {loading ? "Logging In" : "Login and continue"}
           </P>

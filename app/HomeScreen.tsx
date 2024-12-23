@@ -8,14 +8,16 @@ import {
   TouchableOpacity,
   Dimensions,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { ChevronRight, TrendingUp, Star, Package, Clock } from 'lucide-react-native';
-import { H1, H2, H3, H4, P } from '~/components/ui/typography';
+import { H1, H2, H3, H4, H5, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { useEffect, useState } from 'react';
-import { fetchProductsFromDB } from '~/lib/supabase';
+import { checkUser, fetchProductsFromDB } from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import {Ionicons} from "@expo/vector-icons";
+import { useEmail } from './EmailContext';
 
 const { width } = Dimensions.get('window');
 
@@ -56,6 +58,9 @@ const promotions = [
 export default function HomeScreen({ navigation }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [customer, setCustomerDetails] = useState([]);
+  const emailContext = useEmail();
+  
   
   useEffect(() => {
     const loadProducts = async () => {
@@ -63,24 +68,29 @@ export default function HomeScreen({ navigation }) {
         const data = await fetchProductsFromDB();
         setProducts(data);
       } catch (error) {
-        console.error('Error loading products:', error);
+        console.error("Error loading products:", error);
       } finally {
         setLoading(false);
       }
     };
+    async function fetchUserDetails() {
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
+    }
+    fetchUserDetails();
     loadProducts();
   }, []);
 
   const renderFeaturedCategories = () => (
     <View className="mt-6">
       <View className="flex-row items-center justify-between px-6 mb-4">
-        <H3 className="uppercase text-lg">Featured Categories</H3>
+        <H3 className="text-xl">Categories</H3>
         <TouchableOpacity
           className="flex-row items-center"
           onPress={() => navigation.navigate("SearchScreen")}
         >
-          <H3 className="text-sm text-zinc-500 uppercase">View All</H3>
-          <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
+          <H3 className="text-sm text-[#555]">See All</H3>
+          <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
         </TouchableOpacity>
       </View>
       <ScrollView
@@ -113,8 +123,8 @@ export default function HomeScreen({ navigation }) {
   const renderPromotions = () => (
     <View className="mt-8">
       <H3 className="px-6 mb-4 uppercase text-lg">Special Offers</H3>
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         className="pl-6"
       >
@@ -123,7 +133,7 @@ export default function HomeScreen({ navigation }) {
             key={promo.id}
             className="mr-4 rounded-xl overflow-hidden"
             style={{ width: width * 0.8, height: 120 }}
-            onPress={() => navigation.navigate('SearchScreen')}
+            onPress={() => navigation.navigate("SearchScreen")}
           >
             <ImageBackground
               source={{ uri: promo.image }}
@@ -142,36 +152,42 @@ export default function HomeScreen({ navigation }) {
 
   const renderQuickLinks = () => (
     <View className="flex-row justify-between px-6 py-6">
-      <TouchableOpacity 
+      <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() => navigation.navigate('SearchScreen', { sort: 'trending' })}
+        onPress={() =>
+          navigation.navigate("SearchScreen", { sort: "trending" })
+        }
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <TrendingUp size={24} color="#fff" />
         </View>
         <P>Trending</P>
       </TouchableOpacity>
-      <TouchableOpacity 
+      <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() => navigation.navigate('SearchScreen', { filter: 'new' })}
+        onPress={() => navigation.navigate("SearchScreen", { filter: "new" })}
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <Star size={24} color="#fff" />
         </View>
         <P>New</P>
       </TouchableOpacity>
-      <TouchableOpacity 
+      <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() => navigation.navigate('SearchScreen', { filter: 'popular' })}
+        onPress={() =>
+          navigation.navigate("SearchScreen", { filter: "popular" })
+        }
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <Package size={24} color="#fff" />
         </View>
         <P>Popular</P>
       </TouchableOpacity>
-      <TouchableOpacity 
+      <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() => navigation.navigate('SearchScreen', { filter: 'recent' })}
+        onPress={() =>
+          navigation.navigate("SearchScreen", { filter: "recent" })
+        }
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <Clock size={24} color="#fff" />
@@ -182,15 +198,15 @@ export default function HomeScreen({ navigation }) {
   );
 
   const renderProducts = () => (
-    <View className="px-6 mt-10 bg-[#111] py-4">
+    <View className="mt-10 bg-[#111] py-4">
       <View className="flex-row items-center justify-between mb-4">
-        <H3 className="uppercase text-lg">Popular Products</H3>
+        <H3 className="text-2xl">Popular</H3>
         <TouchableOpacity
-          className="flex-row items-center gap-2"
+          className="flex-row items-centeri"
           onPress={() => navigation.navigate("SearchScreen")}
         >
-          <H3 className="text-sm text-zinc-500 uppercase">View All</H3>
-          <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
+          <H3 className="text-sm text-[#555] px-2">See All</H3>
+          <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
         </TouchableOpacity>
       </View>
       <View className="flex-row flex-wrap">
@@ -205,9 +221,9 @@ export default function HomeScreen({ navigation }) {
               className="w-full h-32 rounded-lg mb-2"
               resizeMode="cover"
             />
-            <H4 numberOfLines={2} className="mb-1 text-lg">
+            <P numberOfLines={2} className="mb-1 text-base">
               {product.name}
-            </H4>
+            </P>
             <P className="text-sm">{formatPrice(product.price)}</P>
           </TouchableOpacity>
         ))}
@@ -216,22 +232,22 @@ export default function HomeScreen({ navigation }) {
   );
   const renderAllProducts = () => {
     return (
-      <View className="px-6 mt-14">
-        <View className="flex-row items-center justify-between mb-4">
-          <H3 className="text-lg w-max">All Products</H3>
+      <View className="mt-14">
+        <View className="flex-row items-center justify-between mb-4 px-6">
+          <H3 className="text-2xl w-max">Recommended</H3>
           <TouchableOpacity
-            className="flex-row items-center gap-2"
+            className="flex-row items-center"
             onPress={() => navigation.navigate("SearchScreen")}
           >
-            <H3 className="text-sm text-zinc-500 uppercase">View All</H3>
-            <Ionicons name="arrow-forward-sharp" size={20} color="#555" />
+            <H3 className="text-sm text-[#555]">See All</H3>
+            <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
           </TouchableOpacity>
         </View>
-        <View className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <View className="flex-row flex-wrap space-x-2">
           {products.slice(0, 6).map((product) => (
             <TouchableOpacity
               key={product.product_id}
-              className="rounded-lg shadow"
+              className="rounded-lg shadow w-1/2 p-2"
               onPress={() => navigation.navigate("ProductScreen", { product })}
             >
               <Image
@@ -239,7 +255,7 @@ export default function HomeScreen({ navigation }) {
                 className="w-full h-48 rounded-t-lg"
                 resizeMode="cover"
               />
-              <View className="p-4">
+              <View className="">
                 <H4 numberOfLines={2} className="mb-1">
                   {product.name}
                 </H4>
@@ -255,9 +271,18 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView className="flex-1">
-        <View className="pt-14">
-          <H2 className="px-6 text-2xl">Welcome to RefNet</H2>
-          <P className="px-6 mt-1 opacity-60">Discover Professional HVAC Solutions</P>
+        <View className="pt-16">
+          <View className='px-6'>
+            <H2 className="text-2xl border-b-0 leading-0">
+              Hi there, {customer.username} 👋
+            </H2>
+              <H2 className='text-zinc-400 text-sm border-b-0'>Welcome to Refnet</H2>
+            </View>
+          <Image
+            source={require("~/assets/images/Background.png")}
+            className="w-full h-48 rounded-t-lg"
+            resizeMode="cover"
+          />
           {renderQuickLinks()}
           {renderFeaturedCategories()}
           {renderPromotions()}

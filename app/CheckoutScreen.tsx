@@ -311,7 +311,7 @@ export default function CheckoutScreen({ navigation }) {
         variant="default"
         onPress={handleShippingSubmit}
       >
-        <P className="uppercase">Continue to Payment</P>
+        <P className="uppercase text-black">Continue to Payment</P>
       </Button>
     </View>
   );
@@ -366,7 +366,7 @@ export default function CheckoutScreen({ navigation }) {
         variant="default"
         onPress={handlePaymentSubmit}
       >
-        <P className="uppercase">Review Order</P>
+        <P className="uppercase text-black">Review Order</P>
       </Button>
     </View>
   );
@@ -417,7 +417,7 @@ export default function CheckoutScreen({ navigation }) {
         variant="default"
         onPress={handlePlaceOrder}
       >
-        <P className="uppercase">Place Order</P>
+        <P className="uppercase text-black">Place Order</P>
       </Button>
     </View>
   );
