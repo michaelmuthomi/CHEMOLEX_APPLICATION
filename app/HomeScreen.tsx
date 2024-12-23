@@ -199,7 +199,7 @@ export default function HomeScreen({ navigation }) {
 
   const renderProducts = () => (
     <View className="mt-10 bg-[#111] py-4">
-      <View className="flex-row items-center justify-between mb-4">
+      <View className="flex-row items-center justify-between mb-4 px-4">
         <H3 className="text-2xl">Popular</H3>
         <TouchableOpacity
           className="flex-row items-centeri"
@@ -264,6 +264,13 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </View>
+        <TouchableOpacity
+          className="flex-row items-center p-4 mt-6 bg-white"
+          onPress={() => navigation.navigate("SearchScreen")}
+        >
+          <H3 className="text-sm text-[#555]">View More Products</H3>
+          <Ionicons name="arrow-forward-sharp" size={15} color="#555" className='ml-auto' />
+        </TouchableOpacity>
       </View>
     );
   };

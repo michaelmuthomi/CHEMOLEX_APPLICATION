@@ -205,7 +205,7 @@ export default function RootLayout({navigation}: any) {
             <Stack.Screen
               name="CartScreen"
               component={CartScreen}
-              options={{ headerShown: true, headerTitle: "" }}
+              // options={{ headerShown: true, headerTitle: "" }}
             />
           </Stack.Navigator>
           <FlashMessage position="top" />
