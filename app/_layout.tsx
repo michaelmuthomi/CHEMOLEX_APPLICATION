@@ -10,29 +10,10 @@ import { NAV_THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { PortalHost } from '@rn-primitives/portal';
 import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FlashMessage from "react-native-flash-message";
 import { EmailProvider } from "./EmailContext"; 
-import { CartProvider } from "~/lib/cart-context";
-import { P } from "~/components/ui/typography";
+import { CartProvider } from "~/lib/cart-context"
 import { router } from "expo-router";
-
-import SignupScreen from "./SignupScreen";
-import LoginScreen from "./LoginScreen";
-import StaffLoginScreen from "./StaffLoginScreen";
-import MainTabs from "./MainTabs";
-import ProductScreen from "./ProductScreen";
-import CheckoutScreen from "./CheckoutScreen";
-import DispatcherManagerScreen from "./DispatcherManagerScreen";
-import FinanceControllerScreen from "./FinanceControllerScreen";
-import ServiceManagerScreen from "./ServiceManagerScreen";
-import StockManagementScreen from "./StockManagementScreen";
-import TechnicianScreen from "./TechnicianScreen";
-import SupervisorScreen from "./SupervisorScreen";
-import ForgotPassword from "./ForgotPassword";
-import CartScreen from "./CartScreen";
-import HomeScreen from "./HomeScreen";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -44,14 +25,12 @@ const DARK_THEME: Theme = {
 };
 
 export {
-  // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from 'expo-router';
 
 // Prevent the splash screen from auto-hiding before getting the color scheme.
 SplashScreen.preventAutoHideAsync();
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+import {Stack} from 'expo-router'
 import {
   useFonts,
   Inter_100Thin,
@@ -63,8 +42,8 @@ import {
   Inter_700Bold,
   Inter_800ExtraBold,
   Inter_900Black,
-} from "@expo-google-fonts/inter";
-import { Button } from '~/components/ui/button';
+} from "@expo-google-fonts/inter"
+import { P } from '~/components/ui/typography';
 
 export default function RootLayout({navigation}: any) {
   let [fontsLoaded] = useFonts({
@@ -123,31 +102,31 @@ export default function RootLayout({navigation}: any) {
       <StatusBar style={"light"} />
       <EmailProvider>
         <CartProvider>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen
               name="LoginScreen"
-              component={LoginScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
+
             <Stack.Screen
               name="StaffLoginScreen"
-              component={StaffLoginScreen}
               // options={{ headerShown: true, headerTitle: "" }}
+            />
+
+            <Stack.Screen
+              name="DispatchManager"
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="ForgotPassword"
-              component={ForgotPassword}
               options={{ headerShown: true, headerTitle: "" }}
             />
-            <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="HomeScreen"
-              component={HomeScreen}
               options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="SignupScreen"
-              component={SignupScreen}
               options={{
                 headerShown: true,
                 headerTitleAlign: "left",
@@ -164,50 +143,41 @@ export default function RootLayout({navigation}: any) {
 
             <Stack.Screen
               name="ProductScreen"
-              component={ProductScreen}
               options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="CheckoutScreen"
-              component={CheckoutScreen}
               options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="TechnicianScreen"
-              component={TechnicianScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="SupervisorScreen"
-              component={SupervisorScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="StockManagementScreen"
-              component={StockManagementScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="ServiceManagerScreen"
-              component={ServiceManagerScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="FinanceControllerScreen"
-              component={FinanceControllerScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="DispatcherManagerScreen"
-              component={DispatcherManagerScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
               name="CartScreen"
-              component={CartScreen}
               // options={{ headerShown: true, headerTitle: "" }}
             />
-          </Stack.Navigator>
+          </Stack>
           <FlashMessage position="top" />
           <PortalHost />
         </CartProvider>

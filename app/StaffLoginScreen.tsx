@@ -83,7 +83,7 @@ export default function Screen() {
             break;
           case "dispatch_manager":
             router.push({
-              pathname: "./DispatcherManagerScreen",
+              pathname: "DispatchManager",
               params: { email: email },
             });
             break;

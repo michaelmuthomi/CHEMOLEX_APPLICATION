@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -21,16 +21,20 @@ import { fetchOrders, fetchDrivers, checkUser } from "~/lib/supabase";
 import { useEffect } from "react";
 import { H1, H3, H4, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
-import { useEmail } from './EmailContext';
-import { Card, CardContent, CardHeader } from '~/components/ui/card';
+import { useEmail } from "~/app/EmailContext";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 
 const drivers = ["Driver A", "Driver B", "Driver C"];
 
-export default function DispatcherManagerScreen({ navigation }:{navigation: any}) {
+export default function Tab({
+  navigation,
+}: {
+  navigation: any;
+}) {
   const emailContext = useEmail();
   const [orders, setOrders] = useState([]);
   const [sortBy, setSortBy] = useState("all-orders");
-  const [availableDrivers, setAvailableDrivers] = useState([])
+  const [availableDrivers, setAvailableDrivers] = useState([]);
   const [customer, setCustomerDetails] = useState([]);
 
   useEffect(() => {
@@ -42,15 +46,15 @@ export default function DispatcherManagerScreen({ navigation }:{navigation: any}
     async function fetchAvailableDrivers() {
       const response = await fetchDrivers();
       console.log("Available Drivers", response);
-      setAvailableDrivers(response)
+      setAvailableDrivers(response);
     }
-     async function fetchUserDetails() {
-        const response = await checkUser(emailContext?.email);
-        setCustomerDetails(response);
-      }
-      fetchUserDetails();
+    async function fetchUserDetails() {
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
+    }
+    fetchUserDetails();
     fetchCustomerOrders();
-    fetchAvailableDrivers()
+    fetchAvailableDrivers();
   }, []);
 
   const cardContents = [
@@ -181,21 +185,21 @@ export default function DispatcherManagerScreen({ navigation }:{navigation: any}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: "#F7FAFC",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: "#E2E8F0",
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
+    fontWeight: "600",
+    color: "#2D3748",
   },
   placeholder: {
     width: 24,
@@ -205,11 +209,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   orderItem: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -217,43 +221,42 @@ const styles = StyleSheet.create({
   },
   customerName: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   productName: {
     fontSize: 16,
-    color: '#4A5568',
+    color: "#4A5568",
     marginBottom: 4,
   },
   status: {
     fontSize: 14,
-    color: '#718096',
+    color: "#718096",
     marginBottom: 4,
   },
   assignedTo: {
     fontSize: 14,
-    color: '#48BB78',
-    fontWeight: '500',
+    color: "#48BB78",
+    fontWeight: "500",
   },
   assignSection: {
     marginTop: 12,
   },
   assignTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 8,
   },
   driverButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4299E1',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#4299E1",
     borderRadius: 4,
     padding: 8,
     marginBottom: 8,
   },
   driverButtonText: {
-    color: '#fff',
+    color: "#fff",
     marginLeft: 8,
   },
 });
-
