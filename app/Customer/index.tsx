@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Image,
@@ -9,31 +9,39 @@ import {
   Dimensions,
   ImageBackground,
   ActivityIndicator,
-} from 'react-native';
-import { ChevronRight, TrendingUp, Star, Package, Clock } from 'lucide-react-native';
-import { H1, H2, H3, H4, H5, P } from '~/components/ui/typography';
-import { Button } from '~/components/ui/button';
-import { useEffect, useState } from 'react';
+} from "react-native";
+import {
+  ChevronRight,
+  TrendingUp,
+  Star,
+  Package,
+  Clock,
+} from "lucide-react-native";
+import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
+import { useEffect, useState } from "react";
 import { checkUser, fetchProductsFromDB } from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
-import {Ionicons} from "@expo/vector-icons";
-import { useEmail } from './EmailContext';
+import { Ionicons } from "@expo/vector-icons";
+import { useEmail } from "~/app/EmailContext";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const featuredCategories = [
   {
     id: 1,
     title: "Chillers",
     subtitle: "Industrial Cooling Solutions",
-    image: "http://5.imimg.com/data5/SELLER/Default/2024/8/442306416/ZH/AP/PZ/1889348/air-cooled-chillers-1000x1000.png",
+    image:
+      "http://5.imimg.com/data5/SELLER/Default/2024/8/442306416/ZH/AP/PZ/1889348/air-cooled-chillers-1000x1000.png",
     backgroundColor: "#0F4C3A",
   },
   {
     id: 2,
     title: "Air Handling Units",
     subtitle: "Commercial HVAC Systems",
-    image: "http://5.imimg.com/data5/SELLER/Default/2024/4/412323270/DE/RZ/DK/9199886/single-skin-air-handling-unit-1000x1000.png",
+    image:
+      "http://5.imimg.com/data5/SELLER/Default/2024/4/412323270/DE/RZ/DK/9199886/single-skin-air-handling-unit-1000x1000.png",
     backgroundColor: "#FF6347",
   },
 ];
@@ -43,25 +51,26 @@ const promotions = [
     id: 1,
     title: "Summer Sale",
     description: "Up to 20% off on Cooling Systems",
-    image: "http://5.imimg.com/data5/SELLER/Default/2024/4/414735525/QN/IM/OK/202996372/misubishi-air-conditioner-500x500.jpg",
+    image:
+      "http://5.imimg.com/data5/SELLER/Default/2024/4/414735525/QN/IM/OK/202996372/misubishi-air-conditioner-500x500.jpg",
     backgroundColor: "#2C3E50",
   },
   {
     id: 2,
     title: "New Arrivals",
     description: "Latest Energy-Efficient Models",
-    image: "http://5.imimg.com/data5/SELLER/Default/2024/4/411112381/TA/TR/IA/202996372/residential-rooftop-packaged-unit-1000x1000.jpg",
+    image:
+      "http://5.imimg.com/data5/SELLER/Default/2024/4/411112381/TA/TR/IA/202996372/residential-rooftop-packaged-unit-1000x1000.jpg",
     backgroundColor: "#8E44AD",
   },
 ];
 
-export default function HomeScreen({ navigation }) {
+export default function Tab({ navigation }:{navigation: any}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
-  
-  
+
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -269,7 +278,12 @@ export default function HomeScreen({ navigation }) {
           onPress={() => navigation.navigate("SearchScreen")}
         >
           <H3 className="text-sm text-[#555]">View More Products</H3>
-          <Ionicons name="arrow-forward-sharp" size={15} color="#555" className='ml-auto' />
+          <Ionicons
+            name="arrow-forward-sharp"
+            size={15}
+            color="#555"
+            className="ml-auto"
+          />
         </TouchableOpacity>
       </View>
     );
@@ -279,12 +293,14 @@ export default function HomeScreen({ navigation }) {
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView className="flex-1">
         <View className="pt-16">
-          <View className='px-6'>
+          <View className="px-6">
             <H2 className="text-2xl border-b-0 leading-0">
               Hi there, {customer.username} 👋
             </H2>
-              <H2 className='text-zinc-400 text-sm border-b-0'>Welcome to Refnet</H2>
-            </View>
+            <H2 className="text-zinc-400 text-sm border-b-0">
+              Welcome to Refnet
+            </H2>
+          </View>
           <Image
             source={require("~/assets/images/Background.png")}
             className="w-full h-48 rounded-t-lg"

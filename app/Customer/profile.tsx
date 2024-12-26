@@ -135,7 +135,7 @@ const mockOrders: Order[] = [
   },
 ];
 
-export default function ProfileScreen({ navigation }) {
+export default function Tab({ navigation }:{navigation: any}) {
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [customer, setCustomerDetails] = useState([]);
@@ -646,7 +646,7 @@ export default function ProfileScreen({ navigation }) {
             variant="outline"
             className="flex-row items-center justify-center space-x-2 p-4 gap-4"
             onPress={() => {
-              navigation.navigate("LoginScreen");
+              navigation.navigate("../LoginScreen");
             }}
           >
             <P className="uppercase text-white">Log Out Now</P>

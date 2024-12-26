@@ -42,40 +42,53 @@ export default function Screen() {
     setPassword(text);
   };
 
-  const handleLogin = async () => {
-    setLoading(true);
-    if (email && password) {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email)) {
-        displayNotification("Invalid Email", "warning");
-        setLoading(false);
-        return;
-      }
-      const UserAvailable = await checkUser(email);
-      if (!UserAvailable) {
-        displayNotification("User does not exist", "danger");
-        setLoading(false);
-        return;
-      }
-      const isValid = await validateUserCredentials(email, password);
-      if (isValid["role"]) {
-        const user_role = isValid["role"];
-        console.log(isValid["role"]);
-        if (user_role === "customer") {
-          console.log("User is a Customer");
-          setEmailContext(email);
-          setLoading(false);
-          navigation.navigate("MainTabs"); // Navigation should now work
-          return;
-        }
-        displayNotification("Invalid Credentials", "danger");
-        setLoading(false);
-      } else {
-        displayNotification("Please fill all the fields", "warning");
-        setLoading(false);
-      }
-    }
-  };
+ const handleLogin = async () => {
+   setLoading(true);
+
+   // Check if both email and password are provided
+   if (!email || !password) {
+     displayNotification("Please fill all the fields", "warning");
+     setLoading(false);
+     return;
+   }
+
+   // Validate email format
+   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   if (!emailPattern.test(email)) {
+     displayNotification("Invalid Email", "warning");
+     setLoading(false);
+     return;
+   }
+
+   // Check if user exists
+   const UserAvailable = await checkUser(email);
+   if (!UserAvailable) {
+     displayNotification("User does not exist", "danger");
+     setLoading(false);
+     return;
+   }
+
+   // Validate user credentials
+   const isValid = await validateUserCredentials(email, password);
+
+   // Handle user role or invalid password
+   if (isValid) {
+     const user_role = isValid["role"];
+     console.log(user_role);
+
+     if (user_role === "customer") {
+       console.log("User is a Customer");
+       setEmailContext(email);
+       navigation.navigate("Customer");
+     } else {
+       displayNotification("Invalid Credentials", "danger");
+     }
+   } else {
+     displayNotification("Invalid Credentials", "danger");
+   }
+
+   setLoading(false); // Move this to the end to maintain consistent loading state
+ };
   return (
     <SafeAreaView className="flex-1 justify-between items-center px-6 py-14">
       <Image

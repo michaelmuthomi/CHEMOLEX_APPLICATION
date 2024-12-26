@@ -1,12 +1,20 @@
-import React from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
-import { Minus, Plus, MoreHorizontal } from 'lucide-react-native';
-import { useCart } from '~/lib/cart-context';
-import { formatPrice } from '~/lib/format-price';
-import { H3, H4, P } from '~/components/ui/typography';
-import { Button } from '~/components/ui/button';
+import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
+import { Minus, Plus, MoreHorizontal } from "lucide-react-native";
+import { useCart } from "~/lib/cart-context";
+import { formatPrice } from "~/lib/format-price";
+import { H3, H4, P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
 
-export default function CartScreen({ navigation }) {
+export default function Tab({ navigation }) {
   const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
 
   return (
@@ -89,20 +97,20 @@ export default function CartScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     padding: 16,
   },
   productCard: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: "#f1f1f1",
   },
   productDetails: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 16,
   },
   productImage: {
@@ -119,16 +127,16 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 16,
   },
   quantitySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f8f8',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f8f8f8",
     borderRadius: 25,
     padding: 4,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   quantityButton: {
     padding: 8,
@@ -142,31 +150,31 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   checkoutButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: "#6366f1",
     margin: 16,
     padding: 16,
     borderRadius: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   checkoutButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   checkoutButtonPrice: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   emptyCart: {
     padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyCartText: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
 });

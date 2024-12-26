@@ -114,6 +114,10 @@ export default function RootLayout({navigation}: any) {
             />
 
             <Stack.Screen
+              name="Customer"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="DispatchManager"
               options={{ headerShown: false }}
             />
