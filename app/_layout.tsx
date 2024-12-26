@@ -170,10 +170,6 @@ export default function RootLayout({navigation}: any) {
               // options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
-              name="DispatcherManagerScreen"
-              // options={{ headerShown: true, headerTitle: "" }}
-            />
-            <Stack.Screen
               name="CartScreen"
               // options={{ headerShown: true, headerTitle: "" }}
             />
