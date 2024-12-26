@@ -126,10 +126,6 @@ export default function RootLayout({navigation}: any) {
               options={{ headerShown: true, headerTitle: "" }}
             />
             <Stack.Screen
-              name="HomeScreen"
-              options={{ headerShown: true, headerTitle: "" }}
-            />
-            <Stack.Screen
               name="SignupScreen"
               options={{
                 headerShown: true,

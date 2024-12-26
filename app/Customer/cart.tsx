@@ -77,15 +77,20 @@ export default function Tab({ navigation }) {
           </Button>
         ) : (
           <View className="gap-6">
+            <Image
+              source={require("~/assets/images/EmptyCart.png")}
+              className="w-full h-full rounded-t-lg"
+              resizeMode="cover"
+            />
             <P className="uppercase text-center text-zinc-400">
               Your bag is empty
             </P>
             <Button
-              variant="outline"
-              className="p-4 rounded-full"
+              variant="secondary"
+              className="!p-4 !h-14 rounded-lg w-full !bg-yellow-300"
               onPress={() => navigation.navigate("HomeScreen")}
             >
-              <P className="text-white">Start Shopping</P>
+              <H4 className="text-white text-base">Start Shopping</H4>
             </Button>
           </View>
         )}
