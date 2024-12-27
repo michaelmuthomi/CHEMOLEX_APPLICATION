@@ -19,7 +19,7 @@ import {
 } from "lucide-react-native";
 import { fetchOrders, fetchDrivers, checkUser } from "~/lib/supabase";
 import { useEffect } from "react";
-import { H1, H3, H4, P } from "~/components/ui/typography";
+import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useEmail } from "~/app/EmailContext";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
@@ -77,12 +77,15 @@ export default function Tab({
 
   return (
     <SafeAreaView>
-      <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#fff" />
-        </TouchableOpacity>
-        <P className="ml-auto mr-auto">Dispatch Manager</P>
-        <View style={styles.placeholder} />
+      <View className="px-6 pt-14 pb-2 bg-[#111]">
+        <H2 className="text-2xl border-b-0 leading-0">
+          Hi there, {customer === "" ? <View className="animate-pulse w-10 h-10 bg-slate-900" /> : customer.username} 👋
+        </H2>
+        <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
+          {customer.role === "" ? customer.role.replace(/_/g, " ") : (
+            <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" /> 
+          )}
+        </H5>
       </View>
 
       <ScrollView className="p-4 divide-y-4 flex gap-4">
