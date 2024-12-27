@@ -81,6 +81,7 @@ export default function Screen() {
     const validationError = validateInputs();
     if (validationError) {
       displayNotification(validationError, "warning");
+      setLoading(false)
       return;
     }
     if (userName && fullName && email && phoneNumber && password && role) {
@@ -97,6 +98,7 @@ export default function Screen() {
           pathname: "/LoginScreen",
         });
         displayNotification("User created successfully", "success");
+        setLoading(false)
         return;
       }
       displayNotification("User already exists", "danger");
@@ -107,7 +109,7 @@ export default function Screen() {
     }
   };
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-6 pt-6">
+    <View className="flex-1 justify-between items-center gap-5 px-4 pt-6">
       <ScrollView>
         <View className="w-full mb-4">
           <H1>Create an account</H1>
@@ -215,24 +217,24 @@ export default function Screen() {
           </View>
           <Button
             onPress={handleSignup}
-            className="w-full flex"
+            className="w-full rounded-full"
             size={"lg"}
             variant="default"
           >
             {loading ? (
               <View className="flex flex-row items-center gap-2">
                 <ActivityIndicator size="small" color="#000" />
-                <P className="uppercase text-black">Create account</P>
+                <P className="text-center text-black">Create account</P>
               </View>
             ) : (
-              <P className="uppercase text-black">Create account</P>
+              <P className="text-center text-black">Create account</P>
             )}
           </Button>
           <P
             className="text-center text-lg pt-4 color-[#b3b3b3]"
             style={{ fontFamily: "Inter_400Regular" }}
           >
-            Sign in to access your account and manage your air conditioning
+            Create your account and start managing {'\n'} your air conditioning
             solutions
           </P>
         </View>

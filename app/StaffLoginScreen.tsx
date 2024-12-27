@@ -1,5 +1,11 @@
 import * as React from "react";
-import { ActivityIndicator, Image, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1, H5 } from "~/components/ui/typography";
@@ -26,12 +32,11 @@ const displayNotification = (
 };
 
 export default function Screen() {
-
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const emailContext = useEmail();
-  const { setEmail: setEmailContext } = emailContext || { setEmail: () => { } };
-  const [loading, setLoading] = React.useState(false)
+  const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
+  const [loading, setLoading] = React.useState(false);
 
   const onEmailInput = (text: string) => {
     setEmail(text);
@@ -41,12 +46,12 @@ export default function Screen() {
   };
 
   const handleLogin = async () => {
-    setLoading(true)
+    setLoading(true);
     if (email && password) {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) {
         displayNotification("Invalid Email", "warning");
-        setLoading(false)
+        setLoading(false);
         return;
       }
       const UserAvailable = await checkUser(email);
@@ -60,11 +65,14 @@ export default function Screen() {
         const user_role = isValid["role"];
         console.log("Role:", user_role);
         setLoading(false);
-        
+
         // Route to appropriate screen based on role
         switch (user_role) {
           case "customer":
-            displayNotification("Customer Detected. Go to user login page", "danger");
+            displayNotification(
+              "Customer Detected. Go to user login page",
+              "danger"
+            );
             setLoading(false);
             break;
           case "stock_manager":
@@ -123,13 +131,13 @@ export default function Screen() {
     }
   };
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
+    <View className="flex-1 justify-between items-center gap-5 px-4 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
         className="mt-14 w-1/3 h-8 absolute top-4 left-6"
         resizeMode="cover"
       />
-      <View className="w-full mb-auto mt-auto gap-6 bg-zinc-950">
+      <View className="w-full mb-auto mt-auto gap-10 bg-zinc-950">
         <View className="gap-2">
           <H1 className="text-3xl">Staff Login Page</H1>
           <P
@@ -169,30 +177,36 @@ export default function Screen() {
               secureTextEntry
             />
           </View>
+          <H5 className="text-left text-blue-400">
+            <Link href="/ForgotPassword">Forgot Password ?</Link>
+          </H5>
         </View>
-        <P className="text-right uppercase text-blue-400">
-          <Link href="/ForgotPassword">Forgot Password ?</Link>
-        </P>
-        <Button
-          onPress={handleLogin}
-          className="w-full"
-          size={"lg"}
-          disabled={loading}
-        >
-          <P className="uppercase text-black">
-            {loading ? "Logging In" : "Login and continue"}
-          </P>
-        </Button>
+        <View className="gap-6">
+          <Button
+            onPress={handleLogin}
+            className="w-full rounded-full"
+            size={"lg"}
+            disabled={loading}
+          >
+            <H5 className="text-black">
+              {loading ? "Logging In" : "Login and continue"}
+            </H5>
+          </Button>
+        </View>
       </View>
-      <View className="gap-4 divide-x-2 flex flex-row">
-        <Link href="/SignupScreen">
-          <P className="text-blue-400 uppercase">Create an account</P>
-        </Link>
-        <P>|</P>
-        <Link href="/LoginScreen" className="text-blue-400 ">
-          <P className="text-blue-400 uppercase">User Login</P>
-        </Link>
+      <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center">
+        <TouchableOpacity className="w-1/2 rounded-full bg-[#111] !py-4 !border-none">
+          <Link href="/SignupScreen">
+            <P className="text-white text-center">Create an account</P>
+          </Link>
+        </TouchableOpacity>
+        <TouchableOpacity className="w-1/2 rounded-full bg-[#111] !py-4 !border-none">
+          <Link href="/LoginScreen" className="text-blue-400 ">
+            <P className="text-white text-center">Customer Login</P>
+          </Link>
+        </TouchableOpacity>
       </View>
+      <View className="gap-4 divide-x-2 flex flex-row"></View>
     </View>
   );
 }

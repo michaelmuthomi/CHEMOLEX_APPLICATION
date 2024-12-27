@@ -72,7 +72,7 @@ export default function Screen() {
   };
 
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-6 py-14">
+    <View className="flex-1 justify-between items-center gap-5 px-4 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
         className="w-1/3 h-8 absolute top-4 left-6"
@@ -118,13 +118,13 @@ export default function Screen() {
           />
           <Button
             onPress={handleResetPassword}
-            className="w-full"
+            className="w-full rounded-full"
             size={"lg"}
             disabled={isLoading}
           >
-            <P className="text-black uppercase">
+            <H5 className="text-black">
               {isLoading ? "Resetting..." : "Reset Password"}
-            </P>
+            </H5>
           </Button>
         </View>
       </View>
