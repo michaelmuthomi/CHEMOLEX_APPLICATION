@@ -24,6 +24,7 @@ import { checkUser, fetchProductsFromDB } from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import { Ionicons } from "@expo/vector-icons";
 import { useEmail } from "~/app/EmailContext";
+import { useNavigation } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -65,7 +66,8 @@ const promotions = [
   },
 ];
 
-export default function Tab({ navigation }:{navigation: any}) {
+export default function Tab() {
+  const navigation = useNavigation()
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customer, setCustomerDetails] = useState([]);
@@ -96,7 +98,7 @@ export default function Tab({ navigation }:{navigation: any}) {
         <H3 className="text-xl">Categories</H3>
         <TouchableOpacity
           className="flex-row items-center"
-          onPress={() => navigation.navigate("SearchScreen")}
+          onPress={() => navigation.navigate("search")}
         >
           <H3 className="text-sm text-[#555]">See All</H3>
           <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
@@ -112,7 +114,7 @@ export default function Tab({ navigation }:{navigation: any}) {
             key={category.id}
             className="mr-4 rounded-xl overflow-hidden"
             style={{ width: width * 0.7, height: 160 }}
-            onPress={() => navigation.navigate("SearchScreen", { category })}
+            onPress={() => navigation.navigate("search", { category })}
           >
             <ImageBackground
               source={{ uri: category.image }}
@@ -142,7 +144,7 @@ export default function Tab({ navigation }:{navigation: any}) {
             key={promo.id}
             className="mr-4 rounded-xl overflow-hidden"
             style={{ width: width * 0.8, height: 120 }}
-            onPress={() => navigation.navigate("SearchScreen")}
+            onPress={() => navigation.navigate("search")}
           >
             <ImageBackground
               source={{ uri: promo.image }}
@@ -164,7 +166,7 @@ export default function Tab({ navigation }:{navigation: any}) {
       <TouchableOpacity
         className="items-center opacity-80"
         onPress={() =>
-          navigation.navigate("SearchScreen", { sort: "trending" })
+          navigation.navigate("search", { sort: "trending" })
         }
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
@@ -174,7 +176,7 @@ export default function Tab({ navigation }:{navigation: any}) {
       </TouchableOpacity>
       <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() => navigation.navigate("SearchScreen", { filter: "new" })}
+        onPress={() => navigation.navigate("search", { filter: "new" })}
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <Star size={24} color="#fff" />
@@ -184,7 +186,7 @@ export default function Tab({ navigation }:{navigation: any}) {
       <TouchableOpacity
         className="items-center opacity-80"
         onPress={() =>
-          navigation.navigate("SearchScreen", { filter: "popular" })
+          navigation.navigate("search", { filter: "popular" })
         }
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
@@ -195,7 +197,7 @@ export default function Tab({ navigation }:{navigation: any}) {
       <TouchableOpacity
         className="items-center opacity-80"
         onPress={() =>
-          navigation.navigate("SearchScreen", { filter: "recent" })
+          navigation.navigate("search", { filter: "recent" })
         }
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
@@ -212,7 +214,7 @@ export default function Tab({ navigation }:{navigation: any}) {
         <H3 className="text-2xl">Popular</H3>
         <TouchableOpacity
           className="flex-row items-centeri"
-          onPress={() => navigation.navigate("SearchScreen")}
+          onPress={() => navigation.navigate("search")}
         >
           <H3 className="text-sm text-[#555] px-2">See All</H3>
           <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
@@ -223,7 +225,7 @@ export default function Tab({ navigation }:{navigation: any}) {
           <TouchableOpacity
             key={product.product_id}
             className="w-1/2 bg-[#111] rounded-lg shadow p-2"
-            onPress={() => navigation.navigate("ProductScreen", { product })}
+            onPress={() => navigation.navigate("product", { product })}
           >
             <Image
               source={{ uri: product.image_url }}
@@ -246,7 +248,7 @@ export default function Tab({ navigation }:{navigation: any}) {
           <H3 className="text-2xl w-max">Recommended</H3>
           <TouchableOpacity
             className="flex-row items-center"
-            onPress={() => navigation.navigate("SearchScreen")}
+            onPress={() => navigation.navigate("search")}
           >
             <H3 className="text-sm text-[#555]">See All</H3>
             <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
@@ -257,7 +259,7 @@ export default function Tab({ navigation }:{navigation: any}) {
             <TouchableOpacity
               key={product.product_id}
               className="rounded-lg shadow w-1/2 p-2"
-              onPress={() => navigation.navigate("ProductScreen", { product })}
+              onPress={() => navigation.navigate("product", { product })}
             >
               <Image
                 source={{ uri: product.image_url }}
@@ -275,7 +277,7 @@ export default function Tab({ navigation }:{navigation: any}) {
         </View>
         <TouchableOpacity
           className="flex-row items-center p-4 mt-6 bg-white"
-          onPress={() => navigation.navigate("SearchScreen")}
+          onPress={() => navigation.navigate("search")}
         >
           <H3 className="text-sm text-[#555]">View More Products</H3>
           <Ionicons

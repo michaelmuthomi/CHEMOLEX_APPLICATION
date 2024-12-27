@@ -11,16 +11,18 @@ import {
 import { Minus, Plus, MoreHorizontal } from "lucide-react-native";
 import { useCart } from "~/lib/cart-context";
 import { formatPrice } from "~/lib/format-price";
-import { H3, H4, P } from "~/components/ui/typography";
+import { H1, H3, H4, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
+import { useNavigation } from "expo-router";
 
-export default function Tab({ navigation }) {
+export default function Tab() {
+  const navigation = useNavigation()
   const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
 
   return (
     <SafeAreaView className="flex-1 pt-14 p-4">
       <ScrollView>
-        <H3>Cart</H3>
+        <H1>Cart</H1>
 
         {items.map((item) => (
           <View key={item.product_id}>
@@ -79,19 +81,20 @@ export default function Tab({ navigation }) {
           <View className="gap-6">
             <Image
               source={require("~/assets/images/EmptyCart.png")}
-              className="w-full h-full rounded-t-lg"
-              resizeMode="cover"
+              className="w-full h-full rounded-t-lg scale-90"
+              resizeMode="contain"
             />
-            <P className="uppercase text-center text-zinc-400">
-              Your bag is empty
-            </P>
-            <Button
-              variant="secondary"
-              className="!p-4 !h-14 rounded-lg w-full"
-              onPress={() => navigation.navigate("Customer/index")}
+            <H3 className="text-center">Your Basket is empty :(</H3>
+            <H4 className="text-center text-zinc-400 leading-relaxed">
+              Looks like you haven't added anything {"\n"} to your cart yet
+            </H4>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("index")}
             >
-              <H4 className="text-white text-base">Start Shopping</H4>
-            </Button>
+              <H4 className="text-orange-400 text-base text-center">
+                Start Shopping
+              </H4>
+            </TouchableOpacity>
           </View>
         )}
       </ScrollView>
