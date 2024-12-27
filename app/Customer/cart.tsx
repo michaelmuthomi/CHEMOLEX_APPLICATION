@@ -87,8 +87,8 @@ export default function Tab({ navigation }) {
             </P>
             <Button
               variant="secondary"
-              className="!p-4 !h-14 rounded-lg w-full !bg-yellow-300"
-              onPress={() => navigation.navigate("HomeScreen")}
+              className="!p-4 !h-14 rounded-lg w-full"
+              onPress={() => navigation.navigate("Customer/index")}
             >
               <H4 className="text-white text-base">Start Shopping</H4>
             </Button>

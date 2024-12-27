@@ -151,8 +151,20 @@ export default function Tab() {
           </TouchableOpacity>
         ))}
       </View>
-    )
-  };
+    );
+  }
+
+  const placeholder = [];
+
+  // Using a for loop to push 4 placeholder into the array
+  for (let i = 0; i < 4; i++) {
+    placeholder.push(
+      <View
+        key={i}
+        className="w-full h-40 animate-pulse bg-[#111] rounded-md"
+      />
+    );
+  }
 
   const renderProductsView = () => (
     <View className="flex-1 gap-2 pt-8">
@@ -168,29 +180,29 @@ export default function Tab() {
       <View className="flex-row items-center justify-between mb-4 pt-6">
         <H1 className="text-3xl">{selectedCategory?.title}</H1>
       </View>
-      
+
       {/* Sorting Buttons */}
       <View className="flex-row gap-2 mb-4">
         {["popularity", "price-low", "price-high"].map((sort) => (
           <Button
             key={sort}
-            size={'sm'}
+            size={"sm"}
             onPress={() => setSortBy(sort)}
             className={
               sortBy === sort
-                ? "bg-zinc-200 text-white"
-                : "bg-zinc-900 text-black"
+                ? "bg-zinc-700"
+                : "bg-zinc-900"
             }
           >
-            <H5 className="capitalize">{sort.replace("-", " ")}</H5>
+            <H5 className="capitalize leading-none">{sort.replace("-", " ")}</H5>
           </Button>
         ))}
       </View>
 
       {/* Loading and Error Handling */}
       {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#000" />
+        <View className="flex-1 items-center justify-center gap-4">
+          {placeholder}
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center">
@@ -226,7 +238,7 @@ export default function Tab() {
         {selectedCategory ? (
           renderProductsView()
         ) : (
-          <>
+          <View className="gap-4">
             <View className="flex-row items-center justify-between bg-zinc-900 mt-10 px-4 rounded-lg">
               <Ionicons name={"search"} size={14} color={"white"} />
               <Input
@@ -238,7 +250,7 @@ export default function Tab() {
               />
             </View>
             <RenderCategoryView />
-          </>
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
