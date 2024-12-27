@@ -10,35 +10,54 @@ import {
 } from 'react-native';
 import { ArrowLeft, Tool, ShoppingCart } from 'lucide-react-native';
 import { fetchAssignedRepairs } from '~/lib/supabase';
-import { P } from '~/components/ui/typography';
+import { H2, H4, H5, P } from "~/components/ui/typography";
+import { checkUser } from "~/lib/supabase";
+import { useEmail } from '../EmailContext';
 
-const initialRepairs =  [{"created_at": "2024-11-24T14:19:18+00:00", "id": 1, "service_id": 3, "services": {"description": "Professional installation of domestic and commercial air conditioning systems, including LG, Samsung, and Carrier models.", "name": "Air Conditioner Installation", "price": 200, "service_type": "installation"}, "status": "pending", "technician_id": 22}, {"created_at": "2024-11-24T14:20:39+00:00", "id": 2, "service_id": 4, "services": {"description": "Regular servicing and maintenance of air conditioning units to ensure optimal performance and longevity.", "name": "Air Conditioner Maintenance", "price": 100, "service_type": "maintenance"}, "status": "complete", "technician_id": 22}]
 
 export default function TechnicianScreen({ navigation }) {
   const [repairs, setRepairs] = useState<any[]>([]);
-  const [newTool, setNewTool] = useState('');
+  const [newTool, setNewTool] = useState("");
+  const [customer, setCustomerDetails] = useState([]);
+  const emailContext = useEmail();
 
-  useEffect(()=> {
-    async function fetchRepairs(){
-      const response = await fetchAssignedRepairs(22)
-      console.log(response)
-      setRepairs(response)
+  useEffect(() => {
+    async function fetchRepairs() {
+      const response = await fetchAssignedRepairs(22);
+      console.log(response);
+      setRepairs(response);
     }
-    fetchRepairs()
-  }, [])
+    async function fetchUserDetails() {
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
+    }
+    fetchUserDetails();
+    fetchRepairs();
+  }, []);
 
   return (
     <SafeAreaView>
-      <View className="flex flex-row items-center p-4 pt-14 bg-zinc-900">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#fff" />
-        </TouchableOpacity>
-        <P className="ml-auto mr-auto">Technician Dashboard</P>
-        <View style={styles.placeholder} />
+      <View className="px-6 pt-14 pb-2 bg-[#111]">
+        <H2 className="text-2xl border-b-0 leading-0">
+          Hi there,{" "}
+          {customer.username ? (
+            customer.username
+          ) : (
+            <View className="animate-pulse w-20 h-4 rounded-sm bg-zinc-800" />
+          )}{" "}
+          👋
+        </H2>
+        <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
+          {customer.role ? (
+            customer.role.replace("_", " ")
+          ) : (
+            <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
+          )}
+        </H5>
       </View>
 
-      <View className='p-4'>
-        <P>Assigned Repairs</P>
+      <View className="p-4">
+        <H4>Assigned Repairs</H4>
         {repairs &&
           repairs.map((repair) => (
             <View style={styles.repairItem} key={repair.service_id}>
@@ -61,22 +80,6 @@ export default function TechnicianScreen({ navigation }) {
               )}
             </View>
           ))}
-
-        {/* <View style={styles.orderSection}>
-          <Text style={styles.sectionTitle}>Order Repair Tools</Text>
-          <View style={styles.orderInputContainer}>
-            <TextInput
-              style={styles.orderInput}
-              value={newTool}
-              onChangeText={setNewTool}
-              placeholder="Enter tool name"
-            />
-            <TouchableOpacity style={styles.orderButton} onPress={orderTool}>
-              <ShoppingCart size={20} color="#fff" />
-              <Text style={styles.orderButtonText}>Order</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </View>
     </SafeAreaView>
   );

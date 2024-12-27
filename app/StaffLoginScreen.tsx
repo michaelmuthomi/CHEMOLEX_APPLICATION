@@ -99,7 +99,7 @@ export default function Screen() {
             break;
           case "technician":
             router.push({
-              pathname: "./TechnicianScreen",
+              pathname: "Technician",
               params: { email: email },
             });
             break;
