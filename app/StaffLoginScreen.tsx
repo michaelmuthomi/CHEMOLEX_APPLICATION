@@ -64,10 +64,8 @@ export default function Screen() {
         // Route to appropriate screen based on role
         switch (user_role) {
           case "customer":
-            router.push({
-              pathname: "/HomeScreen",
-              params: { email: email },
-            });
+            displayNotification("Customer Detected. Go to user login page", "danger");
+            setLoading(false);
             break;
           case "stock_manager":
             router.push({

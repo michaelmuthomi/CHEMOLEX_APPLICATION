@@ -7,6 +7,7 @@
     "icon": "./assets/images/Logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/Logo.png",
       "resizeMode": "contain",
