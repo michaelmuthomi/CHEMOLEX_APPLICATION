@@ -11,11 +11,13 @@ import {
 import { Search, ChevronRight, Star, Filter } from "lucide-react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { P, H3, H4, H2 } from "~/components/ui/typography";
+import { P, H3, H4, H2, H1, H5 } from "~/components/ui/typography";
 import { fetchProductInCategory } from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import { useNavigation, useRoute } from "@react-navigation/native";
-
+import {
+  Ionicons
+} from "@expo/vector-icons";
 const categories = [
   {
     id: 1,
@@ -131,56 +133,56 @@ export default function Tab() {
 
   const sortedAndFilteredProducts = sortProducts(filteredProducts);
 
-  const renderCategoryView = () => (
-    <View className="gap-4">
-      {categories.map((category) => (
-        <TouchableOpacity
-          key={category.id}
-          className="h-40 rounded-md flex-row justify-between px-4"
-          style={{ backgroundColor: category.backgroundColor }}
-          onPress={() => handleCategoryPress(category)}
-        >
-          <H4 className="text-xl mt-4 text-white">{category.title}</H4>
-          <Image
-            source={{ uri: category.image }}
-            style={styles.categoryImage}
-          />
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
+  function RenderCategoryView() {
+    return (
+      <View className="gap-4">
+        {categories.map((category) => (
+          <TouchableOpacity
+            key={category.id}
+            className="h-40 rounded-md flex-row justify-between px-4"
+            style={{ backgroundColor: category.backgroundColor }}
+            onPress={() => handleCategoryPress(category)}
+          >
+            <H4 className="text-xl mt-4 text-white">{category.title}</H4>
+            <Image
+              source={{ uri: category.image }}
+              style={styles.categoryImage}
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    )
+  };
 
   const renderProductsView = () => (
-    <View className="flex-1">
-      <View className="flex-row items-center justify-between mb-4">
-        <TouchableOpacity
-          onPress={() => setSelectedCategory(null)}
-          className="flex-row items-center px-0"
-        >
-          <ChevronRight
-            size={24}
-            color="#fff"
-            style={{ transform: [{ rotate: "180deg" }] }}
-          />
-          <P>Back to Categories</P>
-        </TouchableOpacity>
-        <H3 className="text-base">{selectedCategory?.title}</H3>{" "}
-        {/* Added optional chaining */}
-      </View>
+    <View className="flex-1 gap-2 pt-8">
+      <TouchableOpacity
+        onPress={() => setSelectedCategory(null)}
+        className="flex-row items-center"
+      >
+        <H5>
+          <H1 className="text-base px-2">&larr;</H1> Back to Categories
+        </H5>
+      </TouchableOpacity>
 
+      <View className="flex-row items-center justify-between mb-4 pt-6">
+        <H1 className="text-3xl">{selectedCategory?.title}</H1>
+      </View>
+      
       {/* Sorting Buttons */}
       <View className="flex-row gap-2 mb-4">
         {["popularity", "price-low", "price-high"].map((sort) => (
           <Button
             key={sort}
+            size={'sm'}
             onPress={() => setSortBy(sort)}
             className={
               sortBy === sort
-                ? "bg-zinc-700 text-white"
+                ? "bg-zinc-200 text-white"
                 : "bg-zinc-900 text-black"
             }
           >
-            <P className="capitalize">{sort.replace("-", " ")}</P>
+            <H5 className="capitalize">{sort.replace("-", " ")}</H5>
           </Button>
         ))}
       </View>
@@ -220,18 +222,24 @@ export default function Tab() {
 
   return (
     <SafeAreaView className="flex-1 px-4">
-      <View className="flex-row items-center justify-between gap-4 mt-10">
-        <Input
-          placeholder="Search for product"
-          placeholderTextColor="#666"
-          className="w-full"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-
       <ScrollView className="pt-4">
-        {selectedCategory ? renderProductsView() : renderCategoryView()}
+        {selectedCategory ? (
+          renderProductsView()
+        ) : (
+          <>
+            <View className="flex-row items-center justify-between bg-zinc-900 mt-10 px-4 rounded-lg">
+              <Ionicons name={"search"} size={14} color={"white"} />
+              <Input
+                placeholder="Search for anything"
+                placeholderTextColor="#666"
+                className="w-full border-0 bg-transparent"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+            </View>
+            <RenderCategoryView />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

@@ -169,10 +169,6 @@ export default function RootLayout({navigation}: any) {
               name="FinanceControllerScreen"
               // options={{ headerShown: true, headerTitle: "" }}
             />
-            <Stack.Screen
-              name="CartScreen"
-              // options={{ headerShown: true, headerTitle: "" }}
-            />
           </Stack>
           <FlashMessage position="top" />
           <PortalHost />
