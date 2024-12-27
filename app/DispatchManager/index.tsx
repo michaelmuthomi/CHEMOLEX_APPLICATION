@@ -88,10 +88,10 @@ export default function Tab({
           👋
         </H2>
         <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
-          {customer.role === "" ? (
-            <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
+          {customer.role ? (
+            customer.role.replace("_", " ")
           ) : (
-            customer.role.replace(/_/g, " ")
+            <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
           )}
         </H5>
       </View>

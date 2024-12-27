@@ -122,6 +122,10 @@ export default function RootLayout({navigation}: any) {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="Technician"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="ForgotPassword"
               options={{ headerShown: true, headerTitle: "" }}
             />
