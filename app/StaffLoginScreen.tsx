@@ -95,7 +95,7 @@ export default function Screen() {
             break;
           case "service_manager":
             router.push({
-              pathname: "./ServiceManagerScreen",
+              pathname: "ServiceManager",
               params: { email: email },
             });
             break;

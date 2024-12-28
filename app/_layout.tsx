@@ -165,14 +165,6 @@ export default function RootLayout({navigation}: any) {
               name="StockManagementScreen"
               // options={{ headerShown: true, headerTitle: "" }}
             />
-            <Stack.Screen
-              name="ServiceManagerScreen"
-              // options={{ headerShown: true, headerTitle: "" }}
-            />
-            <Stack.Screen
-              name="FinanceControllerScreen"
-              // options={{ headerShown: true, headerTitle: "" }}
-            />
           </Stack>
           <FlashMessage position="top" />
           <PortalHost />
