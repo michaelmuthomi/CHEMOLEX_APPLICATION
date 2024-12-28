@@ -194,16 +194,18 @@ export default function Screen() {
           </Button>
         </View>
       </View>
-      <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center">
-        <TouchableOpacity className="w-1/2 rounded-full bg-[#111] !py-4 !border-none">
-          <Link href="/SignupScreen">
-            <P className="text-white text-center">Create an account</P>
-          </Link>
+      <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center overflow-auto">
+        <TouchableOpacity
+          className="w-3/4 rounded-full bg-[#111] !py-4 !border-none"
+          onPress={() => router.push("/SignupScreen")}
+        >
+          <P className="text-white text-center">Create an account</P>
         </TouchableOpacity>
-        <TouchableOpacity className="w-1/2 rounded-full bg-[#111] !py-4 !border-none">
-          <Link href="/LoginScreen" className="text-blue-400 ">
-            <P className="text-white text-center">Customer Login</P>
-          </Link>
+        <TouchableOpacity
+          className="w-1/2 rounded-full bg-[#111] !py-4 !border-none"
+          onPress={() => router.push("/LoginScreen")}
+        >
+          <P className="text-white text-center">Customer Login</P>
         </TouchableOpacity>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row"></View>

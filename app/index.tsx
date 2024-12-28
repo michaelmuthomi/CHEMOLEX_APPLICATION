@@ -1,5 +1,11 @@
 import * as React from "react";
-import { ActivityIndicator, Image, SafeAreaView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  SafeAreaView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1, H2, H4, H5 } from "~/components/ui/typography";
@@ -90,7 +96,7 @@ export default function Screen() {
     setLoading(false); // Move this to the end to maintain consistent loading state
   };
   return (
-    <SafeAreaView className="flex-1 justify-between items-center px-6 py-14">
+    <SafeAreaView className="flex-1 justify-between items-center px-4 py-14">
       <Image
         source={require("../assets/images/RefnetLogo.png")}
         className="mt-14 w-1/3 h-8 absolute top-4 left-6"
@@ -136,30 +142,35 @@ export default function Screen() {
               secureTextEntry
             />
           </View>
+          <H5 className="text-left text-blue-400">
+            <Link href="/ForgotPassword">Forgot Password ?</Link>
+          </H5>
         </View>
-        <P className="text-right uppercase text-blue-400">
-          <Link href="/ForgotPassword">Forgot Password ?</Link>
-        </P>
         <Button
           onPress={handleLogin}
-          className="w-full flex"
+          className="w-full rounded-full"
           size={"lg"}
           variant="default"
           disabled={loading}
         >
-          <P className="uppercase text-black">
+          <H5 className=" text-black">
             {loading ? "Logging In" : "Login and continue"}
-          </P>
+          </H5>
         </Button>
       </View>
-      <View className="gap-4 divide-x-2 flex flex-row">
-        <Link href="/SignupScreen">
-          <P className="text-blue-400 uppercase">Create an account</P>
-        </Link>
-        <P>|</P>
-        <Link href="/StaffLoginScreen" className="text-blue-400 ">
-          <P className="text-blue-400 uppercase">Staff Login</P>
-        </Link>
+      <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center overflow-auto">
+        <TouchableOpacity
+          className="w-3/4 rounded-full bg-[#111] !py-4 !border-none"
+          onPress={() => router.push("/SignupScreen")}
+        >
+          <P className="text-white text-center">Create an account</P>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="w-max px-6 rounded-full bg-[#111] !py-4 !border-none"
+          onPress={() => router.push("/StaffLoginScreen")}
+        >
+          <P className="text-white text-center">Staff Login</P>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

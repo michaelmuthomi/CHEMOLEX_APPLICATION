@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { ArrowLeft, Tool, ShoppingCart } from 'lucide-react-native';
 import { fetchAssignedRepairs } from '~/lib/supabase';
-import { H2, H4, H5, P } from "~/components/ui/typography";
+import { H1, H2, H4, H5, P } from "~/components/ui/typography";
 import { checkUser } from "~/lib/supabase";
 import { useEmail } from '../EmailContext';
 
@@ -57,29 +57,8 @@ export default function TechnicianScreen({ navigation }) {
       </View>
 
       <View className="p-4">
-        <H4>Assigned Repairs</H4>
-        {repairs &&
-          repairs.map((repair) => (
-            <View style={styles.repairItem} key={repair.service_id}>
-              <View>
-                <Text style={styles.deviceName}>{repair.services.name}</Text>
-                <Text style={styles.issueText}>{repair.services.price}</Text>
-                <Text style={styles.status}>Status: {repair.status}</Text>
-              </View>
-              {repair.status !== "complete" && (
-                <TouchableOpacity
-                  style={styles.completeButton}
-                  onPress={() =>
-                    updateRepairStatus(repair.service_id, "Completed")
-                  }
-                >
-                  <Text style={styles.completeButtonText}>
-                    Mark as Completed
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))}
+        <H5 className='text-sm'>Available Balance</H5>
+        <H1 className='text-[40px]'>Ksh 12,390</H1>
       </View>
     </SafeAreaView>
   );
