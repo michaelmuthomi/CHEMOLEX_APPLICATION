@@ -109,6 +109,27 @@ const H5 = React.forwardRef<TextRef, SlottableTextProps>(
 
 H5.displayName = "H5";
 
+const H6 = React.forwardRef<TextRef, SlottableTextProps>(
+  ({ className, asChild = false, ...props }, ref) => {
+    const Component = asChild ? Slot.Text : RNText;
+    return (
+      <Component
+        role="heading"
+        aria-level="4"
+        className={cn(
+          "web:scroll-m-20 text-white tracking-wide leading-4 web:select-text",
+          className
+        )}
+        ref={ref}
+        {...props}
+        style={{ fontFamily: "Inter_100Thin" }}
+      />
+    );
+  }
+);
+
+H6.displayName = "H6";
+
 const P = React.forwardRef<TextRef, SlottableTextProps>(
   ({ className, asChild = false, ...props }, ref) => {
     const Component = asChild ? Slot.Text : RNText;
@@ -230,4 +251,4 @@ const Muted = React.forwardRef<TextRef, SlottableTextProps>(
 
 Muted.displayName = 'Muted';
 
-export { BlockQuote, Code, H1, H2, H3, H4, H5, Large, Lead, Muted, P, Small };
+export { BlockQuote, Code, H1, H2, H3, H4, H5, H6, Large, Lead, Muted, P, Small };

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { ArrowLeft, Tool, ShoppingCart } from 'lucide-react-native';
 import { fetchAssignedRepairs } from '~/lib/supabase';
-import { H1, H2, H4, H5, P } from "~/components/ui/typography";
+import { H1, H2, H3, H4, H5, H6, P } from "~/components/ui/typography";
 import { checkUser } from "~/lib/supabase";
 import { useEmail } from '../EmailContext';
 
@@ -56,9 +56,29 @@ export default function TechnicianScreen({ navigation }) {
         </H5>
       </View>
 
-      <View className="p-4">
-        <H5 className='text-sm'>Available Balance</H5>
-        <H1 className='text-[40px]'>Ksh 12,390</H1>
+      <View className="p-4 py-16 bg-[#07140D]">
+        <H5 className="text-sm px-[4px]">Available Balance</H5>
+        <H6 className="text-5xl uppercase px-0 leading-relaxed">
+          Ksh 1,102,390
+        </H6>
+      </View>
+      <View className="p-4 py-10">
+        <H5 className="text-2xl">Manage Orders</H5>
+        <View className='py-4 gap-2'>
+          <H6 className='text-base'>#H263B</H6>
+          <View className='flex-row justify-between w-full'>
+            <H3 className='w-max text-xl'>Air Conditioning Unit</H3>
+            <H4 className="text-orange-400">Pending</H4>
+          </View>
+          <View className='flex'>
+            <View>
+              <H6>Nairobi, Kenya</H6>
+            </View>
+            <View>
+              <H6>Mon 12 - 12,00 PM</H6>
+            </View>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
