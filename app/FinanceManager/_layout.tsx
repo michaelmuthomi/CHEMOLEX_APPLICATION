@@ -12,7 +12,7 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
-export default function FinanceManagerTabs() {
+export default function TechnicianTabs() {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>

@@ -83,7 +83,7 @@ export default function Screen() {
             break;
           case "finance_controller":
             router.push({
-              pathname: "./FinanceControllerScreen",
+              pathname: "FinanceManager",
               params: { email: email },
             });
             break;
