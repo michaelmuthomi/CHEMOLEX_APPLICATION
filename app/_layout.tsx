@@ -113,20 +113,26 @@ export default function RootLayout({navigation}: any) {
               // options={{ headerShown: true, headerTitle: "" }}
             />
 
-            <Stack.Screen
-              name="Customer"
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="Customer" options={{ headerShown: false }} />
             <Stack.Screen
               name="DispatchManager"
               options={{ headerShown: false }}
             />
+            <Stack.Screen name="Technician" options={{ headerShown: false }} />
             <Stack.Screen
-              name="Technician"
+              name="FinanceManager"
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="FinanceManager"
+              name="ServiceManager"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="StockManager"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Supervisor"
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -159,10 +165,6 @@ export default function RootLayout({navigation}: any) {
             />
             <Stack.Screen
               name="SupervisorScreen"
-              // options={{ headerShown: true, headerTitle: "" }}
-            />
-            <Stack.Screen
-              name="StockManagementScreen"
               // options={{ headerShown: true, headerTitle: "" }}
             />
           </Stack>

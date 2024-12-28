@@ -77,7 +77,7 @@ export default function Screen() {
             break;
           case "stock_manager":
             router.push({
-              pathname: "./StockManagementScreen",
+              pathname: "StockManager",
               params: { email: email },
             });
             break;
@@ -101,7 +101,7 @@ export default function Screen() {
             break;
           case "supervisor":
             router.push({
-              pathname: "./SupervisorScreen",
+              pathname: "Supervisor",
               params: { email: email },
             });
             break;
