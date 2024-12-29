@@ -122,7 +122,7 @@ const H6 = React.forwardRef<TextRef, SlottableTextProps>(
         )}
         ref={ref}
         {...props}
-        style={{ fontFamily: "Inter_100Thin" }}
+        style={{ fontFamily: "Inter_300Light" }}
       />
     );
   }
