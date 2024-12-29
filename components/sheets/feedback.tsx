@@ -12,7 +12,8 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "../ui/button";
 import { showMessage } from "react-native-flash-message";
 import { Input } from "../ui/input";
-
+import { checkUser, submitFeedback } from "~/lib/supabase";
+import { useEmail } from "~/app/EmailContext";
 
 export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   const [loading, setLoading] = React.useState(false);
@@ -20,38 +21,72 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   const [value, setValue] = React.useState("Comfortable");
   const [message, setMessage] = React.useState("");
 
+  const [customer, setCustomerDetails] = useState([]);
+  const emailContext = useEmail();
+
+  React.useEffect(() => {
+    async function fetchUserDetails() {
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
+    }
+    fetchUserDetails();
+  }, []);
+
   // Function to handle present modal
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleFeedBack = () => {
-    if (value && message) {
+  const handleFeedBack = async () => {
+    // Make sure to also collect order_id and comments
+    const order_id = 1; // This should be dynamically defined based on your application's context
+    const comments = message; // Using the message state as comments
+
+    // Validate input fields
+    if (customer.user_id && selectedEmoji && comments) {
+      const feedback = {
+        user_id: customer.user_id, // user ID from the customer details
+        rating: selectedEmoji, // rating based on selected emoji
+        comments: comments, // comments collected from the textarea
+      };
+
+      const response = await submitFeedback(feedback); // Submit the feedback
+
+      console.log("Response output: ", response)
+
+      if (response?.startsWith("error")) {
+        console.error("Error submitting feedback:", response);
+        showMessage({
+          message: "Error submitting feedback",
+          type: "danger",
+        });
+        return;
+      } else {
+        // Optionally show a success message or further process response data
+        showMessage({
+          message: "Thanks for the feedback",
+          type: "success",
+        });
+        return;
+      }
+    } else {
       showMessage({
-        message: "Thanks for the feedback",
-        type: "success",
+        message: "Please fill in all the fields",
+        type: "danger",
       });
-      // Dismiss the modal after feedback
-      bottomSheetModalRef.current?.dismiss();
-      return;
     }
+  }
 
-    showMessage({
-      message: "Please fill in all the fields",
-      type: "danger",
-    });
-  };
+  const emojis = [
+    { id: 1, emoji: "😢", label: "Help Needed" },
+    { id: 2, emoji: "😕", label: "Room for Improvement" },
+    { id: 3, emoji: "😐", label: "It's Okay" },
+    { id: 4, emoji: "🙂", label: "Happy Customer" },
+    { id: 5, emoji: "🤗", label: "Delighted!" },
+  ];
 
-    const emojis = [
-      { id: 1, emoji: "😢", label: "Help Needed" },
-      { id: 2, emoji: "😕", label: "Room for Improvement" },
-      { id: 3, emoji: "😐", label: "It's Okay" },
-      { id: 4, emoji: "🙂", label: "Happy Customer" },
-      { id: 5, emoji: "🤗", label: "Delighted!" },
-    ];
-
-    const [selectedEmoji, setSelectedEmoji] = useState(3);
-    const [comment, setComment] = useState("");
+  const [selectedEmoji, setSelectedEmoji] = useState(3);
+  const [comment, setComment] = useState("");
 
   return (
     <>
@@ -96,14 +131,12 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
                     <TouchableOpacity onPress={() => setSelectedEmoji(item.id)}>
                       <View
                         className={`transform ${
-                          isSelected
-                            ? "scale-150"
-                            : "scale-100"
+                          isSelected ? "scale-150" : "scale-100"
                         } transition-transform duration-200`}
                       >
                         <P
                           className={`text-2xl ${
-                            isSelected ? "text-4xl " : "text-2xl opacity-30"
+                            isSelected ? "text-4xl shadow-2xl" : "text-2xl opacity-30"
                           }`}
                         >
                           {item.emoji}
@@ -124,21 +157,22 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
 
             {/* Comment Input */}
             <Textarea
-              className="rounded-xl p-4 mb-6 min-h-[100px]"
-              placeholder="Add a Comment..."
-              multiline
-              value={comment}
-              onChangeText={setComment}
+              className="rounded-xl p-4 mb-6 min-h-[100px] !bg-transparent"
+              placeholder="Please tell us more"
+              onChangeText={setMessage}
             />
 
             {/* Submit Button */}
             <Button
-              className="bg-green-500 py-4 rounded-xl"
-              onPress={() => {
-                /* Handle submit */
-              }}
+              onPress={handleFeedBack}
+              className="w-full rounded-full"
+              size={"lg"}
+              variant="default"
+              disabled={loading}
             >
-              <P className="text-white text-center font-semibold">Submit Now</P>
+              <H5 className=" text-black">
+                {loading ? "Thanks for your feedback" : "Submit Feedback"}
+              </H5>
             </Button>
           </View>
         </BottomSheetView>

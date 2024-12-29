@@ -1,5 +1,5 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { P } from "../ui/typography";
+import { H3, P } from "../ui/typography";
 import { useRef } from "react";
 import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -61,15 +61,19 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
       {React.cloneElement(sheetTrigger as React.ReactElement, {
         onPress: handlePresentModalPress,
       })}
-      <BottomSheetModal ref={bottomSheetModalRef} onChange={handleSheetChanges} backgroundStyle={{backgroundColor: '#0e0e0e'}} handleIndicatorStyle={{backgroundColor: 'white'}}>
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        onChange={handleSheetChanges}
+        backgroundStyle={{ backgroundColor: "#0e0e0e" }}
+        handleIndicatorStyle={{ backgroundColor: "white" }}
+      >
         <BottomSheetView className="p-6 gap-6">
-          <View>
-            <H4 className="" style={{ fontFamily: "Inter_700Bold" }}>
-              Hey, were ready to hear from you.
-            </H4>
-            <P>
-              Please fill in the form and we will get back to you as soon as
-              possible
+          {/* Title and Subtitle */}
+          <View className="items-center mb-8">
+            <H3 className="text-2xl mb-2 text-center">Hey, We're here to help!</H3>
+            <P className="text-gray-500 text-center">
+              Please fill in the form and we will get {'\n'} back to you as soon as
+              possible.
             </P>
           </View>
           <View className="gap-4">
@@ -81,7 +85,7 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                // className="bg-[#212121] border-0 !h-14 color-white"
+                className="bg-transparent !h-14"
                 style={{ fontFamily: "Inter_500Medium" }}
               />
             </View>
@@ -93,6 +97,7 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
                 value={message}
                 onChangeText={setMessage}
                 aria-labelledby="textareaLabel"
+                className="bg-transparent"
                 style={{ fontFamily: "Inter_500Medium" }}
               />
             </View>

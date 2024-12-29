@@ -1,235 +1,187 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-  ScrollView,
-} from "react-native";
-import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
-import {
-  ArrowLeft,
-  Tool,
-  ShoppingCart,
-  LocateIcon,
-  Pin,
-} from "lucide-react-native";
-import { fetchAssignedRepairs, fetchCustomerOrders, fetchOrders } from "~/lib/supabase";
-import { H1, H2, H3, H4, H5, H6, P } from "~/components/ui/typography";
-import { checkUser } from "~/lib/supabase";
-import { useEmail } from "../EmailContext";
+import { ArrowDown, ArrowUp } from "lucide-react-native";
+import React, { useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { H1, H3, H5, H6, P } from "~/components/ui/typography";
 
-export default function TechnicianScreen({ navigation }) {
-  const [repairs, setRepairs] = useState<any[]>([]);
-  const [newTool, setNewTool] = useState("");
-  const [customer, setCustomerDetails] = useState([]);
-  const [orders, setOrders] = useState([])
-  const emailContext = useEmail();
+type Transaction = {
+  id: number;
+  date: string;
+  description: string;
+  amount: string;
+  verified: boolean;
+};
 
-  useEffect(() => {
-    async function fetchRepairs() {
-      const response = await fetchAssignedRepairs(22);
-      console.log(response);
-      setRepairs(response);
-    }
-    async function fetchUserDetails() {
-      const response = await checkUser(emailContext?.email);
-      setCustomerDetails(response);
-    }
-    async function fetchAllOrders() {
-      const response = await fetchOrders()
-      setOrders(response)
-    }
-    fetchAllOrders()
-    fetchUserDetails();
-    fetchRepairs();
-  }, []);
+const FinancialStatusPage = () => {
+  const [pendingTransactions, setPendingTransactions] = useState<Transaction[]>(
+    [
+      {
+        id: 1,
+        date: "2023-06-16",
+        description: "Client Invoice #1001",
+        amount: "$10,000",
+        verified: false,
+      },
+      {
+        id: 2,
+        date: "2023-06-17",
+        description: "Supplier Payment #2001",
+        amount: "-$5,000",
+        verified: false,
+      },
+      {
+        id: 3,
+        date: "2023-06-18",
+        description: "Client Invoice #1002",
+        amount: "$7,500",
+        verified: false,
+      },
+    ]
+  );
+
+  const verifyTransaction = (id: number) => {
+    setPendingTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === id ? { ...transaction, verified: true } : transaction
+      )
+    );
+  };
 
   return (
-    <ScrollView>
-      <View className="p-4 py-16 bg-[#07140D]">
-        <H5 className="text-sm px-[4px]">Available Balance</H5>
-        <H6 className="text-5xl uppercase px-0 leading-relaxed">Ksh 1.2M</H6>
+    <ScrollView className="flex-1">
+      <View className="rounded-lg mb-4 p-4 shadow">
+        <H1 className="text-xl mb-3">
+          Financial Summary
+        </H1>
+        <View className="flex-row justify-between">
+          <MetricCard title="Revenue" value="$1,234,567" trend="up" />
+          <MetricCard title="Expenses" value="$876,543" trend="down" />
+          <MetricCard title="Profit" value="$358,024" trend="up" />
+        </View>
       </View>
-      <View className="p-4 py-10 bg-white h-full">
-        <H5 className="text-2xl text-black">Approve Orders</H5>
-        <ScrollView className="pt-10">
-          {orders !== "" ? (
-            orders.map((order) => (
-              <View
-                className="py-4 gap-24 pt-6 grid grid-cols-1 divide-y"
-                key={order.order_id}
-              >
-                <View className="gap-6">
-                  <View>
-                    <H6 className="text-base text-black">#{order.order_id}</H6>
-                    <View className="flex-row justify-between w-full items-top">
-                      <H1 className="w-2/3 text-2xl text-black">
-                        {order.products.name}
-                      </H1>
-                      <H5 className="text-orange-400 capitalize">
-                        {order.payment_status}
-                      </H5>
-                    </View>
-                    <View>
-                      <H4 className="text-xl text-black w-max">
-                        {order.total_price}
-                        <H4 className="text-base text-black">KSH</H4>
-                      </H4>
-                    </View>
-                  </View>
-                  <View className="gap-2">
-                    <View className="flex-row justify-between">
-                      <View className="w-max flex-row items-center gap-[4px]">
-                        <FontAwesome6 name="location-dot" size={14} />
-                        <H5 className="text-black w-max text-base">
-                          Nairobi, Kenya
-                        </H5>
-                      </View>
-                      <View className="w-max flex-row items-center gap-[4px]">
-                        <MaterialCommunityIcons
-                          name="clock-time-five"
-                          size={14}
-                        />
-                        <H5 className="text-black text-base">
-                          Mon 12 - 12,00 PM
-                        </H5>
-                      </View>
-                    </View>
-                    <ScrollView horizontal>
-                      <View className="flex-row gap-4 overflow-scroll">
-                        <TouchableOpacity
-                          className="px-10 rounded-full bg-[#000] !py-4 !border-none"
-                          onPress={() => router.push("/SignupScreen")}
-                        >
-                          <P className="text-white text-center">
-                            Approve for Dispatch
-                          </P>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          className="px-16 rounded-full bg-[#c94040] !py-4 !border-none"
-                          onPress={() => router.push("/LoginScreen")}
-                        >
-                          <P className="text-white text-center">Reject</P>
-                        </TouchableOpacity>
-                      </View>
-                    </ScrollView>
-                  </View>
-                </View>
-              </View>
-            ))
-          ) : (
-            <View className="gap-4">
-              <View className="w-full h-40 bg-zinc-300 animate-pulse rounded-lg" />
-              <View className="w-full h-40 bg-zinc-300 animate-pulse rounded-lg" />
-              <View className="w-full h-40 bg-zinc-300 animate-pulse rounded-lg" />
-            </View>
-          )}
-        </ScrollView>
+
+      <View className="bg-white rounded-lg mx-4 mb-4 p-4 shadow">
+        <H3 className="text-xl mb-3 text-black">
+          Recent Transactions
+        </H3>
+        <TransactionItem
+          date="2023-06-15"
+          description="Office Supplies"
+          amount="-$1,234"
+        />
+        <TransactionItem
+          date="2023-06-14"
+          description="Client Payment"
+          amount="$5,678"
+        />
+        <TransactionItem
+          date="2023-06-13"
+          description="Utility Bill"
+          amount="-$432"
+        />
+      </View>
+
+      <View className="bg-white rounded-lg mx-4 mb-4 p-4 shadow">
+        <H3 className="text-xl mb-3 text-black">
+          Financial Trends
+        </H3>
+        <View className="h-48 bg-gray-100 rounded-lg items-center justify-center">
+          <P className="text-gray-500">Chart Placeholder</P>
+        </View>
+      </View>
+
+      <View className="bg-white rounded-lg mx-4 mb-4 p-4 shadow">
+        <H3 className="text-xl mb-3 text-black">
+          Pending Transactions
+        </H3>
+        {pendingTransactions.map((transaction) => (
+          <PendingTransactionItem
+            key={transaction.id}
+            transaction={transaction}
+            onVerify={() => verifyTransaction(transaction.id)}
+          />
+        ))}
       </View>
     </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F7FAFC',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  placeholder: {
-    width: 24,
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#2D3748',
-  },
-  repairItem: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  deviceName: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  issueText: {
-    fontSize: 16,
-    color: '#4A5568',
-    marginBottom: 4,
-  },
-  status: {
-    fontSize: 14,
-    color: '#718096',
-    marginBottom: 8,
-  },
-  completeButton: {
-    backgroundColor: '#48BB78',
-    borderRadius: 4,
-    padding: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  completeButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  orderSection: {
-    marginTop: 24,
-  },
-  orderInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  orderInput: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
-    marginRight: 8,
-  },
-  orderButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4299E1',
-    borderRadius: 8,
-    padding: 12,
-  },
-  orderButtonText: {
-    color: '#fff',
-    marginLeft: 8,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-});
+const MetricCard = ({
+  title,
+  value,
+  trend,
+}: {
+  title: string;
+  value: string;
+  trend: "up" | "down";
+}) => (
+  <View className="rounded-lg flex-1 ">
+    <P className="text-sm text-gray-500">{title}</P>
+    <H5 className="text-lg mt-1">{value}</H5>
+    {trend === "up" ? (
+      <ArrowUp size={14} color={"#22c55e"} />
+    ) : (
+      <ArrowDown size={14} color={"#ef4444"} />
+    )}
+  </View>
+);
 
+const TransactionItem = ({
+  date,
+  description,
+  amount,
+}: {
+  date: string;
+  description: string;
+  amount: string;
+}) => (
+  <View className="flex-row justify-between py-2 border-b border-gray-200">
+    <P className="text-sm text-gray-500 flex-1">{date}</P>
+    <P className="text-sm flex-2">{description}</P>
+    <P
+      className={`text-sm flex-1 text-right ${
+        parseFloat(amount) >= 0 ? "text-green-500" : "text-red-500"
+      }`}
+    >
+      {amount}
+    </P>
+  </View>
+);
+
+const PendingTransactionItem = ({
+  transaction,
+  onVerify,
+}: {
+  transaction: Transaction;
+  onVerify: () => void;
+}) => (
+  <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
+    <View className="flex-1">
+      <H6 className="text-sm text-gray-500">{transaction.date}</H6>
+      <H5 className="text-sm mt-1 text-black">
+        {transaction.description}
+      </H5>
+      <H5
+        className={`text-sm mt-1 ${
+          parseFloat(transaction.amount) >= 0
+            ? "text-green-500"
+            : "text-red-500"
+        }`}
+      >
+        {transaction.amount}
+      </H5>
+    </View>
+    <TouchableOpacity
+      className={`px-3 py-2 rounded-lg ${
+        transaction.verified ? "bg-green-500" : "bg-blue-500"
+      }`}
+      onPress={onVerify}
+      disabled={transaction.verified}
+    >
+      <H5 className="text-sm text-black">
+        {transaction.verified ? "Verified" : "Verify"}
+      </H5>
+    </TouchableOpacity>
+  </View>
+);
+
+export default FinancialStatusPage;
