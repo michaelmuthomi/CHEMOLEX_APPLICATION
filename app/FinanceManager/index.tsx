@@ -76,66 +76,77 @@ export default function TechnicianScreen({ navigation }) {
       <View className="p-4 py-10 bg-white h-full">
         <H5 className="text-2xl text-black">Approve Orders</H5>
         <ScrollView className="pt-10">
-          <View className="py-4 gap-24 pt-6 grid grid-cols-1 divide-y">
-            {orders.map((order) => (
-              <View key={order.order_id} className="gap-6">
-                <View>
-                  <H6 className="text-base text-black">#{order.order_id}</H6>
-                  <View className="flex-row justify-between w-full items-top">
-                    <H1 className="w-2/3 text-2xl text-black">
-                      {order.products.name}
-                    </H1>
-                    <H5 className="text-orange-400 capitalize">
-                      {order.payment_status}
-                    </H5>
-                  </View>
+          {orders !== "" ? (
+            orders.map((order) => (
+              <View
+                className="py-4 gap-24 pt-6 grid grid-cols-1 divide-y"
+                key={order.order_id}
+              >
+                <View className="gap-6">
                   <View>
-                    <H4 className="text-xl text-black w-max">
-                      {order.total_price}
-                      <H4 className="text-base text-black">KSH</H4>
-                    </H4>
-                  </View>
-                </View>
-                <View className="gap-2">
-                  <View className="flex-row justify-between">
-                    <View className="w-max flex-row items-center gap-[4px]">
-                      <FontAwesome6 name="location-dot" size={14} />
-                      <H5 className="text-black w-max text-base">
-                        Nairobi, Kenya
+                    <H6 className="text-base text-black">#{order.order_id}</H6>
+                    <View className="flex-row justify-between w-full items-top">
+                      <H1 className="w-2/3 text-2xl text-black">
+                        {order.products.name}
+                      </H1>
+                      <H5 className="text-orange-400 capitalize">
+                        {order.payment_status}
                       </H5>
                     </View>
-                    <View className="w-max flex-row items-center gap-[4px]">
-                      <MaterialCommunityIcons
-                        name="clock-time-five"
-                        size={14}
-                      />
-                      <H5 className="text-black text-base">
-                        Mon 12 - 12,00 PM
-                      </H5>
+                    <View>
+                      <H4 className="text-xl text-black w-max">
+                        {order.total_price}
+                        <H4 className="text-base text-black">KSH</H4>
+                      </H4>
                     </View>
                   </View>
-                  <ScrollView horizontal>
-                    <View className="flex-row gap-4 overflow-scroll">
-                      <TouchableOpacity
-                        className="px-10 rounded-full bg-[#000] !py-4 !border-none"
-                        onPress={() => router.push("/SignupScreen")}
-                      >
-                        <P className="text-white text-center">
-                          Approve for Dispatch
-                        </P>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        className="px-16 rounded-full bg-[#c94040] !py-4 !border-none"
-                        onPress={() => router.push("/LoginScreen")}
-                      >
-                        <P className="text-white text-center">Reject</P>
-                      </TouchableOpacity>
+                  <View className="gap-2">
+                    <View className="flex-row justify-between">
+                      <View className="w-max flex-row items-center gap-[4px]">
+                        <FontAwesome6 name="location-dot" size={14} />
+                        <H5 className="text-black w-max text-base">
+                          Nairobi, Kenya
+                        </H5>
+                      </View>
+                      <View className="w-max flex-row items-center gap-[4px]">
+                        <MaterialCommunityIcons
+                          name="clock-time-five"
+                          size={14}
+                        />
+                        <H5 className="text-black text-base">
+                          Mon 12 - 12,00 PM
+                        </H5>
+                      </View>
                     </View>
-                  </ScrollView>
+                    <ScrollView horizontal>
+                      <View className="flex-row gap-4 overflow-scroll">
+                        <TouchableOpacity
+                          className="px-10 rounded-full bg-[#000] !py-4 !border-none"
+                          onPress={() => router.push("/SignupScreen")}
+                        >
+                          <P className="text-white text-center">
+                            Approve for Dispatch
+                          </P>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          className="px-16 rounded-full bg-[#c94040] !py-4 !border-none"
+                          onPress={() => router.push("/LoginScreen")}
+                        >
+                          <P className="text-white text-center">Reject</P>
+                        </TouchableOpacity>
+                      </View>
+                    </ScrollView>
+                  </View>
                 </View>
               </View>
-            ))}
-          </View>
+            ))
+          ) : (
+            <View className="gap-4">
+              <View className="w-full h-40 bg-zinc-300 animate-pulse rounded-lg" />
+              <View className="w-full h-40 bg-zinc-300 animate-pulse rounded-lg" />
+              <View className="w-full h-40 bg-zinc-300 animate-pulse rounded-lg" />
+            </View>
+          )}
         </ScrollView>
       </View>
     </ScrollView>
