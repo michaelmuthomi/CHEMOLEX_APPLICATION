@@ -1,5 +1,5 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { H3, P } from "../ui/typography";
+import { H3, H5, P } from "../ui/typography";
 import { useRef, useState } from "react";
 import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -61,7 +61,6 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={["50%"]}
         backgroundStyle={{ backgroundColor: "#0e0e0e" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
         onDismiss={() => setValue("Comfortable")} // Reset on dismiss
@@ -89,18 +88,23 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
                   <View key={item.id} className="items-center">
                     <RadioGroup
                       value={item.id.toString()}
-                      className="sr-only" onValueChange={function (val: string): void {
+                      className="sr-only h-max"
+                      onValueChange={function (val: string): void {
                         throw new Error("Function not implemented.");
-                      } }                    />
+                      }}
+                    />
                     <TouchableOpacity onPress={() => setSelectedEmoji(item.id)}>
                       <View
-                        
-                        style={{
-                          transform: [{ scale: isSelected ? 1.5 : 1 }],
-                        }}
+                        className={`transform ${
+                          isSelected
+                            ? "scale-150"
+                            : "scale-100"
+                        } transition-transform duration-200`}
                       >
                         <P
-                          className={`text-2xl ${isSelected ? "text-3xl" : ""}`}
+                          className={`text-2xl ${
+                            isSelected ? "text-4xl " : "text-2xl opacity-30"
+                          }`}
                         >
                           {item.emoji}
                         </P>
@@ -108,9 +112,9 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
                     </TouchableOpacity>
                     {isSelected && (
                       <View className="mt-2">
-                        <P className="text-sm font-medium text-white px-3 py-1 rounded-full">
+                        <H5 className="text-xs font-medium text-zinc-200 px-3 py-4 rounded-full">
                           {item.label}
-                        </P>
+                        </H5>
                       </View>
                     )}
                   </View>
@@ -120,7 +124,7 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
 
             {/* Comment Input */}
             <Textarea
-              className="bg-gray-50 rounded-xl p-4 mb-6 min-h-[100px]"
+              className="rounded-xl p-4 mb-6 min-h-[100px]"
               placeholder="Add a Comment..."
               multiline
               value={comment}
