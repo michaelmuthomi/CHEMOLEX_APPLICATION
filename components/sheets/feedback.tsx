@@ -67,6 +67,7 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
           message: "Thanks for the feedback",
           type: "success",
         });
+        bottomSheetModalRef.current?.dismiss();
         return;
       }
     } else {

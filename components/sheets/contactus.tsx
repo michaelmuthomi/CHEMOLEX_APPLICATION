@@ -1,5 +1,5 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { H3, P } from "../ui/typography";
+import { H3, H5, P } from "../ui/typography";
 import { useRef } from "react";
 import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -41,6 +41,7 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
           textAlign: "center",
         },
       });
+      bottomSheetModalRef.current?.dismiss();
       return;
     }
     showMessage({
@@ -70,10 +71,12 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
         <BottomSheetView className="p-6 gap-6">
           {/* Title and Subtitle */}
           <View className="items-center mb-8">
-            <H3 className="text-2xl mb-2 text-center">Hey, We're here to help!</H3>
+            <H3 className="text-2xl mb-2 text-center">
+              Hey, We're here to help!
+            </H3>
             <P className="text-gray-500 text-center">
-              Please fill in the form and we will get {'\n'} back to you as soon as
-              possible.
+              Please fill in the form and we will get {"\n"} back to you as soon
+              as possible.
             </P>
           </View>
           <View className="gap-4">
@@ -81,7 +84,6 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
               <P className="">Email</P>
               <Input
                 placeholder="Email"
-                value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -94,7 +96,6 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
               <Textarea
                 ref={inputRef}
                 placeholder="What's you query"
-                value={message}
                 onChangeText={setMessage}
                 aria-labelledby="textareaLabel"
                 className="bg-transparent"
@@ -102,50 +103,15 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
               />
             </View>
             <Button
+              onPress={handleContactUs}
+              className="w-full rounded-full"
               size={"lg"}
-              variant={"default"}
-              className="bg-[#66d46f] text-white rounded-full h-10"
-              onPress={async () => {
-                setLoading(true);
-                await handleContactUs();
-                setLoading(false);
-              }}
+              variant="default"
+              disabled={loading}
             >
-              {loading ? (
-                <View className="flex flex-row gap-2">
-                  <ActivityIndicator animating={true} color="black" />
-                  <P
-                    className="text-base"
-                    style={{ fontFamily: "Inter_700Bold" }}
-                  >
-                    Submit message
-                  </P>
-                </View>
-              ) : (
-                <P
-                  className="text-base"
-                  style={{ fontFamily: "Inter_700Bold" }}
-                >
-                  Submit message
-                </P>
-              )}
-            </Button>
-            <Button
-              className="bg-transparent"
-              onPress={() =>
-                Linking.openURL(
-                  "mailto:sales@gjenge.co.ke?subject=RE:ENQUIRY"
-                ).catch((error) => {
-                  console.log(error);
-                })
-              }
-            >
-              <P
-                className="uppercase"
-                style={{ fontFamily: "Inter_500Medium" }}
-              >
-                Email Us directly
-              </P>
+              <H5 className=" text-black">
+                {loading ? "Submitting" : "Submit Query"}
+              </H5>
             </Button>
           </View>
         </BottomSheetView>
