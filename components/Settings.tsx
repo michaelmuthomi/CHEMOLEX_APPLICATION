@@ -16,15 +16,7 @@ import { showMessage } from "react-native-flash-message";
 
 export default function SettingsScreen () {
   return (
-    <View className=" bg-[#060606] flex-1 pt-20 px-6 gap-10">
-      <View className="flex justify-center">
-        <H1
-          className="capitalize color-white"
-          style={{ fontFamily: "Inter_600SemiBold" }}
-        >
-          Settings
-        </H1>
-      </View>
+    <View className=" bg-[#060606] flex-1 p-6 gap-10">
       <ScrollView>
         <View className="flex-1">
           <ContactUs

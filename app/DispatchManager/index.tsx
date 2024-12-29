@@ -77,25 +77,6 @@ export default function Tab({
 
   return (
     <SafeAreaView>
-      <View className="px-6 pt-14 pb-2 bg-[#111]">
-        <H2 className="text-2xl border-b-0 leading-0">
-          Hi there,{" "}
-          {customer === "" ? (
-            <View className="animate-pulse w-10 h-10 bg-slate-900" />
-          ) : (
-            customer.username
-          )}{" "}
-          👋
-        </H2>
-        <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
-          {customer.role ? (
-      customer.role.replace("_", " ")
-    ) : (
-      <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
-    )}
-        </H5>
-      </View>
-
       <ScrollView className="p-4 divide-y-4 flex gap-4">
         <H1 className="text-2xl">Overview</H1>
         <ScrollView horizontal={true}>

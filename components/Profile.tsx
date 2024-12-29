@@ -37,15 +37,7 @@ export default function ProfileScreen() {
     setIsEditing(false);
   };
   return (
-    <View className="bg-[#060606] flex-1 pt-20  gap-10">
-      <View className="flex justify-center px-6">
-        <H1
-          className="capitalize color-white"
-          style={{ fontFamily: "Inter_600SemiBold" }}
-        >
-          My Account
-        </H1>
-      </View>
+    <View className="bg-[#060606] flex-1 gap-10">
       <View className="py-8 px-6 bg-[#090909]">
         <View className="relative">
           <TouchableOpacity className="p-2 w-12 rounded-full shadow-sm border border-zinc-200 items-center">

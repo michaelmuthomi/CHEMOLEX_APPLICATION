@@ -37,27 +37,8 @@ export default function Tabs({ navigation }) {
 
   return (
     <SafeAreaView>
-      <View className="px-6 pt-14 pb-2 bg-[#111]">
-        <H2 className="text-2xl border-b-0 leading-0">
-          Hi there,{" "}
-          {customer.username ? (
-            customer.username
-          ) : (
-            <View className="animate-pulse w-20 h-4 rounded-sm bg-zinc-800" />
-          )}{" "}
-          👋
-        </H2>
-        <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
-          {customer.role ? (
-            customer.role.replace("_", " ")
-          ) : (
-            <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
-          )}
-        </H5>
-      </View>
-
       <View className="p-4">
-        <H4>Assigned Repairs</H4>
+        <H4>Stock Manager</H4>
         {repairs &&
           repairs.map((repair) => (
             <View style={styles.repairItem} key={repair.service_id}>

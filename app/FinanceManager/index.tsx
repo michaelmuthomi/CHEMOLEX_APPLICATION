@@ -50,25 +50,6 @@ export default function TechnicianScreen({ navigation }) {
 
   return (
     <ScrollView>
-      <View className="px-6 pt-14 pb-2 bg-[#111]">
-        <H2 className="text-2xl border-b-0 leading-0">
-          Hi there,{" "}
-          {customer.username ? (
-            customer.username
-          ) : (
-            <View className="animate-pulse w-20 h-4 rounded-sm bg-zinc-800" />
-          )}{" "}
-          👋
-        </H2>
-        <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
-          {customer.role ? (
-            customer.role.replace("_", " ")
-          ) : (
-            <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
-          )}
-        </H5>
-      </View>
-
       <View className="p-4 py-16 bg-[#07140D]">
         <H5 className="text-sm px-[4px]">Available Balance</H5>
         <H6 className="text-5xl uppercase px-0 leading-relaxed">Ksh 1.2M</H6>
