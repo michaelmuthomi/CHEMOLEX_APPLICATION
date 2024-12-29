@@ -113,7 +113,7 @@ export default function RootLayout({navigation}: any) {
               // options={{ headerShown: true, headerTitle: "" }}
             />
 
-            <Stack.Screen name="Customer" options={{ headerShown: false }} />
+            <Stack.Screen name="(Customer)" options={{ headerShown: false }} />
             <Stack.Screen
               name="DispatchManager"
               options={{ headerShown: false }}
@@ -162,10 +162,6 @@ export default function RootLayout({navigation}: any) {
             <Stack.Screen
               name="CheckoutScreen"
               options={{ headerShown: true, headerTitle: "" }}
-            />
-            <Stack.Screen
-              name="SupervisorScreen"
-              // options={{ headerShown: true, headerTitle: "" }}
             />
           </Stack>
           <FlashMessage position="top" />

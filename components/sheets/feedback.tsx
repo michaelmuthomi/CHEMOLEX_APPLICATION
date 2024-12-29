@@ -1,16 +1,18 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { P } from "../ui/typography";
-import { useRef } from "react";
+import { H3, P } from "../ui/typography";
+import { useRef, useState } from "react";
 import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as React from "react";
 import { useCallback } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Label } from "../ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "../ui/button";
 import { showMessage } from "react-native-flash-message";
+import { Input } from "../ui/input";
+
 
 export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   const [loading, setLoading] = React.useState(false);
@@ -40,6 +42,17 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
     });
   };
 
+    const emojis = [
+      { id: 1, emoji: "😢", label: "Help Needed" },
+      { id: 2, emoji: "😕", label: "Room for Improvement" },
+      { id: 3, emoji: "😐", label: "It's Okay" },
+      { id: 4, emoji: "🙂", label: "Happy Customer" },
+      { id: 5, emoji: "🤗", label: "Delighted!" },
+    ];
+
+    const [selectedEmoji, setSelectedEmoji] = useState(3);
+    const [comment, setComment] = useState("");
+
   return (
     <>
       {React.cloneElement(sheetTrigger as React.ReactElement, {
@@ -48,78 +61,84 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={['50%']}
+        snapPoints={["50%"]}
         backgroundStyle={{ backgroundColor: "#0e0e0e" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
         onDismiss={() => setValue("Comfortable")} // Reset on dismiss
       >
         <BottomSheetView className="p-6 gap-6">
-          <View>
-            <H4 className="text-center" style={{ fontFamily: "Inter_700Bold" }}>
-              How was your experience {"\n"} with the app?
-            </H4>
-            <P>
-              State your experience interacting with the app and recommend improvements
-            </P>
-          </View>
-          <View className="gap-4">
-            <RadioGroup value={value} onValueChange={setValue} className="gap-3 flex-row">
-              <RadioGroupItemWithLabel value="Bad" onLabelPress={() => setValue("Bad")} />
-              <RadioGroupItemWithLabel value="Decent" onLabelPress={() => setValue("Decent")} />
-              <RadioGroupItemWithLabel value="Love it!" onLabelPress={() => setValue("Love it!")} />
+          <View className="rounded-t-3xl">
+            {/* Title and Subtitle */}
+            <View className="items-center mb-8">
+              <H3 className="text-2xl mb-2">How are you feeling?</H3>
+              <P className="text-gray-500 text-center">
+                Your input is valuable in helping us better understand your
+                needs and tailor our service accordingly.
+              </P>
+            </View>
+
+            {/* Emoji Selection */}
+            <RadioGroup
+              value={selectedEmoji.toString()}
+              onValueChange={(value) => setSelectedEmoji(Number(value))}
+              className="flex-row justify-between mb-8"
+            >
+              {emojis.map((item) => {
+                const isSelected = selectedEmoji === item.id;
+                return (
+                  <View key={item.id} className="items-center">
+                    <RadioGroup
+                      value={item.id.toString()}
+                      className="sr-only" onValueChange={function (val: string): void {
+                        throw new Error("Function not implemented.");
+                      } }                    />
+                    <TouchableOpacity onPress={() => setSelectedEmoji(item.id)}>
+                      <View
+                        
+                        style={{
+                          transform: [{ scale: isSelected ? 1.5 : 1 }],
+                        }}
+                      >
+                        <P
+                          className={`text-2xl ${isSelected ? "text-3xl" : ""}`}
+                        >
+                          {item.emoji}
+                        </P>
+                      </View>
+                    </TouchableOpacity>
+                    {isSelected && (
+                      <View className="mt-2">
+                        <P className="text-sm font-medium text-white px-3 py-1 rounded-full">
+                          {item.label}
+                        </P>
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
             </RadioGroup>
+
+            {/* Comment Input */}
             <Textarea
-              placeholder="Tell us more"
-              value={message}
-              onChangeText={setMessage}
-              style={{ fontFamily: "Inter_500Medium" }}
+              className="bg-gray-50 rounded-xl p-4 mb-6 min-h-[100px]"
+              placeholder="Add a Comment..."
+              multiline
+              value={comment}
+              onChangeText={setComment}
             />
+
+            {/* Submit Button */}
             <Button
-              size={"lg"}
-              variant={"default"}
-              className="bg-[#66d46f] text-white rounded-full h-10"
-              onPress={async () => {
-                setLoading(true);
-                handleFeedBack();
-                setLoading(false);
+              className="bg-green-500 py-4 rounded-xl"
+              onPress={() => {
+                /* Handle submit */
               }}
             >
-              {loading ? (
-                <View className="flex flex-row gap-2">
-                  <ActivityIndicator animating={true} color="black" />
-                  <P className="text-base" style={{ fontFamily: "Inter_700Bold" }}>
-                    Submitting...
-                  </P>
-                </View>
-              ) : (
-                <P className="text-base" style={{ fontFamily: "Inter_500Medium" }}>
-                  Submit feedback
-                </P>
-              )}
+              <P className="text-white text-center font-semibold">Submit Now</P>
             </Button>
           </View>
         </BottomSheetView>
       </BottomSheetModal>
     </>
-  );
-}
-
-function RadioGroupItemWithLabel({ value, onLabelPress }) {
-  const emojiMap = {
-    Bad: "😞",
-    Decent: "🙂",
-    "Love it!": "😍",
-  };
-  return (
-    <View className="flex-row gap-2 flex-1 items-center p-2 background-color:white; border-radius:8px;">
-      <RadioGroupItem
-        value={value}
-        aria-labelledby={`label-for-${value}`}
-        style={{ display: "none" }}
-      />
-      <Label nativeID={`label-for-${value}`} onPress={onLabelPress} style={{ fontFamily: "Inter_500Medium", fontSize: 16 }}>
-        {emojiMap[value]} {value}
-      </Label>
-    </View>
   );
 }

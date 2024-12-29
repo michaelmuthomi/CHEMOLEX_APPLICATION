@@ -85,7 +85,7 @@ export default function Screen() {
       if (user_role === "customer") {
         console.log("User is a Customer");
         setEmailContext(email);
-        navigation.navigate("Customer");
+        router.replace("/Customer");
       } else {
         displayNotification("Invalid Credentials", "danger");
       }
