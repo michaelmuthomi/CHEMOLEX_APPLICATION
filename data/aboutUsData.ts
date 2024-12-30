@@ -31,12 +31,12 @@ export const foundersData = [
 
 export const faqs = [
   {
-    question: "WHAT WE DO?",
+    question: "What We Do?",
     answer:
       "Gjenge is committed to sustainable business practices. We've recycled over 200,000 kg of plastic waste into building materials and created 600 jobs for women, youth, and garbage collectors.",
   },
   {
-    question: "WHY US?",
+    question: "Why Us?",
     answer:
       "Choose our innovative recycled plastic pavers to enhance your neighborhood's beauty and help reduce plastic pollution. These eco-friendly pavers are durable, vibrant, and a symbol of your commitment to sustainability, contributing to a cleaner, greener future.",
   },

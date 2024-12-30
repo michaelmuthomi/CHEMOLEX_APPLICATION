@@ -21,7 +21,7 @@ export default function SettingsScreen () {
           <ContactUs
             sheetTrigger={
               <TouchableOpacity className="flex-row w-full items-center">
-                <H4>Contact us </H4>
+                <H4 className="text-xl">Contact us </H4>
                 <P className="ml-auto">&rarr;</P>
               </TouchableOpacity>
             }
@@ -30,7 +30,7 @@ export default function SettingsScreen () {
           <AboutUs
             sheetTrigger={
               <TouchableOpacity className="flex-row w-full items-center">
-                <H4>About us </H4>
+                <H4 className="text-xl">About us </H4>
                 <P className="ml-auto">&rarr;</P>
               </TouchableOpacity>
             }
@@ -39,7 +39,7 @@ export default function SettingsScreen () {
           <Feedback
             sheetTrigger={
               <TouchableOpacity className="flex-row w-full items-center">
-                <H4>Send us Feedback</H4>
+                <H4 className="text-xl">Send us Feedback</H4>
                 <P className="ml-auto">&rarr;</P>
               </TouchableOpacity>
             }

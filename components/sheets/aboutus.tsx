@@ -1,11 +1,11 @@
 import { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
-import { P } from "../ui/typography";
+import { H3, H6, P } from "../ui/typography";
 import { useRef } from "react";
 import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as React from "react";
 import { useCallback } from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Accordion,
@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion";
 import { faqs, foundersData } from "~/data/aboutUsData";
+import { ContactUs } from "./contactus";
 
 export function AboutUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   // ref
@@ -38,34 +39,25 @@ export function AboutUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
         backgroundStyle={{ backgroundColor: "#0e0e0e" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
         enableDismissOnClose
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            pressBehavior="none" // Manage how backdrop should behave on press
-            opacity={0.5} // Adjust the opacity of the backdrop
-          />
-        )}
       >
         <BottomSheetView className="p-6 gap-6">
-          <View>
-            <H4 className="" style={{ fontFamily: "Inter_700Bold" }}>
-              Get to Know Us
-            </H4>
-            <P>
-              GJENGE - We help you Build Alternatively, Affordably and
-              Sustainably.
+          <View className="items-center">
+            <H3 className="text-center text-2xl">Get to Know Us</H3>
+            <P className="text-center text-gray-500">
+              Our goal is to become the number one air conditioning (HVAC)
+              contractor in Kenya and entire East Africa.
             </P>
           </View>
           <Accordion
             type="multiple"
             collapsible
             defaultValue={["item-1"]}
-            className="w-full max-w-sm native:max-w-md"
+            // className="w-full max-w-sm native:max-w-md"
           >
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index + 1}`}>
                 <AccordionTrigger>
-                  <P>{faq.question}</P>
+                  <H6>{faq.question}</H6>
                 </AccordionTrigger>
                 <AccordionContent>
                   <P>{faq.answer}</P>
@@ -73,55 +65,32 @@ export function AboutUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
               </AccordionItem>
             ))}
           </Accordion>
-          <View>
-            <H4 className="" style={{ fontFamily: "Inter_700Bold" }}>
-              Meet the team making this happen
-            </H4>
-          </View>
           <View className="gap-2">
-            {foundersData.map((member, index) => (
-              <TeamShowcase
-                key={index}
-                image_url={member.image_url}
-                fallback={member.fallback}
-                name={member.name}
-                position={member.position}
-              />
-            ))}
+            <H3>Got any questions?</H3>
+            <P className="text-zinc-200 text-sm w-3/5">
+              Send us a message and we will get back to you as soon as possible
+            </P>
+          </View>
+          <View className="gap-4">
+            <ContactUs
+              sheetTrigger={
+                <TouchableOpacity className="flex-row w-full items-center">
+                  <P>Reach out </P>
+                  <P className="ml-auto">&rarr;</P>
+                </TouchableOpacity>
+              }
+            />
+            <ContactUs
+              sheetTrigger={
+                <TouchableOpacity className="flex-row w-full items-center">
+                  <P>Send us Feedback </P>
+                  <P className="ml-auto">&rarr;</P>
+                </TouchableOpacity>
+              }
+            />
           </View>
         </BottomSheetView>
       </BottomSheetModal>
     </>
-  );
-}
-
-export function TeamShowcase({
-  image_url,
-  fallback,
-  name,
-  position,
-}: {
-  image_url: string;
-  fallback: string;
-  name: string;
-  position: string;
-}) {
-  return (
-    <View className="flex-row items-center gap-4">
-      <Avatar alt="CEO IMAGE">
-        <AvatarImage
-          source={{
-            uri: image_url,
-          }}
-        />
-        <AvatarFallback>
-          <H4>{fallback}</H4>
-        </AvatarFallback>
-      </Avatar>
-      <View>
-        <H4 style={{fontFamily: "Inter_500Medium"}}>{name}</H4>
-        <P className="text-xs">{position}</P>
-      </View>
-    </View>
   );
 }
