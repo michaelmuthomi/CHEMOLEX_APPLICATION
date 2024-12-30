@@ -184,7 +184,7 @@ export default function ProfileScreen() {
                   className="rounded-full bg-white !py-4 !border-none"
                   onPress={() => setIsEditing(true)}
                 >
-                  <H5 className="text-black leading-none">Edit details</H5>
+                  <H5 className="text-black leading-none">Add Product</H5>
                 </Button>
               )}
             </View>

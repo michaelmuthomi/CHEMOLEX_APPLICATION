@@ -15,6 +15,7 @@ import {
 } from "~/components/ui/accordion";
 import { faqs, foundersData } from "~/data/aboutUsData";
 import { ContactUs } from "./contactus";
+import { Contact, SendToBack } from "lucide-react-native";
 
 export function AboutUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   // ref
@@ -67,23 +68,25 @@ export function AboutUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
           </Accordion>
           <View className="gap-2">
             <H3>Got any questions?</H3>
-            <P className="text-zinc-200 text-sm w-3/5">
+            <P className="text-zinc-400 text-sm w-3/5">
               Send us a message and we will get back to you as soon as possible
             </P>
           </View>
           <View className="gap-4">
             <ContactUs
               sheetTrigger={
-                <TouchableOpacity className="flex-row w-full items-center">
-                  <P>Reach out </P>
+                <TouchableOpacity className="flex-row w-full items-center gap-2">
+                  <Contact size={16} color={"white"} />
+                  <H4 className="text-base">Contact us </H4>
                   <P className="ml-auto">&rarr;</P>
                 </TouchableOpacity>
               }
             />
             <ContactUs
               sheetTrigger={
-                <TouchableOpacity className="flex-row w-full items-center">
-                  <P>Send us Feedback </P>
+                <TouchableOpacity className="flex-row w-full items-center gap-2">
+                  <SendToBack size={16} color={"white"} />
+                  <H4 className="text-base">Send us Feedback </H4>
                   <P className="ml-auto">&rarr;</P>
                 </TouchableOpacity>
               }
