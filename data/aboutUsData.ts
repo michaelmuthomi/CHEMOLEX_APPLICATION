@@ -33,21 +33,21 @@ export const faqs = [
   {
     question: "What We Do?",
     answer:
-      "Gjenge is committed to sustainable business practices. We've recycled over 200,000 kg of plastic waste into building materials and created 600 jobs for women, youth, and garbage collectors.",
+      "REFNET AIR CONDITIONING (E.A) LTD is a top Kenyan contractor specializing in LG, Samsung, and Carrier systems, offering top-notch services for both domestic and commercial clients.",
   },
   {
     question: "Why Us?",
     answer:
-      "Choose our innovative recycled plastic pavers to enhance your neighborhood's beauty and help reduce plastic pollution. These eco-friendly pavers are durable, vibrant, and a symbol of your commitment to sustainability, contributing to a cleaner, greener future.",
+      "We don't just promise we deliver as proven by our positive reviews and brand loyalty by major companies and co-operations.",
   },
   {
     question: "Our Mission",
     answer:
-      "Our mission is to create innovative, sustainable construction products that serve Kenya and the wider African continent. We aim to provide cost-effective building materials while generating jobs for youth and women, promoting a culture of recycling and environmental preservation across Africa.",
+      "To work very  closely with clients while emphasizing on time and quality of service delivery.",
   },
   {
     question: "Our Journey",
     answer:
-      "Gjenge is a community-focused enterprise addressing the need for sustainable, affordable building materials in Kenya and Africa. We innovate by transforming recycled plastics into paving blocks, tiles, and manhole covers. Initially, we aimed to collect and sell plastic waste but quickly shifted to creating value-added products when recycling companies couldn't keep up with the supply. This led to the founding of Gjenge Makers.",
+      "We prioritize client satisfaction by providing accurate information and delivering work within the agreed time frame, ensuring they are well-informed and satisfied with our services.",
   },
 ];
