@@ -472,3 +472,15 @@ export async function fetchDrivers() {
 
   return availableDrivers;
 }
+
+// Fetch Products and their quantity in stock
+export async function fetchProductsAndQuantityFromDB() {
+  const { data, error } = await supabase.from("products").select("product_id, name, price, stock_quantity, image_url");
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}

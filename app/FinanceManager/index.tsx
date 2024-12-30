@@ -118,9 +118,13 @@ const MetricCard = ({
     <P className="text-sm text-gray-500">{title}</P>
     <H5 className="text-lg mt-1">{value}</H5>
     {trend === "up" ? (
-      <ArrowUp size={14} color={"#22c55e"} />
+      // <View className="bg-green-500 p-2 w-8 rounded-full">
+        <ArrowUp size={14} color={"green"} />
+      // </View>
     ) : (
-      <ArrowDown size={14} color={"#ef4444"} />
+      // <View className="bg-red-200 p-2 w-8 rounded-full">
+        <ArrowDown size={14} color={"red"} />
+      // </View>
     )}
   </View>
 );
