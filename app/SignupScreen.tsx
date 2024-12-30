@@ -5,28 +5,9 @@ import { Button } from "~/components/ui/button";
 import { P, H1 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { showMessage } from "react-native-flash-message";
 import { addUserToDB } from "~/lib/supabase";
 import { Dropdown } from "react-native-element-dropdown";
-import AntDesign from "@expo/vector-icons/AntDesign";
-
-const displayNotification = (
-  message: string,
-  type: "danger" | "success" | "warning"
-) => {
-  return showMessage({
-    message,
-    type,
-    hideOnPress: true,
-    style: {
-      marginTop: 40,
-    },
-    titleStyle: {
-      fontFamily: "Inter_500Medium",
-      textAlign: "center",
-    },
-  });
-};
+import displayNotification from "~/lib/Notification";
 
 export default function Screen() {
   const insets = useSafeAreaInsets();

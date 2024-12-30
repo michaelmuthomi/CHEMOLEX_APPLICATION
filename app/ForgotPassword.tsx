@@ -5,19 +5,9 @@ import { useState } from "react";
 import { H1, H5, P } from "~/components/ui/typography";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { showMessage } from "react-native-flash-message";
 import { checkUser, resetPassword } from "~/lib/supabase";
+import displayNotification from "~/lib/Notification";
 
-const displayNotification = (
-  message: string,
-  type: "danger" | "success" | "warning"
-) => {
-  showMessage({
-    message,
-    type,
-    style: { paddingTop: 40 },
-  });
-};
 
 export default function Screen() {
   const [email, setEmail] = useState("");

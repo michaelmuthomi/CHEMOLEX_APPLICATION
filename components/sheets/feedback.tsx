@@ -10,10 +10,10 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Label } from "../ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "../ui/button";
-import { showMessage } from "react-native-flash-message";
 import { Input } from "../ui/input";
 import { checkUser, submitFeedback } from "~/lib/supabase";
 import { useEmail } from "~/app/EmailContext";
+import displayNotification from "~/lib/Notification";
 
 export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   const [loading, setLoading] = React.useState(false);
@@ -52,31 +52,23 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
 
       const response = await submitFeedback(feedback); // Submit the feedback
 
-      console.log("Response output: ", response)
+      console.log("Response output: ", response);
 
       if (response?.startsWith("error")) {
         console.error("Error submitting feedback:", response);
-        showMessage({
-          message: "Error submitting feedback",
-          type: "danger",
-        });
+        displayNotification(response, "danger");
         return;
       } else {
         // Optionally show a success message or further process response data
-        showMessage({
-          message: "Thanks for the feedback",
-          type: "success",
-        });
+
+        displayNotification("Thanks for the feedback", "success");
         bottomSheetModalRef.current?.dismiss();
         return;
       }
     } else {
-      showMessage({
-        message: "Please fill in all the fields",
-        type: "danger",
-      });
+      displayNotification("Please fill in all the fields", "danger");
     }
-  }
+  };
 
   const emojis = [
     { id: 1, emoji: "😢", label: "Help Needed" },
@@ -137,7 +129,9 @@ export function Feedback({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
                       >
                         <P
                           className={`text-2xl ${
-                            isSelected ? "text-4xl shadow-2xl" : "text-2xl opacity-30"
+                            isSelected
+                              ? "text-4xl shadow-2xl"
+                              : "text-2xl opacity-30"
                           }`}
                         >
                           {item.emoji}

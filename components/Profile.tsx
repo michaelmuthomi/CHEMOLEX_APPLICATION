@@ -11,10 +11,13 @@ import { H1, H2, H3, H5, P } from "~/components/ui/typography";
 import { useEmail } from "~/app/EmailContext";
 import { checkUser } from "~/lib/supabase";
 import { Input } from "~/components/ui/input";
-import { showMessage } from "react-native-flash-message";
 import { Button } from "~/components/ui/button";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
+import displayNotification from "~/lib/Notification";
 
 export default function ProfileScreen() {
+  const navigation = useNavigation()
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
   const [isEditing, setIsEditing] = useState(false);
@@ -29,15 +32,11 @@ export default function ProfileScreen() {
 
   const handleSavecustomer = () => {
     // TODO: Implement API call to save user info
-    showMessage({
-      message: "Profile updated successfully",
-      type: "success",
-      style: { paddingTop: 40 },
-    });
+    displayNotification("Profile updated successfully", 'success');
     setIsEditing(false);
   };
   return (
-    <View className="bg-[#060606] flex-1 gap-10">
+    <ScrollView className="bg-[#060606] flex-1 gap-10">
       <View className="py-8 px-6 bg-[#090909]">
         <View className="relative">
           <TouchableOpacity className="p-2 w-12 rounded-full shadow-sm border border-zinc-200 items-center">
@@ -61,9 +60,8 @@ export default function ProfileScreen() {
           </P>
         </View>
       </View>
-      <View className="h-full gap-4">
-        <H3 className="text-2xl px-6">Details</H3>
-        <ScrollView className="flex-1 gap-4 px-6 py-4 bg-[#090909]">
+      <View className="py-2">
+        <ScrollView className="gap-6 px-6 py-4 bg-[#090909]">
           <View className="gap-4">
             <View className="flex-row">
               <View className="gap-2 w-1/2 pr-2">
@@ -165,6 +163,7 @@ export default function ProfileScreen() {
                   <Button
                     variant="outline"
                     onPress={handleSavecustomer}
+                    size={'lg'}
                     className="w-2/3 rounded-full bg-white !py-4 !border-none"
                   >
                     <H5 className="!leading-none text-black ">Save Changes</H5>
@@ -172,6 +171,7 @@ export default function ProfileScreen() {
                   <Button
                     variant="outline"
                     onPress={() => setIsEditing(false)}
+                    size={'lg'}
                     className="rounded-full bg-red-400 !py-4 !border-none"
                   >
                     <H5 className="!leading-0 text-black">Cancel</H5>
@@ -179,7 +179,8 @@ export default function ProfileScreen() {
                 </View>
               ) : (
                 <Button
-                  variant="outline"
+                    variant="outline"
+                    size={'lg'}
                   className="rounded-full bg-white !py-4 !border-none"
                   onPress={() => setIsEditing(true)}
                 >
@@ -190,15 +191,18 @@ export default function ProfileScreen() {
           </View>
         </ScrollView>
       </View>
-      <View>
-        <Button
-          variant="outline"
-          className="rounded-full bg-white !py-4 !border-none"
-          onPress={() => setIsEditing(true)}
-        >
-          <H5 className="text-black leading-none">Logout</H5>
-        </Button>
-      </View>
-    </View>
+      <TouchableOpacity
+        className="flex-row items-center p-4 mt-6 bg-red-200"
+        onPress={() => navigation.navigate("LoginScreen")}
+      >
+        <H3 className="text-sm text-[#555]">Log out</H3>
+        <Ionicons
+          name="arrow-forward-sharp"
+          size={15}
+          color="#555"
+          className="ml-auto"
+        />
+      </TouchableOpacity>
+    </ScrollView>
   );
 }

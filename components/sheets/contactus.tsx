@@ -9,7 +9,7 @@ import { ActivityIndicator, Linking, View } from "react-native";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { showMessage } from "react-native-flash-message";
+import displayNotification from "~/lib/Notification";
 
 export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
   // ref
@@ -30,31 +30,11 @@ export function ContactUs({ sheetTrigger }: { sheetTrigger: React.ReactNode }) {
 
   async function handleContactUs() {
     if (email && message) {
-      showMessage({
-        message: "We will get back to you soon",
-        type: "success",
-        style: {
-          paddingTop: 40,
-        },
-        titleStyle: {
-          fontFamily: "Inter_500Medium",
-          textAlign: "center",
-        },
-      });
+      displayNotification("We will get back to you soon", "success");
       bottomSheetModalRef.current?.dismiss();
       return;
     }
-    showMessage({
-      message: "Please fill in all the fields",
-      type: "danger",
-      style: {
-        paddingTop: 40,
-      },
-      titleStyle: {
-        fontFamily: "Inter_500Medium",
-        textAlign: "center",
-      },
-    });
+    displayNotification("Please fill in all the fields", "danger");
   }
 
   return (

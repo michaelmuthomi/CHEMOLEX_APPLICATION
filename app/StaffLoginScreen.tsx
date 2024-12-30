@@ -10,26 +10,9 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1, H5 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
-import { showMessage } from "react-native-flash-message";
 import { checkUser, validateUserCredentials } from "~/lib/supabase";
 import { useEmail } from "~/app/EmailContext";
-
-const displayNotification = (
-  message: string,
-  type: "danger" | "success" | "warning"
-) => {
-  return showMessage({
-    message,
-    type,
-    style: {
-      paddingTop: 40,
-    },
-    titleStyle: {
-      fontFamily: "Inter_500Medium",
-      textAlign: "center",
-    },
-  });
-};
+import displayNotification from "~/lib/Notification";
 
 export default function Screen() {
   const [email, setEmail] = React.useState("");
@@ -112,11 +95,7 @@ export default function Screen() {
             });
             break;
           default:
-            showMessage({
-              message: "Invalid role or access denied",
-              type: "danger",
-              style: { paddingTop: 40 },
-            });
+            displayNotification("Invalid role or access denied", "danger");
             return;
         }
 

@@ -25,10 +25,10 @@ import {
 import { H2, H3, H4, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { showMessage } from 'react-native-flash-message';
 import { useEmail } from '~/app/EmailContext';
 import { checkUser, fetchCustomerOrders, submitFeedback } from '~/lib/supabase';
 import { formatPrice } from '~/lib/format-price';
+import displayNotification from '~/lib/Notification';
 
 interface customer {
   full_name: string;
@@ -171,11 +171,7 @@ export default function Tab({ navigation }:{navigation: any}) {
 
   const handleSavecustomer = () => {
     // TODO: Implement API call to save user info
-    showMessage({
-      message: 'Profile updated successfully',
-      type: 'success',
-      style: { paddingTop: 40 },
-    });
+    displayNotification("Profile updated successfully", 'success');
     setIsEditing(false);
   };
 
@@ -204,12 +200,7 @@ export default function Tab({ navigation }:{navigation: any}) {
 
   const handleInitiateReturn = (orderId: string) => {
     // TODO: Implement return initiation logic
-    showMessage({
-      message: 'Return request initiated',
-      description: 'Our team will contact you shortly with return instructions.',
-      type: 'success',
-      style: { paddingTop: 40 },
-    });
+    displayNotification("Return request initiated", "success");
     setSelectedOrder(null);
   };
 
@@ -224,17 +215,9 @@ export default function Tab({ navigation }:{navigation: any}) {
 
     const response = await submitFeedback(feedback);
     if (typeof response === 'string' && response.startsWith('Error')) {
-      showMessage({
-        message: response,
-        type: 'danger',
-        style: { paddingTop: 40 },
-      });
+      displayNotification(response, 'danger');
     } else {
-      showMessage({
-        message: 'Review submitted successfully',
-        type: 'success',
-        style: { paddingTop: 40 },
-      });
+      displayNotification("Review submitted successfully", "success");
       setSelectedProduct(null);
       setRating(0);
       setComment('');

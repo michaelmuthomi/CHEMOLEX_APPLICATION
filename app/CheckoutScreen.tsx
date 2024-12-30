@@ -14,9 +14,9 @@ import { H3, H4, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { ChevronLeft } from 'lucide-react-native';
 import { Input } from '~/components/ui/input';
-import { showMessage } from 'react-native-flash-message';
 import { useEmail } from '~/app/EmailContext';
 import { checkUser, placeAnOrder } from '~/lib/supabase'
+import displayNotification from '~/lib/Notification';
 
 interface ValidationError {
   field: string;
@@ -38,23 +38,6 @@ interface PaymentInfo {
   cvv: string;
   cardHolderName: string;
 }
-
-const displayNotification = (
-  message: string,
-  type: "danger" | "success" | "warning"
-) => {
-  return showMessage({
-    message,
-    type,
-    style: {
-      paddingTop: 40,
-    },
-    titleStyle: {
-      fontFamily: "Inter_500Medium",
-      textAlign: "center",
-    },
-  });
-};
 
 const validateShippingInfo = (info: ShippingInfo): ValidationError[] => {
   const errors: ValidationError[] = [];

@@ -11,8 +11,7 @@ import { H1, H2, H3, H4, P } from "~/components/ui/typography";
 import { Separator } from "~/components/ui/separator";
 import { Feedback } from "~/components/sheets/feedback";
 import { AboutUs } from "~/components/sheets/aboutus";
-import { ContactUs } from "~/components/sheets/contactus";
-import { showMessage } from "react-native-flash-message";
+import { ContactUs } from "~/components/sheets/contactus"
 
 export default function SettingsScreen () {
   return (

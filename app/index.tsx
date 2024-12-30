@@ -10,27 +10,10 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { P, H1, H2, H4, H5 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
-import { showMessage } from "react-native-flash-message";
 import { checkUser, validateUserCredentials } from "~/lib/supabase";
 import { useEmail } from "~/app/EmailContext";
 import { useNavigation } from "@react-navigation/native";
-
-const displayNotification = (
-  message: string,
-  type: "danger" | "success" | "warning"
-) => {
-  return showMessage({
-    message,
-    type,
-    style: {
-      paddingTop: 40,
-    },
-    titleStyle: {
-      fontFamily: "Inter_500Medium",
-      textAlign: "center",
-    },
-  });
-};
+import displayNotification from "~/lib/Notification";
 
 export default function Screen() {
   const navigation = useNavigation(); // Use hook to access navigation
