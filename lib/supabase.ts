@@ -484,3 +484,18 @@ export async function fetchProductsAndQuantityFromDB() {
     return data;
   }
 }
+
+// Fetch suppliers
+export async function fetchSuppliers() {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("role", 'supplier')
+
+ if (error) {
+   return `Error: ${error.message || JSON.stringify(error)}`;
+ } else {
+   console.log(data);
+   return data;
+ }
+}
