@@ -1,4 +1,4 @@
-import { User } from "lucide-react-native";
+import { Mail, MapPinIcon, Phone, User } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   View,
@@ -66,95 +66,147 @@ export default function ProfileScreen() {
             <View className="flex-row">
               <View className="gap-2 w-1/2 pr-2">
                 <H5>First Name</H5>
-                <Input
-                  placeholder="First Name"
-                  value={
-                    customer.full_name ? customer.full_name.split(" ")[0] : ""
-                  }
-                  onChangeText={(text) => {
-                    const lastName = customer.full_name
-                      .split(" ")
-                      .slice(1)
-                      .join(" ");
-                    setCustomerDetails({
-                      ...customer,
-                      full_name: text + (lastName ? " " + lastName : ""),
-                    });
-                  }}
-                  editable={isEditing}
-                  className={
-                    !isEditing
-                      ? "bg-zinc-950 text-white"
-                      : "!border-none !bg-transparent"
-                  }
-                />
+                <View
+                  className={`
+                  flex-row items-center rounded-md
+                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                `}
+                >
+                  <User size={14} color={isEditing ? "white" : "gray"} />
+                  <Input
+                    placeholder="First Name"
+                    value={
+                      customer.full_name ? customer.full_name.split(" ")[0] : ""
+                    }
+                    onChangeText={(text) => {
+                      const lastName = customer.full_name
+                        .split(" ")
+                        .slice(1)
+                        .join(" ");
+                      setCustomerDetails({
+                        ...customer,
+                        full_name: text + (lastName ? " " + lastName : ""),
+                      });
+                    }}
+                    editable={isEditing}
+                    className={
+                      !isEditing
+                        ? "bg-transparent border-0 flex-1"
+                        : "border-0 flex-1"
+                    }
+                  />
+                </View>
               </View>
 
               <View className="gap-2 w-1/2">
                 <H5>Last Name</H5>
-                <Input
-                  placeholder="Last Name"
-                  value={
-                    customer.full_name
-                      ? customer.full_name.split(" ").slice(1).join(" ")
-                      : ""
-                  }
-                  onChangeText={(text) => {
-                    const firstName = customer.full_name.split(" ")[0];
-                    setCustomerDetails({
-                      ...customer,
-                      full_name: firstName + (text ? " " + text : ""),
-                    });
-                  }}
-                  editable={isEditing}
-                  className={
-                    !isEditing
-                      ? "bg-zinc-950 text-white"
-                      : "!border-none !bg-transparent"
-                  }
-                />
+                <View
+                  className={`
+                  flex-row items-center rounded-md
+                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                `}
+                >
+                  <User size={14} color={isEditing ? "white" : "gray"} />
+                  <Input
+                    placeholder="Last Name"
+                    value={
+                      customer.full_name
+                        ? customer.full_name.split(" ").slice(1).join(" ")
+                        : ""
+                    }
+                    onChangeText={(text) => {
+                      const firstName = customer.full_name.split(" ")[0];
+                      setCustomerDetails({
+                        ...customer,
+                        full_name: firstName + (text ? " " + text : ""),
+                      });
+                    }}
+                    editable={isEditing}
+                    className={
+                      !isEditing
+                        ? "bg-transparent border-0 flex-1"
+                        : "border-0 flex-1"
+                    }
+                  />
+                </View>
               </View>
             </View>
 
             <View className="gap-2">
               <H5>Email</H5>
-              <Input
-                placeholder="Email"
-                value={customer.email}
-                onChangeText={(text) =>
-                  setCustomerDetails({ ...customer, email: text })
-                }
-                keyboardType="email-address"
-                editable={isEditing}
-                className={!isEditing ? "bg-zinc-950 text-white" : ""}
-              />
+              <View
+                className={`
+                  flex-row items-center rounded-md
+                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                `}
+              >
+                <Mail size={14} color={isEditing ? "white" : "gray"} />
+                <Input
+                  placeholder="Email"
+                  value={customer.email}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, email: text })
+                  }
+                  keyboardType="email-address"
+                  editable={isEditing}
+                  className={
+                    !isEditing
+                      ? "bg-transparent border-0 flex-1"
+                      : "border-0 flex-1"
+                  }
+                />
+              </View>
             </View>
 
             <View className="gap-2">
               <H5>Phone Number</H5>
-              <Input
-                placeholder="Phone"
-                value={customer.phone_number}
-                onChangeText={(text) =>
-                  setCustomerDetails({ ...customer, phone_number: text })
-                }
-                keyboardType="phone-pad"
-                editable={isEditing}
-                className={!isEditing ? "bg-zinc-950 text-white" : ""}
-              />
+              <View
+                className={`
+                  flex-row items-center rounded-md
+                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                `}
+              >
+                <Phone size={14} color={isEditing ? "white" : "gray"} />
+                <Input
+                  placeholder="Phone"
+                  value={customer.phone_number}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, phone_number: text })
+                  }
+                  keyboardType="phone-pad"
+                  editable={isEditing}
+                  className={
+                    !isEditing
+                      ? "bg-transparent border-0 flex-1"
+                      : "border-0 flex-1"
+                  }
+                />
+              </View>
             </View>
 
             <View className="gap-2">
               <H5>Address</H5>
-              <Input
-                placeholder="Address"
-                value={customer.address === "" ? "N/A" : customer.address}
-                onChangeText={(text) =>
-                  setCustomerDetails({ ...customer, address: text })
-                }
-                editable={isEditing}
-                className={!isEditing ? "bg-zinc-950 text-white" : ""}
-              />
+              <View
+                className={`
+                  flex-row items-center rounded-md
+                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                `}
+              >
+                <MapPinIcon size={14} color={isEditing ? "white" : "gray"} />
+                <Input
+                  placeholder="Address"
+                  value={customer.address === "" ? "N/A" : customer.address}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, address: text })
+                  }
+                  editable={isEditing}
+                  className={
+                    !isEditing
+                      ? "bg-transparent border-0 flex-1"
+                      : "border-0 flex-1"
+                  }
+                />
+              </View>
             </View>
 
             <View className="space-y-4 pt-4">
@@ -163,7 +215,7 @@ export default function ProfileScreen() {
                   <Button
                     variant="outline"
                     onPress={handleSavecustomer}
-                    size={'lg'}
+                    size={"lg"}
                     className="w-2/3 rounded-full bg-white !py-4 !border-none"
                   >
                     <H5 className="!leading-none text-black ">Save Changes</H5>
@@ -171,16 +223,16 @@ export default function ProfileScreen() {
                   <Button
                     variant="outline"
                     onPress={() => setIsEditing(false)}
-                    size={'lg'}
-                    className="rounded-full bg-red-400 !py-4 !border-none"
+                    size={"lg"}
+                    className="rounded-full bg-red-400 !py-4 !border-none flex-1"
                   >
                     <H5 className="!leading-0 text-black">Cancel</H5>
                   </Button>
                 </View>
               ) : (
                 <Button
-                    variant="outline"
-                    size={'lg'}
+                  variant="outline"
+                  size={"lg"}
                   className="rounded-full bg-white !py-4 !border-none"
                   onPress={() => setIsEditing(true)}
                 >
