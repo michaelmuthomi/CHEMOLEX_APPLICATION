@@ -59,7 +59,7 @@ const FinancialStatusPage = () => {
         </View>
       </View>
 
-      <View className="bg-white rounded-lg mx-4 mb-4 p-4 shadow">
+      <View className="bg-white mb-4 p-4 shadow">
         <H3 className="text-xl mb-3 text-black">
           Recent Transactions
         </H3>
@@ -80,7 +80,7 @@ const FinancialStatusPage = () => {
         />
       </View>
 
-      <View className="bg-white rounded-lg mx-4 mb-4 p-4 shadow">
+      <View className="bg-white mb-4 p-4 shadow">
         <H3 className="text-xl mb-3 text-black">
           Financial Trends
         </H3>
@@ -89,7 +89,7 @@ const FinancialStatusPage = () => {
         </View>
       </View>
 
-      <View className="bg-white rounded-lg mx-4 mb-4 p-4 shadow">
+      <View className="bg-white mb-4 p-4 shadow">
         <H3 className="text-xl mb-3 text-black">
           Pending Transactions
         </H3>
