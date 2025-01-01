@@ -488,14 +488,36 @@ export async function fetchProductsAndQuantityFromDB() {
 // Fetch suppliers
 export async function fetchSuppliers() {
   const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("role", 'supplier')
+    .from("suppliers")
+    .select("*, users(*)") 
+    .eq("users.role", "supplier");
 
- if (error) {
-   return `Error: ${error.message || JSON.stringify(error)}`;
- } else {
-   console.log(data);
-   return data;
- }
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    console.log(data);
+    return data;
+  }
+}
+
+// Add New Product to DB
+export async function insertNewProductToDB(
+  name: string,
+  description: string,
+  price: number,
+  supplier_id: number,
+  stock_quantity: number,
+  category: string
+) {
+  const { data, error } = await supabase
+    .from("products")
+    .insert([{ name, description, price, supplier_id, stock_quantity, category }])
+    .single();
+
+  if (error) {
+    console.error(error)
+    return "Error:" + error;
+  } else {
+    return "Success:" + data;
+  }
 }

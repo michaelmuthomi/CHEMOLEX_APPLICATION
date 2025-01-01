@@ -1,11 +1,11 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { H3, H5, P } from "../ui/typography";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as React from "react";
 import { useCallback } from "react";
-import { ActivityIndicator, Linking, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
@@ -21,7 +21,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchSuppliers } from "~/lib/supabase";
+import { fetchSuppliers, insertNewProductToDB } from "~/lib/supabase";
+import { Value } from "@rn-primitives/select";
+
+interface Supplier {
+  user_id: Number,
+  full_name: string,
+}
 
 export function AddProduct({
   sheetTrigger,
@@ -45,36 +51,48 @@ export function AddProduct({
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [stockQuantity, setStockQuantity] = useState("");
-  //   const inputRef = useRef<Textarea>(null);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
 
   async function handleAddProduct() {
-    if (email && message) {
-      displayNotification("We will get back to you soon", "success");
-      bottomSheetModalRef.current?.dismiss();
-      return;
-    }
-    displayNotification("Please fill in all the fields", "danger");
-  }
-
-  React.useEffect(() => {
-    async function fetchAllSuppliers() {
-      const response = await fetchSuppliers();
-      if (response?.startsWith("error")) {
-        console.error("Error submitting feedback:", response);
-        displayNotification(response, "danger");
-        return;
-      } else {
-        setSuppliers(response)
-        console.log("Suppliers fetched: ", response)
-        displayNotification("Thanks for the feedback", "success");
+    setLoading(true)
+    if (name && description && supplier && category && price && stockQuantity) {
+      const response = await insertNewProductToDB(
+        name,
+        description,
+        Number(price),
+        Number(supplier),
+        Number(stockQuantity),
+        category
+      );
+      if (response.startsWith("Success")) {
+        displayNotification("Products added Successfully", "success");
         bottomSheetModalRef.current?.dismiss();
         return;
+      } else {
+        displayNotification(response, "danger");
       }
+      setLoading(false)
+    } else {
+      displayNotification("Please fill in all the fields", "danger");
     }
-    fetchAllSuppliers()
-  });
+    console.log('name: ', name)
+    console.log("description: ", description);
+    console.log("stockQuantity: ", stockQuantity);
+    console.log("price: ", price);
+    console.log("category: ", category);
+    console.log("supplier: ", supplier);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    async function fetchAllSuppliers() {
+      const response = await fetchSuppliers();
+      setSuppliers(response);
+      console.log("Suppliers fetched: ", response);
+    }
+    fetchAllSuppliers();
+  }, []); // Run only once when the component mounts
 
   const insets = useSafeAreaInsets();
   const contentInsets = {
@@ -109,8 +127,6 @@ export function AddProduct({
               <Input
                 placeholder="Product Name"
                 onChangeText={setName}
-                aria-labelledby="inputLabel"
-                aria-errormessage="inputError"
                 className="bg-transparent !h-14 text-white"
                 autoComplete="name"
                 textContentType="name"
@@ -125,7 +141,7 @@ export function AddProduct({
                 onChangeText={setDescription}
               />
             </View>
-            <Select defaultValue={{ value: "apple", label: "Apple" }}>
+            <Select onValueChange={(option) => setSupplier(option.value)}>
               <P className="text-white pb-2">Supplier</P>
               <SelectTrigger className="bg-transparent">
                 <SelectValue
@@ -141,7 +157,11 @@ export function AddProduct({
                   </SelectLabel>
                   <ScrollView>
                     {suppliers.map((supplier) => (
-                      <SelectItem label="Apple" value="apple">
+                      <SelectItem
+                        key={supplier.supplier_id}
+                        label={supplier.users.full_name}
+                        value={supplier.supplier_id}
+                      >
                         {supplier.full_name}
                       </SelectItem>
                     ))}
@@ -149,12 +169,15 @@ export function AddProduct({
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Select defaultValue={{ value: "apple", label: "Apple" }}>
+            <Select
+              defaultValue={{ value: "Chillers", label: "Chillers" }}
+              onValueChange={(option) => setCategory(option.value)}
+            >
               <P className="text-white pb-2">Category</P>
               <SelectTrigger className="bg-transparent">
                 <SelectValue
                   className="text-foreground text-sm native:text-lg bg-transparent"
-                  placeholder="Select a supplier"
+                  placeholder="Select a category"
                   style={{ fontFamily: "Inter_400Regular" }}
                 />
               </SelectTrigger>
@@ -185,16 +208,10 @@ export function AddProduct({
                     >
                       Ducted Split Systems
                     </SelectItem>
-                    <SelectItem
-                      label="Residential"
-                      value="Residential"
-                    >
+                    <SelectItem label="Residential" value="Residential">
                       Residential
                     </SelectItem>
-                    <SelectItem
-                      label="Accessories"
-                      value="Accessories"
-                    >
+                    <SelectItem label="Accessories" value="Accessories">
                       Accessories
                     </SelectItem>
                   </ScrollView>
@@ -209,11 +226,9 @@ export function AddProduct({
                   <Input
                     placeholder="001000"
                     onChangeText={setPrice}
-                    aria-labelledby="inputLabel"
-                    aria-errormessage="inputError"
                     className="bg-transparent !h-14 border-0 text-white"
-                    autoComplete="name"
-                    textContentType="name"
+                    autoComplete="off"
+                    textContentType="none"
                     keyboardType="numeric"
                     maxLength={6}
                   />
@@ -226,10 +241,8 @@ export function AddProduct({
                   <Input
                     placeholder="0100"
                     onChangeText={setStockQuantity}
-                    aria-labelledby="inputLabel"
-                    aria-errormessage="inputError"
                     className="bg-transparent !h-14 border-0 text-white"
-                    textContentType="name"
+                    textContentType="none"
                     keyboardType="numeric"
                     maxLength={4}
                   />
@@ -244,7 +257,7 @@ export function AddProduct({
               disabled={loading}
             >
               <H5 className=" text-black">
-                {loading ? "Submitting" : "Submit Query"}
+                {loading ? "Adding" : "Add New Product"}
               </H5>
             </Button>
           </View>
