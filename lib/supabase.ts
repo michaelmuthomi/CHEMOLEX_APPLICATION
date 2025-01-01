@@ -507,11 +507,12 @@ export async function insertNewProductToDB(
   price: number,
   supplier_id: number,
   stock_quantity: number,
-  category: string
+  category: string,
+  image_url: string
 ) {
   const { data, error } = await supabase
     .from("products")
-    .insert([{ name, description, price, supplier_id, stock_quantity, category }])
+    .insert([{ name, description, price, supplier_id, stock_quantity, category, image_url }])
     .single();
 
   if (error) {

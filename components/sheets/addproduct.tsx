@@ -5,12 +5,12 @@ import { H4 } from "../ui/typography";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as React from "react";
 import { useCallback } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Image } from "react-native";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import displayNotification from "~/lib/Notification";
-import { Coins, SquareStack } from "lucide-react-native";
+import { Box, Coins, Group, ImageIcon, SquareStack } from "lucide-react-native";
 import {
   Select,
   SelectContent,
@@ -51,37 +51,35 @@ export function AddProduct({
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [stockQuantity, setStockQuantity] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
 
   async function handleAddProduct() {
     setLoading(true)
-    if (name && description && supplier && category && price && stockQuantity) {
+    if (name && description && supplier && category && price && stockQuantity && imageUrl) {
       const response = await insertNewProductToDB(
         name,
         description,
         Number(price),
         Number(supplier),
         Number(stockQuantity),
-        category
+        category,
+        imageUrl
       );
       if (response.startsWith("Success")) {
         displayNotification("Products added Successfully", "success");
         bottomSheetModalRef.current?.dismiss();
+        setLoading(false)
         return;
       } else {
         displayNotification(response, "danger");
+        setLoading(false);
       }
       setLoading(false)
     } else {
       displayNotification("Please fill in all the fields", "danger");
     }
-    console.log('name: ', name)
-    console.log("description: ", description);
-    console.log("stockQuantity: ", stockQuantity);
-    console.log("price: ", price);
-    console.log("category: ", category);
-    console.log("supplier: ", supplier);
     setLoading(false);
   }
 
@@ -121,146 +119,191 @@ export function AddProduct({
               Please fill in the form to add a new product
             </P>
           </View>
-          <View className="gap-4">
-            <View className="gap-2">
-              <P className="text-white">Name</P>
-              <Input
-                placeholder="Product Name"
-                onChangeText={setName}
-                className="bg-transparent !h-14 text-white"
-                autoComplete="name"
-                textContentType="name"
-                keyboardType="default"
-              />
-            </View>
-            <View className="gap-2">
-              <P className="text-white">Description</P>
-              <Textarea
-                placeholder="Description"
-                className="bg-transparent"
-                onChangeText={setDescription}
-              />
-            </View>
-            <Select onValueChange={(option) => setSupplier(option.value)}>
-              <P className="text-white pb-2">Supplier</P>
-              <SelectTrigger className="bg-transparent">
-                <SelectValue
-                  className="text-foreground text-sm native:text-lg bg-transparent"
-                  placeholder="Select a supplier"
-                  style={{ fontFamily: "Inter_400Regular" }}
-                />
-              </SelectTrigger>
-              <SelectContent insets={contentInsets} className="w-[250px]">
-                <SelectGroup>
-                  <SelectLabel className="uppercase border-b-[1px] border-b-white">
-                    Select Supplier
-                  </SelectLabel>
-                  <ScrollView>
-                    {suppliers.map((supplier) => (
-                      <SelectItem
-                        key={supplier.supplier_id}
-                        label={supplier.users.full_name}
-                        value={supplier.supplier_id}
-                      >
-                        {supplier.full_name}
-                      </SelectItem>
-                    ))}
-                  </ScrollView>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Select
-              defaultValue={{ value: "Chillers", label: "Chillers" }}
-              onValueChange={(option) => setCategory(option.value)}
-            >
-              <P className="text-white pb-2">Category</P>
-              <SelectTrigger className="bg-transparent">
-                <SelectValue
-                  className="text-foreground text-sm native:text-lg bg-transparent"
-                  placeholder="Select a category"
-                  style={{ fontFamily: "Inter_400Regular" }}
-                />
-              </SelectTrigger>
-              <SelectContent insets={contentInsets} className="w-[250px]">
-                <SelectGroup>
-                  <SelectLabel className="uppercase border-b-[1px] border-b-white">
-                    Select Category
-                  </SelectLabel>
-                  <ScrollView>
-                    <SelectItem label="Chillers" value="Chillers">
-                      Chillers
-                    </SelectItem>
-                    <SelectItem
-                      label="Air Handling Units"
-                      value="Air Handling Units"
-                    >
-                      Air Handling Units
-                    </SelectItem>
-                    <SelectItem label="Fan Coil Units" value="Fan Coil Units">
-                      Fan Coil Units
-                    </SelectItem>
-                    <SelectItem label="VRF Multi" value="VRF Multi">
-                      VRF Multi
-                    </SelectItem>
-                    <SelectItem
-                      label="Ducted Split Systems"
-                      value="Ducted Split Systems"
-                    >
-                      Ducted Split Systems
-                    </SelectItem>
-                    <SelectItem label="Residential" value="Residential">
-                      Residential
-                    </SelectItem>
-                    <SelectItem label="Accessories" value="Accessories">
-                      Accessories
-                    </SelectItem>
-                  </ScrollView>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <View className="flex-row justify-between">
-              <View className="gap-2 w-1/3">
-                <P className="text-white">Price</P>
-                <View className="flex-row items-center border-[1px]  px-2 border-zinc-800 rounded-md">
-                  <Coins color={"white"} />
+          <ScrollView>
+            <View className="gap-4">
+              <View className="gap-2">
+                <P className="text-white">Name</P>
+                <View className="flex-row items-center px-2 rounded-md w-full">
+                  <Box size={14} color={"white"} />
                   <Input
-                    placeholder="001000"
-                    onChangeText={setPrice}
-                    className="bg-transparent !h-14 border-0 text-white"
-                    autoComplete="off"
-                    textContentType="none"
-                    keyboardType="numeric"
-                    maxLength={6}
+                    placeholder="Product Name"
+                    onChangeText={setName}
+                    className="bg-transparent !h-14 text-white border-0 flex-1"
+                    autoComplete="name"
+                    textContentType="name"
+                    keyboardType="default"
                   />
                 </View>
               </View>
-              <View className="gap-2 w-2/3 pl-2">
-                <P className="text-white">Quantity</P>
-                <View className="flex-row items-center border-[1px] px-2 border-zinc-800 rounded-md">
-                  <SquareStack color={"white"} />
+              <View className="gap-2">
+                <P className="text-white">Description</P>
+                <Textarea
+                  placeholder="Description"
+                  className="bg-transparent border-0"
+                  onChangeText={setDescription}
+                />
+              </View>
+              <View className="flex-row">
+                <Select
+                  onValueChange={(option) => setSupplier(option.value)}
+                  className="w-1/2"
+                >
+                  <P className="text-white pb-2">Supplier</P>
+                  <View className="flex-row items-center w-full">
+                    <Group size={14} color={"white"} />
+                    <SelectTrigger className="bg-transparent border-0 flex-1">
+                      <SelectValue
+                        className="text-foreground text-sm native:text-lg bg-transparent"
+                        placeholder="Select a supplier"
+                        style={{ fontFamily: "Inter_400Regular" }}
+                      />
+                    </SelectTrigger>
+                  </View>
+
+                  <SelectContent insets={contentInsets} className="w-[250px]">
+                    <SelectGroup>
+                      <SelectLabel className="uppercase border-b-[1px] border-b-white">
+                        Select Supplier
+                      </SelectLabel>
+                      <ScrollView>
+                        {suppliers.map((supplier) => (
+                          <SelectItem
+                            key={supplier.supplier_id}
+                            label={supplier.users.full_name}
+                            value={supplier.supplier_id}
+                          >
+                            {supplier.full_name}
+                          </SelectItem>
+                        ))}
+                      </ScrollView>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <Select
+                  defaultValue={{ value: "Chillers", label: "Chillers" }}
+                  onValueChange={(option) => setCategory(option.value)}
+                  className="w-1/2"
+                >
+                  <P className="text-white pb-2">Category</P>
+                  <View className="flex-row items-center w-full">
+                    <Group size={14} color={"white"} />
+                    <SelectTrigger className="bg-transparent border-0 flex-1">
+                      <SelectValue
+                        className="text-foreground text-sm native:text-lg bg-transparent"
+                        placeholder="Select a category"
+                        style={{ fontFamily: "Inter_400Regular" }}
+                      />
+                    </SelectTrigger>
+                  </View>
+                  <SelectContent insets={contentInsets} className="w-[250px]">
+                    <SelectGroup>
+                      <SelectLabel className="uppercase border-b-[1px] border-b-white">
+                        Select Category
+                      </SelectLabel>
+                      <ScrollView>
+                        <SelectItem label="Chillers" value="Chillers">
+                          Chillers
+                        </SelectItem>
+                        <SelectItem
+                          label="Air Handling Units"
+                          value="Air Handling Units"
+                        >
+                          Air Handling Units
+                        </SelectItem>
+                        <SelectItem
+                          label="Fan Coil Units"
+                          value="Fan Coil Units"
+                        >
+                          Fan Coil Units
+                        </SelectItem>
+                        <SelectItem label="VRF Multi" value="VRF Multi">
+                          VRF Multi
+                        </SelectItem>
+                        <SelectItem
+                          label="Ducted Split Systems"
+                          value="Ducted Split Systems"
+                        >
+                          Ducted Split Systems
+                        </SelectItem>
+                        <SelectItem label="Residential" value="Residential">
+                          Residential
+                        </SelectItem>
+                        <SelectItem label="Accessories" value="Accessories">
+                          Accessories
+                        </SelectItem>
+                      </ScrollView>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </View>
+              <View className="flex-row justify-between">
+                <View className="gap-2 w-1/3">
+                  <P className="text-white">Price</P>
+                  <View className="flex-row items-center px-2 rounded-md">
+                    <Coins size={14} color={"white"} />
+                    <Input
+                      placeholder="001000"
+                      onChangeText={setPrice}
+                      className="bg-transparent !h-14 border-0 text-white"
+                      autoComplete="off"
+                      textContentType="none"
+                      keyboardType="numeric"
+                      maxLength={6}
+                    />
+                  </View>
+                </View>
+                <View className="gap-2 w-2/3 pl-6">
+                  <P className="text-white">Quantity</P>
+                  <View className="flex-row items-center px-2 rounded-md">
+                    <SquareStack size={14} color={"white"} />
+                    <Input
+                      placeholder="0100"
+                      onChangeText={setStockQuantity}
+                      className="bg-transparent !h-14 border-0 text-white"
+                      textContentType="none"
+                      keyboardType="numeric"
+                      maxLength={4}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View className="gap-2">
+                <P className="text-white">Image Url</P>
+                <View className="flex-row items-center rounded-md">
+                  {imageUrl ? (
+                    <Image
+                    source={{
+                      uri: imageUrl
+                    }}
+                    className="w-10 h-10 bg-white rounded-full"
+                    resizeMode="cover"
+                  />
+                  ) : (                      
+                    <ImageIcon size={14} color={"white"} />
+                  )}
                   <Input
-                    placeholder="0100"
-                    onChangeText={setStockQuantity}
-                    className="bg-transparent !h-14 border-0 text-white"
-                    textContentType="none"
-                    keyboardType="numeric"
-                    maxLength={4}
+                    placeholder="Paste the url for the product"
+                    onChangeText={setImageUrl}
+                    className="bg-transparent !h-14 text-white border-0"
+                    autoComplete="name"
+                    textContentType="name"
+                    keyboardType="default"
                   />
                 </View>
               </View>
+              <Button
+                onPress={handleAddProduct}
+                className="w-full rounded-full"
+                size={"lg"}
+                variant="default"
+                disabled={loading}
+              >
+                <H5 className=" text-black">
+                  {loading ? "Adding" : "Add New Product"}
+                </H5>
+              </Button>
             </View>
-            <Button
-              onPress={handleAddProduct}
-              className="w-full rounded-full"
-              size={"lg"}
-              variant="default"
-              disabled={loading}
-            >
-              <H5 className=" text-black">
-                {loading ? "Adding" : "Add New Product"}
-              </H5>
-            </Button>
-          </View>
+          </ScrollView>
         </BottomSheetView>
       </BottomSheetModal>
     </>
