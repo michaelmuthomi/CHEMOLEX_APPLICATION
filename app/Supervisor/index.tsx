@@ -11,6 +11,7 @@ import { supabase } from "~/lib/supabase";
 import { WorkflowStatistics } from "~/components/WorkflowStatistics";
 import { RepairItem } from "~/components/RepairItem";
 import { RepairDetailsModal } from "~/components/RepairDetailsModal";
+import { H3 } from "~/components/ui/typography";
 
 type Repair = {
   id: number;
@@ -54,7 +55,6 @@ const SupervisorPage: React.FC = () => {
       const { data, error } = await supabase
         .from("repairs")
         .select("*")
-        // .order("estimatedCompletion", { ascending: true });
 
       if (error) throw error;
       setRepairs(data || []);
@@ -145,9 +145,9 @@ const SupervisorPage: React.FC = () => {
           completedToday={completedToday}
         />
 
-        <Text className="text-xl font-bold text-gray-800 mt-6 mb-4">
+        <H3 className="text-xl text-white mt-6 mb-4">
           Pending Approval
-        </Text>
+        </H3>
         {pendingApprovalRepairs.map((repair) => (
           <RepairItem
             key={repair.id}
@@ -156,9 +156,9 @@ const SupervisorPage: React.FC = () => {
           />
         ))}
 
-        <Text className="text-xl font-bold text-gray-800 mt-6 mb-4">
+        <H3 className="text-xl text-white mt-6 mb-4">
           In Progress
-        </Text>
+        </H3>
         {inProgressRepairs.map((repair) => (
           <RepairItem
             key={repair.id}
