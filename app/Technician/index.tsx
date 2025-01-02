@@ -7,9 +7,10 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { supabase } from "~/lib/supabase";
+import { checkUser , supabase } from "~/lib/supabase";
 import { RepairCard } from "~/components/RepairCard";
 import { RepairDetailsModal } from "~/components/RepairManagerModal";
+import { useEmail } from "../EmailContext";
 
 type RepairStatus = "Assigned" | "In Progress" | "Completed";
 
@@ -25,11 +26,13 @@ type Repair = {
 };
 
 const TechnicianPage: React.FC = () => {
+  const emailContext = useEmail();
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [technicianId, setTechnicianId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRepairs();
@@ -45,17 +48,29 @@ const TechnicianPage: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [technicianId]); // Add technicianId as a dependency
+
+  useEffect(() => {
+    async function fetchUserDetails() {
+      const response = await checkUser (emailContext?.email);
+      console.log("Username", response.full_name);
+      const userId = response.user_id;
+
+      setTechnicianId(userId);
+    }
+    fetchUserDetails();
+  }, [emailContext]);
 
   const fetchRepairs = async () => {
+    if (!technicianId) return; // Don't fetch repairs if technicianId is not set
+
     setIsLoading(true);
     setError(null);
     try {
-      // In a real app, you'd filter repairs by the logged-in technician's ID
       const { data, error } = await supabase
         .from("repairs")
         .select("*")
-        .order("dueDate", { ascending: true });
+        .eq("technician_id", technicianId); // Use technicianId to fetch repairs
 
       if (error) throw error;
       setRepairs(data || []);
