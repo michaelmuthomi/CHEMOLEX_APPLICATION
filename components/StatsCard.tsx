@@ -1,5 +1,5 @@
 import { GalleryVertical } from "lucide-react-native"; // Ensure this is the correct import
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { H4, P } from "./ui/typography";
 
 interface StatsCardProps {
@@ -18,9 +18,9 @@ const StatsCard: React.FC<StatsCardProps> = ({
   return (
     <View className="gap-4 w-1/2">
       <View className="flex items-start">
-        <View className={`p-2 rounded-full w-auto ${iconBgColor}`}>
-          {Icon} {/* Ensure Icon is rendered here */}
-        </View>
+        <TouchableOpacity className={`p-2 rounded-full w-auto ${iconBgColor}`}>
+          {Icon}
+        </TouchableOpacity>
       </View>
       <View>
         <H4 className="text-black">{Title}</H4>
