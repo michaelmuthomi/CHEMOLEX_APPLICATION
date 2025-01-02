@@ -1,167 +1,159 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-} from 'react-native';
-import { ArrowLeft, Tool, ShoppingCart } from 'lucide-react-native';
-import { fetchAssignedRepairs } from '~/lib/supabase';
-import { H2, H4, H5, P } from "~/components/ui/typography";
-import { checkUser } from "~/lib/supabase";
-import { useEmail } from '../EmailContext';
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { supabase } from "~/lib/supabase";
+import { RepairCard } from "~/components/RepairCard";
+import { RepairDetailsModal } from "~/components/RepairManagerModal";
 
+type RepairStatus = "Assigned" | "In Progress" | "Completed";
 
-export default function TechnicianScreen({ navigation }) {
-  const [repairs, setRepairs] = useState<any[]>([]);
-  const [newTool, setNewTool] = useState("");
-  const [customer, setCustomerDetails] = useState([]);
-  const emailContext = useEmail();
+type Repair = {
+  id: number;
+  deviceName: string;
+  deviceType: string;
+  issueDescription: string;
+  status: RepairStatus;
+  dueDate: string;
+  requiredProducts: { name: string; quantity: number }[];
+  repairNotes: string;
+};
+
+const TechnicianPage: React.FC = () => {
+  const [repairs, setRepairs] = useState<Repair[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    async function fetchRepairs() {
-      const response = await fetchAssignedRepairs(22);
-      console.log(response);
-      setRepairs(response);
-    }
-    async function fetchUserDetails() {
-      const response = await checkUser(emailContext?.email);
-      setCustomerDetails(response);
-    }
-    fetchUserDetails();
     fetchRepairs();
+    const subscription = supabase
+      .channel("repairs")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "repairs" },
+        handleRepairChange
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  return (
-    <SafeAreaView>
-      <View className="p-4">
-        <H4>Assigned Repairs</H4>
-        {repairs &&
-          repairs.map((repair) => (
-            <View style={styles.repairItem} key={repair.service_id}>
-              <View>
-                <Text style={styles.deviceName}>{repair.services.name}</Text>
-                <Text style={styles.issueText}>{repair.services.price}</Text>
-                <Text style={styles.status}>Status: {repair.status}</Text>
-              </View>
-              {repair.status !== "complete" && (
-                <TouchableOpacity
-                  style={styles.completeButton}
-                  onPress={() =>
-                    updateRepairStatus(repair.service_id, "Completed")
-                  }
-                >
-                  <Text style={styles.completeButtonText}>
-                    Mark as Completed
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))}
+  const fetchRepairs = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // In a real app, you'd filter repairs by the logged-in technician's ID
+      const { data, error } = await supabase
+        .from("repairs")
+        .select("*")
+        .order("dueDate", { ascending: true });
+
+      if (error) throw error;
+      setRepairs(data || []);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRepairChange = (payload: any) => {
+    fetchRepairs();
+  };
+
+  const handleViewDetails = (repairId: number) => {
+    const repair = repairs.find((r) => r.id === repairId);
+    if (repair) {
+      setSelectedRepair(repair);
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleUpdateStatus = async (
+    repairId: number,
+    newStatus: RepairStatus
+  ) => {
+    try {
+      const { error } = await supabase
+        .from("repairs")
+        .update({ status: newStatus })
+        .eq("id", repairId);
+
+      if (error) throw error;
+
+      Alert.alert("Success", `Repair status updated to ${newStatus}`);
+      setIsModalVisible(false);
+      fetchRepairs();
+    } catch (err) {
+      Alert.alert(
+        "Error",
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-100">
+        <ActivityIndicator size="large" color="#3b82f6" />
       </View>
-    </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-100">
+        <Text className="text-red-500 text-lg">{error}</Text>
+        <TouchableOpacity
+          className="mt-4 bg-blue-500 px-4 py-2 rounded-lg"
+          onPress={fetchRepairs}
+        >
+          <Text className="text-white font-bold">Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View className="flex-1 bg-gray-100">
+      <View className="bg-blue-800 p-6">
+        <Text className="text-3xl font-bold text-white mb-4">
+          Technician Dashboard
+        </Text>
+      </View>
+
+      <ScrollView className="flex-1 p-4">
+        <Text className="text-xl font-bold text-gray-800 mb-4">
+          Your Assigned Repairs
+        </Text>
+        {repairs.map((repair) => (
+          <RepairCard
+            key={repair.id}
+            repair={repair}
+            onViewDetails={handleViewDetails}
+          />
+        ))}
+      </ScrollView>
+
+      <RepairDetailsModal
+        visible={isModalVisible}
+        repair={selectedRepair}
+        onClose={() => setIsModalVisible(false)}
+        onUpdateStatus={handleUpdateStatus}
+      />
+    </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F7FAFC',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  placeholder: {
-    width: 24,
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#2D3748',
-  },
-  repairItem: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  deviceName: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  issueText: {
-    fontSize: 16,
-    color: '#4A5568',
-    marginBottom: 4,
-  },
-  status: {
-    fontSize: 14,
-    color: '#718096',
-    marginBottom: 8,
-  },
-  completeButton: {
-    backgroundColor: '#48BB78',
-    borderRadius: 4,
-    padding: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  completeButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  orderSection: {
-    marginTop: 24,
-  },
-  orderInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  orderInput: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
-    marginRight: 8,
-  },
-  orderButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4299E1',
-    borderRadius: 8,
-    padding: 12,
-  },
-  orderButtonText: {
-    color: '#fff',
-    marginLeft: 8,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-});
-
+export default TechnicianPage;
