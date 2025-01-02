@@ -11,6 +11,9 @@ import { checkUser , supabase } from "~/lib/supabase";
 import { RepairCard } from "~/components/RepairCard";
 import { RepairDetailsModal } from "~/components/RepairManagerModal";
 import { useEmail } from "../EmailContext";
+import { H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { GalleryVertical, ListChecks, ListTodo, MessageCircle } from "lucide-react-native";
+import StatsCard from "~/components/StatsCard";
 
 type RepairStatus = "Assigned" | "In Progress" | "Completed";
 
@@ -52,7 +55,17 @@ const TechnicianPage: React.FC = () => {
 
   useEffect(() => {
     async function fetchUserDetails() {
-      const response = await checkUser (emailContext?.email);
+      if (!emailContext || !emailContext.email) {
+        console.error("Email context is not available");
+        return;
+      }
+
+      const response = await checkUser (emailContext.email);
+      if (!response || !response.user_id) {
+        console.error("User  details could not be fetched");
+        return;
+      }
+
       console.log("Username", response.full_name);
       const userId = response.user_id;
 
@@ -69,11 +82,12 @@ const TechnicianPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from("repairs")
-        .select("*")
+        .select("*, services:service_id(name, description), products:product_id(name)")
         .eq("technician_id", technicianId); // Use technicianId to fetch repairs
 
       if (error) throw error;
       setRepairs(data || []);
+      console.log("repairs", repairs)
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -140,25 +154,54 @@ const TechnicianPage: React.FC = () => {
     );
   }
 
-  return (
-    <View className="flex-1 bg-gray-100">
-      <View className="bg-blue-800 p-6">
-        <Text className="text-3xl font-bold text-white mb-4">
-          Technician Dashboard
-        </Text>
-      </View>
+  const stats = [
+    {
+      iconBgColor: 'bg-blue-600',
+      Icon: <GalleryVertical color="white" size={19} />,
+      Title: 'Assignement',
+      Description: '10 components'
+    },
+    {
+      iconBgColor: 'bg-orange-600',
+      Icon: <ListTodo color="white" size={19} />,
+      Title: 'Pending',
+      Description: '10 components'
+    },
+    {
+      iconBgColor: 'bg-red-600',
+      Icon: <ListChecks color="white" size={19} />,
+      Title: 'Complete',
+      Description: '10 components'
+    },
+    {
+      iconBgColor: 'bg-purple-600',
+      Icon: <MessageCircle color="white" size={19} />,
+      Title: 'Redo',
+      Description: '10 components'
+    },
+  ]
 
-      <ScrollView className="flex-1 p-4">
-        <Text className="text-xl font-bold text-gray-800 mb-4">
-          Your Assigned Repairs
-        </Text>
-        {repairs.map((repair) => (
-          <RepairCard
-            key={repair.id}
-            repair={repair}
-            onViewDetails={handleViewDetails}
-          />
-        ))}
+  return (
+    <View className="flex-1">
+      <ScrollView className="flex-1">
+        <View className="bg-white p-4 gap-6">
+          <H3 className="text-black">Statistics</H3>
+          <View className="flex-row flex-wrap gap-y-6 justify-between">
+            {stats.map(stat => (
+              <StatsCard iconBgColor={stat.iconBgColor} Icon={stat.Icon} Title={stat.Title} Description={stat.Description} />
+            ))}
+          </View>
+        </View>
+        <View className="p-4">
+          <H2 className="text-xl mb-4">Assigned Repairs</H2>
+          {repairs.map((repair) => (
+            <RepairCard
+              key={repair.id}
+              repair={repair}
+              onViewDetails={handleViewDetails}
+            />
+          ))}
+        </View>
       </ScrollView>
 
       <RepairDetailsModal

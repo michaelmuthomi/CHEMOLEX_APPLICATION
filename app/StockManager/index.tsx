@@ -13,9 +13,10 @@ import { StatisticsCard } from "~/components/StatisticsCard";
 import { Input } from "~/components/ui/input";
 import { H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
-import { AlertTriangle, Search } from "lucide-react-native";
+import { AlertTriangle, GalleryVerticalEnd, Layers2, Package2, Search, Truck } from "lucide-react-native";
 import displayNotification from "~/lib/Notification";
 import { AddProduct } from "~/components/sheets/addproduct";
+import StatsCard from "~/components/StatsCard";
 
 type Product = {
   product_id: number;
@@ -49,6 +50,33 @@ const InventoryManagerPage = () => {
     inventoryHealth: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
+
+  const statistics = [
+    {
+      iconBgColor: "bg-blue-600",
+      Icon: <GalleryVerticalEnd color="white" size={19} />,
+      Title: "Total Products",
+      Description: stats.totalProducts + " Products",
+    },
+    {
+      iconBgColor: "bg-orange-600",
+      Icon: <Layers2 color="white" size={19} />,
+      Title: "Low Stock Items",
+      Description: stats.lowStock + " Products",
+    },
+    {
+      iconBgColor: "bg-red-600",
+      Icon: <Truck color="white" size={19} />,
+      Title: "Delivery Rate",
+      Description: stats.deliveryRate + " Products",
+    },
+    {
+      iconBgColor: "bg-purple-600",
+      Icon: <Package2 color="white" size={19} />,
+      Title: "Inventory Health",
+      Description: stats.inventoryHealth + "% Health",
+    },
+  ];
 
   useEffect(() => {
     fetchProducts();
@@ -185,36 +213,17 @@ const InventoryManagerPage = () => {
 
   return (
     <ScrollView className="flex-1">
-      <View className="bg-zinc-900 p-4">
-        <View className="flex-row flex-wrap -mx-2">
-          <View className="w-1/2 px-2 mb-4">
-            <StatisticsCard
-              title="Total Products"
-              value={stats.totalProducts}
-              trend={{ value: 8.0, isPositive: true }}
+      <View className="bg-white p-4 gap-6">
+        <H3 className="text-black">Statistics</H3>
+        <View className="flex-row flex-wrap gap-y-6 justify-between">
+          {statistics.map((stat) => (
+            <StatsCard
+              iconBgColor={stat.iconBgColor}
+              Icon={stat.Icon}
+              Title={stat.Title}
+              Description={stat.Description}
             />
-          </View>
-          <View className="w-1/2 px-2 mb-4">
-            <StatisticsCard
-              title="Low Stock Items"
-              value={stats.lowStock}
-              trend={{ value: 2.3, isPositive: false }}
-            />
-          </View>
-          <View className="w-1/2 px-2 mb-4">
-            <StatisticsCard
-              title="Delivery Rate"
-              value={`${stats.deliveryRate}%`}
-              trend={{ value: 1.2, isPositive: true }}
-            />
-          </View>
-          <View className="w-1/2 px-2 mb-4">
-            <StatisticsCard
-              title="Inventory Health"
-              value={`${stats.inventoryHealth}%`}
-              trend={{ value: 4.5, isPositive: true }}
-            />
-          </View>
+          ))}
         </View>
       </View>
 

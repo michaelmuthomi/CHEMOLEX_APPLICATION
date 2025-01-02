@@ -1,13 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Clock, Smartphone, Tool } from "lucide-react-native";
+import { Clock, Smartphone } from "lucide-react-native";
 
-type RepairCardProps = {
-  repair: Repair;
-  onViewDetails: (repairId: number) => void;
-};
 
-export const RepairCard: React.FC<RepairCardProps> = ({
+export const RepairCard = ({
   repair,
   onViewDetails,
 }) => {
@@ -32,18 +28,18 @@ export const RepairCard: React.FC<RepairCardProps> = ({
           {repair.status}
         </Text>
       </View>
-      <Text className="text-gray-600 mb-2">{repair.deviceName}</Text>
+      <Text className="text-gray-600 mb-2">{repair.products.name}</Text>
       <View className="flex-row items-center mb-1">
         <Smartphone className="w-4 h-4 text-gray-400 mr-2" />
-        <Text className="text-sm text-gray-600">{repair.deviceType}</Text>
+        <Text className="text-sm text-gray-600">{repair.services.name}</Text>
       </View>
       <View className="flex-row items-center mb-1">
-        <Tool className="w-4 h-4 text-gray-400 mr-2" />
-        <Text className="text-sm text-gray-600">{repair.issueDescription}</Text>
+        {/* <Tool className="w-4 h-4 text-gray-400 mr-2" /> */}
+        <Text className="text-sm text-gray-600">{repair.services.description}</Text>
       </View>
       <View className="flex-row items-center">
         <Clock className="w-4 h-4 text-gray-400 mr-2" />
-        <Text className="text-sm text-gray-600">Due: {repair.dueDate}</Text>
+        <Text className="text-sm text-gray-600">Due: {repair.created_at}</Text>
       </View>
     </TouchableOpacity>
   );
