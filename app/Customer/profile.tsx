@@ -21,15 +21,19 @@ import {
   ShoppingBag,
   X,
   Star,
-} from 'lucide-react-native';
-import { H2, H3, H4, H5, P } from '~/components/ui/typography';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { useEmail } from '~/app/EmailContext';
-import { checkUser, fetchCustomerOrders, submitFeedback } from '~/lib/supabase';
-import { formatPrice } from '~/lib/format-price';
-import displayNotification from '~/lib/Notification';
-import { useNavigation } from 'expo-router';
+  ArrowRight,
+} from "lucide-react-native";
+import { H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { useEmail } from "~/app/EmailContext";
+import { checkUser, fetchCustomerOrders, submitFeedback } from "~/lib/supabase";
+import { formatPrice } from "~/lib/format-price";
+import displayNotification from "~/lib/Notification";
+import { useNavigation } from "expo-router";
+import { ManageDetails } from '~/components/sheets/manage/details';
+import { ManageOrders } from '~/components/sheets/manage/orders';
+import { ManageReviews } from '~/components/sheets/manage/review';
 
 interface customer {
   full_name: string;
@@ -49,95 +53,104 @@ interface OrderItem {
 interface Order {
   id: string;
   date: string;
-  status: 'processing' | 'shipped' | 'delivered' | 'returned';
+  status: "processing" | "shipped" | "delivered" | "returned";
   total: number;
   items: OrderItem[];
   trackingNumber?: string;
 }
 
-const menuItems = [
+const personalInformationModalTrigger = [
   {
     id: "personal",
     title: "Personal Information",
     description: "Update your profile details and preferences",
     icon: User,
     screen: "personal",
-  },
+    iconBgColor: "bg-blue-600",
+  }
+];
+
+const ordersModalTrigger =[
   {
     id: "orders",
     title: "Orders & Returns",
     description: "Track orders and manage returns",
     icon: ShoppingBag,
     screen: "orders",
+    iconBgColor: "bg-orange-600",
   },
+]
+
+const reviewModalTrigger = [
   {
     id: "review",
     title: "Products review",
     description: "Tell us about your experience with our products",
     icon: DollarSign,
     screen: "review",
+    iconBgColor: "bg-purple-600",
   },
-];
+]
 
 const mockOrders: Order[] = [
   {
-    id: 'ORD001',
-    date: '2024-01-15',
-    status: 'delivered',
+    id: "ORD001",
+    date: "2024-01-15",
+    status: "delivered",
     total: 129.99,
     items: [
       {
-        id: 'ITEM001',
-        name: 'Wireless Earbuds',
+        id: "ITEM001",
+        name: "Wireless Earbuds",
         price: 79.99,
         quantity: 1,
-        image: 'https://picsum.photos/200',
+        image: "https://picsum.photos/200",
       },
       {
-        id: 'ITEM002',
-        name: 'Phone Case',
+        id: "ITEM002",
+        name: "Phone Case",
         price: 24.99,
         quantity: 2,
-        image: 'https://picsum.photos/200',
+        image: "https://picsum.photos/200",
       },
     ],
-    trackingNumber: '1Z999AA1234567890',
+    trackingNumber: "1Z999AA1234567890",
   },
   {
-    id: 'ORD002',
-    date: '2024-01-20',
-    status: 'shipped',
+    id: "ORD002",
+    date: "2024-01-20",
+    status: "shipped",
     total: 199.99,
     items: [
       {
-        id: 'ITEM003',
-        name: 'Smart Watch',
+        id: "ITEM003",
+        name: "Smart Watch",
         price: 199.99,
         quantity: 1,
-        image: 'https://picsum.photos/200',
+        image: "https://picsum.photos/200",
       },
     ],
-    trackingNumber: '1Z999AA1234567891',
+    trackingNumber: "1Z999AA1234567891",
   },
   {
-    id: 'ORD003',
-    date: '2024-01-25',
-    status: 'processing',
+    id: "ORD003",
+    date: "2024-01-25",
+    status: "processing",
     total: 49.99,
     items: [
       {
-        id: 'ITEM004',
-        name: 'Power Bank',
+        id: "ITEM004",
+        name: "Power Bank",
         price: 49.99,
         quantity: 1,
-        image: 'https://picsum.photos/200',
+        image: "https://picsum.photos/200",
       },
     ],
   },
 ];
 
 export default function Tab() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [customer, setCustomerDetails] = useState([]);
@@ -146,7 +159,7 @@ export default function Tab() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
 
   const handleMenuPress = (screen) => {
     setActiveModal(screen);
@@ -168,35 +181,35 @@ export default function Tab() {
         setOrders(response);
       }
     }
-    fetchOrders()
-  }, [customer])
+    fetchOrders();
+  }, [customer]);
 
   const handleSavecustomer = () => {
     // TODO: Implement API call to save user info
-    displayNotification("Profile updated successfully", 'success');
+    displayNotification("Profile updated successfully", "success");
     setIsEditing(false);
   };
 
-  const getStatusColor = (status: Order['status']) => {
+  const getStatusColor = (status: Order["status"]) => {
     switch (status) {
-      case 'processing':
-        return 'text-yellow-500';
-      case 'shipped':
-        return 'text-blue-500';
-      case 'delivered':
-        return 'text-green-500';
-      case 'returned':
-        return 'text-red-500';
+      case "processing":
+        return "text-yellow-500";
+      case "shipped":
+        return "text-blue-500";
+      case "delivered":
+        return "text-green-500";
+      case "returned":
+        return "text-red-500";
       default:
-        return 'text-zinc-500';
+        return "text-zinc-500";
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -212,31 +225,28 @@ export default function Tab() {
       // service_id: order.product_id,
       order_id: order.order_id,
       rating: rating,
-      comments: comment
+      comments: comment,
     };
 
     const response = await submitFeedback(feedback);
-    if (typeof response === 'string' && response.startsWith('Error')) {
-      displayNotification(response, 'danger');
+    if (typeof response === "string" && response.startsWith("Error")) {
+      displayNotification(response, "danger");
     } else {
       displayNotification("Review submitted successfully", "success");
       setSelectedProduct(null);
       setRating(0);
-      setComment('');
+      setComment("");
     }
   };
 
   const renderStars = () => (
     <View className="flex-row justify-center space-x-2 py-4">
       {[1, 2, 3, 4, 5].map((star) => (
-        <TouchableOpacity
-          key={star}
-          onPress={() => setRating(star)}
-        >
+        <TouchableOpacity key={star} onPress={() => setRating(star)}>
           <Star
             size={32}
-            color={star <= rating ? '#FCD34D' : '#374151'}
-            fill={star <= rating ? '#FCD34D' : 'none'}
+            color={star <= rating ? "#FCD34D" : "#374151"}
+            fill={star <= rating ? "#FCD34D" : "none"}
           />
         </TouchableOpacity>
       ))}
@@ -610,40 +620,89 @@ export default function Tab() {
         </View>
 
         {/* Menu Items */}
-        <View className="p-4 space-y-4">
-          {menuItems.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              className="flex-row items-center p-4 bg-zinc-950 rounded-2xl"
-              onPress={() => handleMenuPress(item.screen)}
-            >
-              <View className="p-3 rounded-full">
-                <item.icon size={20} color="#fff" />
-              </View>
-              <View className="flex-1 ml-4">
-                <H4 className="text-white">{item.title}</H4>
-                <P className="text-sm text-zinc-500">{item.description}</P>
-              </View>
-              <ChevronRight size={20} color="#fff" />
-            </TouchableOpacity>
+        <View className="p-4 gap-10">
+          {personalInformationModalTrigger.map((item) => (
+            <ManageDetails
+              sheetTrigger={
+                <TouchableOpacity key={item.id} className="bg-zinc-950 rounded-2xl gap-2">
+                  <View className="flex items-start">
+                    <TouchableOpacity
+                      className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
+                    >
+                      <item.icon size={20} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                  <View className="flex-row items-center">
+                    <View className="flex-1">
+                      <H4 className="text-white">{item.title}</H4>
+                      <P className="text-sm text-zinc-500 w-3/4">
+                        {item.description}
+                      </P>
+                    </View>
+                    <ArrowRight size={20} color="#aaa" />
+                  </View>
+                </TouchableOpacity>
+              }
+            />
+          ))}
+          {ordersModalTrigger.map((item) => (
+            <ManageOrders
+              sheetTrigger={
+                <TouchableOpacity key={item.id} className="bg-zinc-950 rounded-2xl gap-2">
+                  <View className="flex items-start">
+                    <TouchableOpacity
+                      className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
+                    >
+                      <item.icon size={20} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                  <View className="flex-row items-center">
+                    <View className="flex-1">
+                      <H4 className="text-white">{item.title}</H4>
+                      <P className="text-sm text-zinc-500 w-3/4">
+                        {item.description}
+                      </P>
+                    </View>
+                    <ArrowRight size={20} color="#aaa" />
+                  </View>
+                </TouchableOpacity>
+              }
+            />
+          ))}
+          {reviewModalTrigger.map((item) => (
+            <ManageReviews
+              sheetTrigger={
+                <TouchableOpacity key={item.id} className="bg-zinc-950 rounded-2xl gap-2">
+                  <View className="flex items-start">
+                    <TouchableOpacity
+                      className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
+                    >
+                      <item.icon size={20} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                  <View className="flex-row items-center">
+                    <View className="flex-1">
+                      <H4 className="text-white">{item.title}</H4>
+                      <P className="text-sm text-zinc-500 w-3/4">
+                        {item.description}
+                      </P>
+                    </View>
+                    <ArrowRight size={20} color="#aaa" />
+                  </View>
+                </TouchableOpacity>
+              }
+            />
           ))}
         </View>
 
         {/* Logout Button */}
-        <View className="p-4 pt-8">
-          <Button
-            onPress={() => {
-              navigation.navigate("LoginScreen");
-            }}
-            className="w-full rounded-full"
-            size={"lg"}
-            variant="default"
-          >
-            <H5 className=" text-black">
-              {"Logout Now "}
-            </H5>
-          </Button>
-        </View>
+        <TouchableOpacity
+          className="flex-row items-center p-4 mt-auto bg-red-200"
+          onPress={() => navigation.navigate("LoginScreen")}
+        >
+          <H3 className="text-sm text-[#555]">Log out</H3>
+          <ArrowRight size={15} color="#555" className="ml-auto" />
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Modals */}
