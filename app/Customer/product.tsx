@@ -43,7 +43,7 @@ export default function Tab() {
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
-    navigation.navigate("CartScreen");
+    navigation.navigate("cart");
   };
 
   return (

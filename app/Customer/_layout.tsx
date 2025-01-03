@@ -85,6 +85,12 @@ export default function CustomerTabs() {
               href: null,
             }}
           />
+          <Tabs.Screen
+            name="checkout"
+            options={{
+              href: null,
+            }}
+          />
         </Tabs>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
