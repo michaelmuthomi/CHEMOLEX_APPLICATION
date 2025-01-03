@@ -12,11 +12,17 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useCart } from "~/lib/cart-context";
-import { BackpackIcon } from "lucide-react-native";
+import { ArrowLeft, BackpackIcon } from "lucide-react-native";
+import { TouchableOpacity, View } from "react-native";
+import { H2, H4 } from "~/components/ui/typography";
+import { useRouter, useNavigation } from "expo-router";
 
 export default function CustomerTabs() {
   const { getCartQuantity } = useCart();
   const cartQuantity = getCartQuantity();
+  const router = useRouter();
+  const navigation = useNavigation();
+
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
@@ -84,6 +90,24 @@ export default function CustomerTabs() {
             name="product"
             options={{
               href: null,
+              headerShown: true,
+              tabBarStyle: { display: "none" },
+              headerLeft: () => (
+                <TouchableOpacity
+                  className="px-4"
+                  onPress={() => router.back()}
+                >
+                  <ArrowLeft size={19} color="white" />
+                </TouchableOpacity>
+              ),
+              headerTitle: () => (
+                <View className="flex items-center justify-center">
+                  <H4 className="text-xl text-center border-b-0 leading-0">
+                    Product Details
+                  </H4>
+                </View>
+              ),
+              headerTitleAlign: "center",
             }}
           />
           <Tabs.Screen
@@ -91,7 +115,7 @@ export default function CustomerTabs() {
             options={{
               href: null,
               headerShown: true,
-              headerTitle: "" 
+              headerTitle: "",
             }}
           />
         </Tabs>
