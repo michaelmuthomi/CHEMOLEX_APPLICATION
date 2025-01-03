@@ -20,10 +20,8 @@ export default function Tab() {
   const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
 
   return (
-    <SafeAreaView className="flex-1 pt-14 p-4">
-      <ScrollView className="flex-1 h-full">
-        <H1>Cart</H1>
-
+    <SafeAreaView className="flex-1">
+      <ScrollView className="pt-4 p-4">
         {items.map((item) => (
           <View key={item.product_id}>
             <View className="flex-row items-center gap-4 py-4">
@@ -72,35 +70,50 @@ export default function Tab() {
             </View>
           </View>
         ))}
-
-        {items.length > 0 ? (
+      </ScrollView>
+      {items.length > 0 ? (
+        <View>
+          <View className="w-full gap-4 p-2">
+            <View className="flex-row justify-between">
+              <P>Subtotal</P>
+              <P>{formatPrice(getCartTotal())}</P>
+            </View>
+            <View className="flex-row justify-between">
+              <P>Shipping</P>
+              <P>Free</P>
+            </View>
+            <View className="flex-row justify-between">
+              <H4>Total</H4>
+              <H4>{formatPrice(getCartTotal())}</H4>
+            </View>
+          </View>
           <Button
-            variant="outline"
-            className="p-4 rounded-full flex-row justify-between items-center mt-auto"
+            className="rounded-full mx-4 mb-4"
+            size={"lg"}
+            variant="default"
             onPress={() => navigation.navigate("checkout")}
           >
-            <P className="text-white">Continue to checkout</P>
-            <P className="text-white">{formatPrice(getCartTotal())}</P>
+            <H5 className=" text-black">{"Proceed to checkout"} &rarr;</H5>
           </Button>
-        ) : (
-          <View className="gap-6">
-            <Image
-              source={require("~/assets/images/EmptyCart.png")}
-              className="w-full h-full rounded-t-lg scale-90"
-              resizeMode="contain"
-            />
-            <H3 className="text-center">Your Basket is empty :(</H3>
-            <H4 className="text-center text-zinc-400 leading-relaxed">
-              Looks like you haven't added anything {"\n"} to your cart yet
+        </View>
+      ) : (
+        <View className="gap-6">
+          <Image
+            source={require("~/assets/images/EmptyCart.png")}
+            className="w-full h-full rounded-t-lg scale-90"
+            resizeMode="contain"
+          />
+          <H3 className="text-center">Your Basket is empty :(</H3>
+          <H4 className="text-center text-zinc-400 leading-relaxed">
+            Looks like you haven't added anything {"\n"} to your cart yet
+          </H4>
+          <TouchableOpacity onPress={() => navigation.navigate("index")}>
+            <H4 className="text-orange-400 text-base text-center">
+              Start Shopping
             </H4>
-            <TouchableOpacity onPress={() => navigation.navigate("index")}>
-              <H4 className="text-orange-400 text-base text-center">
-                Start Shopping
-              </H4>
-            </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

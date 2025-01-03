@@ -74,8 +74,26 @@ export default function CustomerTabs() {
                   color={color}
                 />
               ),
+              tabBarStyle: { display: "none" },
+              headerShown: true,
               tabBarBadge: cartQuantity || undefined,
               tabBarBadgeStyle: { backgroundColor: "#6366f1" },
+              headerLeft: () => (
+                <TouchableOpacity
+                  className="px-4"
+                  onPress={() => router.back()}
+                >
+                  <ArrowLeft size={19} color="white" />
+                </TouchableOpacity>
+              ),
+              headerTitle: () => (
+                <View className="flex items-center justify-center">
+                  <H4 className="text-xl text-center border-b-0 leading-0">
+                    Cart
+                  </H4>
+                </View>
+              ),
+              headerTitleAlign: "center",
             }}
           />
           <Tabs.Screen
