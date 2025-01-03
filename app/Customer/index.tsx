@@ -32,8 +32,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEmail } from "~/app/EmailContext";
 import { Link, useNavigation } from "expo-router";
 import StatsCard from "~/components/StatsCard";
+import { NavigationProp } from '@react-navigation/native';
 
 const { width } = Dimensions.get("window");
+
+type RootStackParamList = {
+  search: undefined;
+  product: { product: string };
+};
+
+const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
 const stats = [
   {
@@ -76,8 +84,12 @@ const promotions = [
 ];
 
 export default function Tab() {
-  const navigation = useNavigation();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Array<{
+    product_id: string;
+    name: string;
+    price: number;
+    image_url: string;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
@@ -141,7 +153,11 @@ export default function Tab() {
             <TouchableOpacity
               key={product.product_id}
               className="w-[250px] bg-[#111] rounded-md shadow p-2"
-              onPress={() => navigation.navigate("product", { product })}
+              onPress={() => 
+                navigation.navigate("product", { 
+                  product: JSON.stringify(product) 
+                })
+              }
             >
               <Image
                 source={{ uri: product.image_url }}
@@ -176,7 +192,11 @@ export default function Tab() {
             <TouchableOpacity
               key={product.product_id}
               className="rounded-lg shadow w-1/2 p-2"
-              onPress={() => navigation.navigate("product", { product })}
+              onPress={() => 
+                navigation.navigate("product", { 
+                  product: JSON.stringify(product) 
+                })
+              }
             >
               <Image
                 source={{ uri: product.image_url }}

@@ -24,14 +24,16 @@ import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 
 export default function Tab() {
   const navigation = useNavigation();
-  const route = useRouter(); // Use this hook to get route in Expo Router
+  const params = useLocalSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  const product = useLocalSearchParams()
+  const product = params.product ? JSON.parse(params.product) : null;
 
   if (!product) {
-    return <H1 className="flex-1 bg-red-200 justify-center items-center">Product not found</H1>;
+    return (
+      <H1 className="flex-1 justify-center items-center">Product not found</H1>
+    );
   }
   console.log("Product via Path: ", product);
 

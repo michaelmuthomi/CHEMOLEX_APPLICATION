@@ -70,9 +70,9 @@ const categories = [
   },
 ];
 
-export default function Tab({navigation}) {
-  // const navigation = useNavigation();
-  const route = useRoute(); // Using hook to get the route
+export default function Tab() {
+  const navigation = useNavigation();
+  const route = useRoute(); 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
     route.params?.category || null
@@ -214,7 +214,7 @@ export default function Tab({navigation}) {
             <TouchableOpacity
               key={product.product_id}
               className="w-full bg-[#111] rounded-lg shadow p-2"
-              onPress={() => navigation.navigate("ProductScreen", { product })}
+              onPress={() => navigation.navigate("product", { product })}
             >
               <View className="mt-2">
                 <H4 numberOfLines={2}>{product.name}</H4>
