@@ -186,7 +186,7 @@ export default function Screen() {
                 { label: "Supervisor", value: "supervisor" },
                 { label: "Technician", value: "technician" },
                 { label: "Supplier", value: "supplier" },
-                { label: "Finance", value: "finance" },
+                { label: "Driver", value: "driver" },
               ]}
               maxHeight={300}
               labelField="label"

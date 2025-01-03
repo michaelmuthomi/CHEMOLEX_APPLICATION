@@ -33,7 +33,7 @@ type Repair = {
   repairNotes: string;
 };
 
-const SupplierPage: React.FC = () => {
+const DriverPage: React.FC = () => {
   const emailContext = useEmail();
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -206,7 +206,7 @@ const SupplierPage: React.FC = () => {
           </View>
         </View>
         <View className="p-4">
-          <H2 className="text-xl mb-4">Assigned Repairs</H2>
+          <H2 className="text-xl mb-4">Assigned Deliveries</H2>
           {repairs.map((repair) => (
             <RepairCard
               key={repair.id}
@@ -227,4 +227,4 @@ const SupplierPage: React.FC = () => {
   );
 };
 
-export default SupplierPage;
+export default DriverPage;

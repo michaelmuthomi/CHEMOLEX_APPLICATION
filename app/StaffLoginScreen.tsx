@@ -94,6 +94,18 @@ export default function Screen() {
               params: { email: email },
             });
             break;
+          case "supplier":
+            router.push({
+              pathname: "Supplier",
+              params: { email: email },
+            });
+            break;
+          case "driver":
+            router.push({
+              pathname: "Driver",
+              params: { email: email },
+            });
+            break;
           default:
             displayNotification("Invalid role or access denied", "danger");
             return;

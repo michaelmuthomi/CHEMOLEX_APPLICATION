@@ -131,10 +131,9 @@ export default function RootLayout({navigation}: any) {
               name="StockManager"
               options={{ headerShown: false }}
             />
-            <Stack.Screen
-              name="Supervisor"
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="Supervisor" options={{ headerShown: false }} />
+            <Stack.Screen name="Driver" options={{ headerShown: false }} />
+            <Stack.Screen name="Supplier" options={{ headerShown: false }} />
             <Stack.Screen
               name="ForgotPassword"
               options={{ headerShown: true, headerTitle: "" }}
