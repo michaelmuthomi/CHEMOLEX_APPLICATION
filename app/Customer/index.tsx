@@ -124,115 +124,42 @@ export default function Tab() {
     </View>
   );
 
-  const renderPromotions = () => (
-    <View className="mt-8">
-      <H3 className="px-6 mb-4 uppercase text-lg">Special Offers</H3>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="pl-6"
-      >
-        {promotions.map((promo) => (
-          <TouchableOpacity
-            key={promo.id}
-            className="mr-4 rounded-xl overflow-hidden"
-            style={{ width: width * 0.8, height: 120 }}
-            onPress={() => navigation.navigate("search")}
-          >
-            <ImageBackground
-              source={{ uri: promo.image }}
-              className="w-full h-full justify-center p-4"
-              imageStyle={{ opacity: 0.7 }}
-              style={{ backgroundColor: promo.backgroundColor }}
-            >
-              <H3 className="text-white">{promo.title}</H3>
-              <P className="text-white opacity-80">{promo.description}</P>
-            </ImageBackground>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
-  );
-
-  const renderQuickLinks = () => (
-    <View className="flex-row justify-between px-6 py-6">
-      <TouchableOpacity
-        className="items-center opacity-80"
-        onPress={() => navigation.navigate("search", { sort: "trending" })}
-      >
-        <View className="bg-zinc-800 p-3 rounded-full mb-2">
-          <TrendingUp size={24} color="#fff" />
-        </View>
-        <P>Trending</P>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="items-center opacity-80"
-        onPress={() => navigation.navigate("search", { filter: "new" })}
-      >
-        <View className="bg-zinc-800 p-3 rounded-full mb-2">
-          <Star size={24} color="#fff" />
-        </View>
-        <P>New</P>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="items-center opacity-80"
-        onPress={() => navigation.navigate("search", { filter: "popular" })}
-      >
-        <View className="bg-zinc-800 p-3 rounded-full mb-2">
-          <Package size={24} color="#fff" />
-        </View>
-        <P>Popular</P>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="items-center opacity-80"
-        onPress={() => navigation.navigate("search", { filter: "recent" })}
-      >
-        <View className="bg-zinc-800 p-3 rounded-full mb-2">
-          <Clock size={24} color="#fff" />
-        </View>
-        <P>Recent</P>
-      </TouchableOpacity>
-    </View>
-  );
-
   const renderProducts = () => (
-    <View className="mt-10 bg-[#111] py-4">
-      <View className="flex-row items-center justify-between mb-4 px-4">
-        <H3 className="text-2xl">Popular</H3>
-        <TouchableOpacity
-          className="flex-row items-centeri"
-          onPress={() => navigation.navigate("search")}
-        >
-          <H3 className="text-sm text-[#555] px-2">See All</H3>
-          <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
-        </TouchableOpacity>
+    <View className="mt-10 bg-[#111] py-4 px-2">
+      <View className="flex-row justify-between items-center w-full">
+        <H3 className="flex-1 text-xl">Featured Products</H3>
+        <Link href="/Customer/search" className="">
+          <H4 className="text-white text-sm">View More &rarr;</H4>
+        </Link>
       </View>
-      <View className="flex-row flex-wrap">
-        {products.slice(0, 4).map((product) => (
-          <TouchableOpacity
-            key={product.product_id}
-            className="w-1/2 bg-[#111] rounded-lg shadow p-2"
-            onPress={() => navigation.navigate("product", { product })}
-          >
-            <Image
-              source={{ uri: product.image_url }}
-              className="w-full h-32 rounded-lg mb-2"
-              resizeMode="cover"
-            />
-            <P numberOfLines={2} className="mb-1 text-base">
-              {product.name}
-            </P>
-            <P className="text-sm">{formatPrice(product.price)}</P>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <ScrollView horizontal>
+        <View className="flex-row">
+          {products.slice(0, 4).map((product) => (
+            <TouchableOpacity
+              key={product.product_id}
+              className="w-[250px] bg-[#111] rounded-md shadow p-2"
+              onPress={() => navigation.navigate("product", { product })}
+            >
+              <Image
+                source={{ uri: product.image_url }}
+                className="w-full h-40 rounded-lg mb-2"
+                resizeMode="cover"
+              />
+              <H3 numberOfLines={1} className="text-2xl">
+                {product.name}
+              </H3>
+              <H4 className="text-sm">{formatPrice(product.price)}</H4>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
   const renderAllProducts = () => {
     return (
       <View className="mt-14">
-        <View className="flex-row items-center justify-between mb-4 px-6">
-          <H3 className="text-2xl w-max">Recommended</H3>
+        <View className="flex-row items-center justify-between mb-4 px-2">
+          <H3 className="flex-1 text-xl">Recommendations</H3>
           <TouchableOpacity
             className="flex-row items-center"
             onPress={() => navigation.navigate("search")}
@@ -250,7 +177,7 @@ export default function Tab() {
             >
               <Image
                 source={{ uri: product.image_url }}
-                className="w-full h-48 rounded-t-lg"
+                className="w-full h-32 rounded-lg mb-2"
                 resizeMode="cover"
               />
               <View className="">
@@ -290,13 +217,13 @@ export default function Tab() {
               Welcome to Refnet
             </H2>
           </View>
-          <Image
+          {/* <Image
             source={require("~/assets/images/Background.png")}
             className="w-full h-48 rounded-t-lg"
             resizeMode="cover"
-          />
+          /> */}
           {renderFeaturedCategories()}
-          {renderPromotions()}
+          {/* {renderPromotions()} */}
           {renderProducts()}
           {renderAllProducts()}
           <View className="h-20" />
