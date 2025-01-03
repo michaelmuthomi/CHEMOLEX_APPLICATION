@@ -133,7 +133,22 @@ export default function CustomerTabs() {
             options={{
               href: null,
               headerShown: true,
-              headerTitle: "",
+              headerLeft: () => (
+                <TouchableOpacity
+                  className="px-4"
+                  onPress={() => router.back()}
+                >
+                  <ArrowLeft size={19} color="white" />
+                </TouchableOpacity>
+              ),
+              headerTitle: () => (
+                <View className="flex items-center justify-center">
+                  <H4 className="text-xl text-center border-b-0 leading-0">
+                    Checkout
+                  </H4>
+                </View>
+              ),
+              headerTitleAlign: "center",
             }}
           />
         </Tabs>

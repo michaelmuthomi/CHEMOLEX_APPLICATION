@@ -82,7 +82,7 @@ export default function Tab() {
               <P>Shipping</P>
               <P>Free</P>
             </View>
-            <View className="flex-row justify-between">
+            <View className="flex-row justify-between border-t-[1px] border-zinc-800 pt-2">
               <H4>Total</H4>
               <H4>{formatPrice(getCartTotal())}</H4>
             </View>

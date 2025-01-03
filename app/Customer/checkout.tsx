@@ -348,23 +348,31 @@ export default function CheckoutScreen({ navigation }) {
           </View>
         </View>
       </View>
-      <Button
-        onPress={handleShippingSubmit}
-        className="w-full rounded-full"
-        size={"lg"}
-        variant="default"
-      >
-        <H5 className=" text-black">{"Continue to Payment"}</H5>
-      </Button>
+      <View className="flex-row gap-4 w-full justify-between">
+        <Button
+          onPress={handleBackStep}
+          className="rounded-full border-[1px] border-white bg-transparent"
+          size={"lg"}
+          variant="default"
+          disabled
+        >
+          <H5 className=" text-white">&larr; {" Back"}</H5>
+        </Button>
+        <Button
+          onPress={handleShippingSubmit}
+          className="rounded-full flex-1"
+          size={"lg"}
+          variant="default"
+        >
+          <H5 className=" text-black">{"Continue"}</H5>
+        </Button>
+      </View>
     </View>
   );
 
   const renderPaymentForm = () => (
     <View className="gap-10">
       <View className="flex-row items-center gap-2">
-        <TouchableOpacity onPress={handleBackStep}>
-          <ChevronLeft size={24} color="#fff" />
-        </TouchableOpacity>
         <View>
           <H3>Choose a Payment Method</H3>
           <P className="text-gray-500">
@@ -445,23 +453,30 @@ export default function CheckoutScreen({ navigation }) {
           </View>
         </View>
       </View>
-      <Button
-        onPress={handlePaymentSubmit}
-        className="w-full rounded-full"
-        size={"lg"}
-        variant="default"
-      >
-        <H5 className=" text-black">{"Review Order"}</H5>
-      </Button>
+      <View className="flex-row gap-4 w-full justify-between">
+        <Button
+          onPress={handleBackStep}
+          className="rounded-full border-[1px] border-white bg-transparent"
+          size={"lg"}
+          variant="default"
+        >
+          <H5 className="text-white">&larr; {" Back"}</H5>
+        </Button>
+        <Button
+          onPress={handlePaymentSubmit}
+          className="rounded-full flex-1"
+          size={"lg"}
+          variant="default"
+        >
+          <H5 className=" text-black">{"Review Order"}</H5>
+        </Button>
+      </View>
     </View>
   );
 
   const renderOrderReview = () => (
     <View className="gap-10">
       <View className="flex-row items-center gap-2">
-        <TouchableOpacity onPress={handleBackStep}>
-          <ChevronLeft size={24} color="#fff" />
-        </TouchableOpacity>
         <View>
           <H3>Please confirm and submit order</H3>
           <P className="text-gray-500">
@@ -522,14 +537,24 @@ export default function CheckoutScreen({ navigation }) {
             <H4>{formatPrice(getCartTotal())}</H4>
           </View>
         </View>
-        <Button
-          onPress={handlePlaceOrder}
-          className="w-full rounded-full"
-          size={"lg"}
-          variant="default"
-        >
-          <H5 className=" text-black">{"Place Order"}</H5>
-        </Button>
+        <View className="flex-row gap-4 w-full justify-between">
+          <Button
+            onPress={handleBackStep}
+            className="rounded-full border-[1px] border-white bg-transparent"
+            size={"lg"}
+            variant="default"
+          >
+            <H5 className=" text-white">&larr; {" Back"}</H5>
+          </Button>
+          <Button
+            onPress={handlePlaceOrder}
+            className="rounded-full flex-1"
+            size={"lg"}
+            variant="default"
+          >
+            <H5 className="text-black">{"Place Order"}</H5>
+          </Button>
+        </View>
       </View>
     </View>
   );
@@ -537,69 +562,54 @@ export default function CheckoutScreen({ navigation }) {
   return (
     <SafeAreaView className="flex-1">
       <ScrollView style={styles.scrollView}>
-        <View style={styles.steps} className="py-10">
-          <View style={styles.step}>
+        <View style={styles.steps}>
+          <View className="flex-row items-center gap-2">
             <View
-              style={[
-                currentStep === "shipping"
-                  ? styles.stepCircleActive
-                  : styles.stepCircleInactive,
-              ]}
-              className="!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center"
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep === "shipping" ? "bg-green-500" : "!bg-[#2c2c2c]"
+              }`}
             >
-              <P
-                style={
-                  currentStep === "shipping"
-                    ? styles.stepTextActive
-                    : styles.stepTextInactive
-                }
-              >
-                1
-              </P>
+              <P> 1 </P>
             </View>
-            <P style={styles.stepLabel}>Shipping</P>
+            <H4
+              className={`text-base ${
+                currentStep === "shipping" ? "text-white" : "text-zinc-400"
+              }`}
+            >
+              Shipping
+            </H4>
           </View>
-          <View style={styles.step}>
+          <View className="flex-row items-center gap-2">
             <View
-              style={[
-                currentStep === "payment"
-                  ? styles.stepCircleActive
-                  : styles.stepCircleInactive,
-              ]}
-              className="!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center"
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep === "payment" ? "bg-green-500" : "!bg-[#2c2c2c]"
+              }`}
             >
-              <P
-                style={
-                  currentStep === "payment"
-                    ? styles.stepTextActive
-                    : styles.stepTextInactive
-                }
-              >
-                2
-              </P>
+              <P> 2 </P>
             </View>
-            <P style={styles.stepLabel}>Payment</P>
+            <H4
+              className={`text-base ${
+                currentStep === "payment" ? "text-white" : "text-zinc-400"
+              }`}
+            >
+              Payment
+            </H4>
           </View>
-          <View style={styles.step}>
+          <View className="flex-row items-center gap-2">
             <View
-              style={[
-                currentStep === "review"
-                  ? styles.stepCircleActive
-                  : styles.stepCircleInactive,
-              ]}
-              className="!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center"
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep === "review" ? "bg-green-500" : "!bg-[#2c2c2c]"
+              }`}
             >
-              <P
-                style={
-                  currentStep === "review"
-                    ? styles.stepTextActive
-                    : styles.stepTextInactive
-                }
-              >
-                3
-              </P>
+              <P> 3 </P>
             </View>
-            <P style={styles.stepLabel}>Review</P>
+            <H4
+              className={`text-base ${
+                currentStep === "review" ? "text-white" : "text-zinc-400"
+              }`}
+            >
+              Review
+            </H4>
           </View>
         </View>
 
