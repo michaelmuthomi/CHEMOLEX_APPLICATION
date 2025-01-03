@@ -40,9 +40,6 @@ type RootStackParamList = {
   search: undefined;
   product: { product: string };
 };
-
-const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
 const stats = [
   {
     iconBgColor: "bg-blue-600",
@@ -64,26 +61,9 @@ const stats = [
   },
 ];
 
-const promotions = [
-  {
-    id: 1,
-    title: "Summer Sale",
-    description: "Up to 20% off on Cooling Systems",
-    image:
-      "http://5.imimg.com/data5/SELLER/Default/2024/4/414735525/QN/IM/OK/202996372/misubishi-air-conditioner-500x500.jpg",
-    backgroundColor: "#2C3E50",
-  },
-  {
-    id: 2,
-    title: "New Arrivals",
-    description: "Latest Energy-Efficient Models",
-    image:
-      "http://5.imimg.com/data5/SELLER/Default/2024/4/411112381/TA/TR/IA/202996372/residential-rooftop-packaged-unit-1000x1000.jpg",
-    backgroundColor: "#8E44AD",
-  },
-];
+function CustomerHome() {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-export default function Tab() {
   const [products, setProducts] = useState<Array<{
     product_id: string;
     name: string;
@@ -255,3 +235,5 @@ export default function Tab() {
     </SafeAreaView>
   );
 }
+
+export default CustomerHome;

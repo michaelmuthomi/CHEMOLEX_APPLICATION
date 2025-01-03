@@ -233,8 +233,8 @@ export default function CheckoutScreen({ navigation }) {
   };
 
   const renderShippingForm = () => (
-    <View className="gap-6">
-      <H4>Shipping Information</H4>
+    <View className="gap-6 my-4">
+      <H3>Shipping Information</H3>
       <View className="gap-2">
         <Input
           placeholder="Full Name"
