@@ -9,6 +9,7 @@ import {
   Dimensions,
   ImageBackground,
   ActivityIndicator,
+  Touchable,
 } from "react-native";
 import {
   ChevronRight,
@@ -16,6 +17,8 @@ import {
   Star,
   Package,
   Clock,
+  GalleryVertical,
+  ListTodo,
 } from "lucide-react-native";
 import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
@@ -24,26 +27,29 @@ import { checkUser, fetchProductsFromDB } from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import { Ionicons } from "@expo/vector-icons";
 import { useEmail } from "~/app/EmailContext";
-import { useNavigation } from "expo-router";
+import { Link, useNavigation } from "expo-router";
+import StatsCard from "~/components/StatsCard";
 
 const { width } = Dimensions.get("window");
 
-const featuredCategories = [
+const stats = [
   {
-    id: 1,
-    title: "Chillers",
-    subtitle: "Industrial Cooling Solutions",
-    image:
-      "http://5.imimg.com/data5/SELLER/Default/2024/8/442306416/ZH/AP/PZ/1889348/air-cooled-chillers-1000x1000.png",
-    backgroundColor: "#0F4C3A",
+    iconBgColor: "bg-blue-600",
+    Icon: <GalleryVertical color="white" size={19} />,
+    Title: "Chillers",
+    Description: "Industrial Cooling Solutions",
   },
   {
-    id: 2,
-    title: "Air Handling Units",
-    subtitle: "Commercial HVAC Systems",
-    image:
-      "http://5.imimg.com/data5/SELLER/Default/2024/4/412323270/DE/RZ/DK/9199886/single-skin-air-handling-unit-1000x1000.png",
-    backgroundColor: "#FF6347",
+    iconBgColor: "bg-orange-600",
+    Icon: <ListTodo color="white" size={19} />,
+    Title: "Air Handling Units",
+    Description: "Commercial HVAC Systems",
+  },
+  {
+    iconBgColor: "bg-orange-600",
+    Icon: <ListTodo color="white" size={19} />,
+    Title: "Air Handling Units",
+    Description: "Commercial HVAC Systems",
   },
 ];
 
@@ -67,7 +73,7 @@ const promotions = [
 ];
 
 export default function Tab() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customer, setCustomerDetails] = useState([]);
@@ -93,40 +99,27 @@ export default function Tab() {
   }, []);
 
   const renderFeaturedCategories = () => (
-    <View className="mt-6">
-      <View className="flex-row items-center justify-between px-6 mb-4">
-        <H3 className="text-xl">Categories</H3>
-        <TouchableOpacity
-          className="flex-row items-center"
-          onPress={() => navigation.navigate("search")}
-        >
-          <H3 className="text-sm text-[#555]">See All</H3>
-          <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
-        </TouchableOpacity>
+    <View className="bg-white p-4 gap-6">
+      <View className="flex-row justify-between items-center w-full">
+        <H3 className="text-black flex-1">Categories</H3>
+        <Link href="/Customer/search" className="">
+          <H4 className="text-blue-600 text-sm">View More &rarr;</H4>
+        </Link>
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="pl-6"
-      >
-        {featuredCategories.map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            className="mr-4 rounded-xl overflow-hidden"
-            style={{ width: width * 0.7, height: 160 }}
-            onPress={() => navigation.navigate("search", { category })}
-          >
-            <ImageBackground
-              source={{ uri: category.image }}
-              className="w-full h-full justify-end p-4"
-              imageStyle={{ opacity: 0.7 }}
-              style={{ backgroundColor: category.backgroundColor }}
-            >
-              <H3 className="text-white">{category.title}</H3>
-              <P className="text-white opacity-80">{category.subtitle}</P>
-            </ImageBackground>
-          </TouchableOpacity>
-        ))}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View className="flex-row gap-4">
+          {stats.map((stat, index) => (
+            <StatsCard
+              key={index}
+              iconBgColor={stat.iconBgColor}
+              Icon={stat.Icon}
+              Title={stat.Title}
+              Description={stat.Description}
+              onStatPress={() => navigation.navigate("search")}
+              statChartStyles={{ width: 150 }}
+            />
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -165,9 +158,7 @@ export default function Tab() {
     <View className="flex-row justify-between px-6 py-6">
       <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() =>
-          navigation.navigate("search", { sort: "trending" })
-        }
+        onPress={() => navigation.navigate("search", { sort: "trending" })}
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <TrendingUp size={24} color="#fff" />
@@ -185,9 +176,7 @@ export default function Tab() {
       </TouchableOpacity>
       <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() =>
-          navigation.navigate("search", { filter: "popular" })
-        }
+        onPress={() => navigation.navigate("search", { filter: "popular" })}
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <Package size={24} color="#fff" />
@@ -196,9 +185,7 @@ export default function Tab() {
       </TouchableOpacity>
       <TouchableOpacity
         className="items-center opacity-80"
-        onPress={() =>
-          navigation.navigate("search", { filter: "recent" })
-        }
+        onPress={() => navigation.navigate("search", { filter: "recent" })}
       >
         <View className="bg-zinc-800 p-3 rounded-full mb-2">
           <Clock size={24} color="#fff" />
@@ -308,7 +295,6 @@ export default function Tab() {
             className="w-full h-48 rounded-t-lg"
             resizeMode="cover"
           />
-          {renderQuickLinks()}
           {renderFeaturedCategories()}
           {renderPromotions()}
           {renderProducts()}

@@ -70,8 +70,8 @@ const categories = [
   },
 ];
 
-export default function Tab() {
-  const navigation = useNavigation();
+export default function Tab({navigation}) {
+  // const navigation = useNavigation();
   const route = useRoute(); // Using hook to get the route
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
@@ -154,7 +154,7 @@ export default function Tab() {
     );
   }
 
-  const placeholder = [];
+  const placeholder:any = [];
 
   // Using a for loop to push 4 placeholder into the array
   for (let i = 0; i < 4; i++) {

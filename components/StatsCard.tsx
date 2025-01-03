@@ -3,20 +3,28 @@ import { TouchableOpacity, View } from "react-native";
 import { H4, P } from "./ui/typography";
 
 interface StatsCardProps {
-  iconBgColor?: string; // Made optional
-  Icon: React.ReactNode; // Changed to React.ReactNode
-  Title?: string; // Made optional
-  Description?: string; // Made optional
+  iconBgColor?: string;
+  Icon: React.ReactNode;
+  Title?: string;
+  Description?: string;
+  onStatPress?: any;
+  statChartStyles?: any;
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({
-  iconBgColor = "bg-blue-600", // Default value
+  iconBgColor = "bg-blue-600",
   Icon,
-  Title = "Set Title", // Default value
-  Description = "Set Description", // Default value
+  Title = "Set Title",
+  Description = "Set Description",
+  onStatPress,
+  statChartStyles,
 }) => {
   return (
-    <View className="gap-4 w-1/2">
+    <TouchableOpacity
+      className="gap-4 w-1/2"
+      onPress={onStatPress}
+      style={statChartStyles}
+    >
       <View className="flex items-start">
         <TouchableOpacity className={`p-2 rounded-full w-auto ${iconBgColor}`}>
           {Icon}
@@ -26,7 +34,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
         <H4 className="text-black">{Title}</H4>
         <P className="text-zinc-400">{Description}</P>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 export default StatsCard;
