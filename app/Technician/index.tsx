@@ -104,6 +104,7 @@ const TechnicianPage: React.FC = () => {
   const handleViewDetails = (repairId: number) => {
     const repair = repairs.find((r) => r.id === repairId);
     if (repair) {
+      console.log('Selected repair', repair)
       setSelectedRepair(repair);
       setIsModalVisible(true);
     }

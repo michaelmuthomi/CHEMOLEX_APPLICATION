@@ -69,7 +69,7 @@ export default function ProfileScreen() {
                 <View
                   className={`
                   flex-row items-center rounded-md
-                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                  ${isEditing ? "border-[1px]" : "border-0"}
                 `}
                 >
                   <User size={14} color={isEditing ? "white" : "gray"} />
@@ -103,7 +103,7 @@ export default function ProfileScreen() {
                 <View
                   className={`
                   flex-row items-center rounded-md
-                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                  ${isEditing ? "border-[1px]" : "border-0"}
                 `}
                 >
                   <User size={14} color={isEditing ? "white" : "gray"} />
@@ -137,7 +137,7 @@ export default function ProfileScreen() {
               <View
                 className={`
                   flex-row items-center rounded-md
-                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                  ${isEditing ? "border-[1px]" : "border-0"}
                 `}
               >
                 <Mail size={14} color={isEditing ? "white" : "gray"} />
@@ -163,7 +163,7 @@ export default function ProfileScreen() {
               <View
                 className={`
                   flex-row items-center rounded-md
-                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                  ${isEditing ? "border-[1px]" : "border-0"}
                 `}
               >
                 <Phone size={14} color={isEditing ? "white" : "gray"} />
@@ -189,7 +189,7 @@ export default function ProfileScreen() {
               <View
                 className={`
                   flex-row items-center rounded-md
-                  ${isEditing ? "border-[1px] px-2" : "border-0"}
+                  ${isEditing ? "border-[1px]" : "border-0"}
                 `}
               >
                 <MapPinIcon size={14} color={isEditing ? "white" : "gray"} />
