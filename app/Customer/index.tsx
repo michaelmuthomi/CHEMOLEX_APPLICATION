@@ -49,7 +49,7 @@ const stats = [
     Description: "Commercial HVAC Systems",
   },
   {
-    iconBgColor: "bg-orange-600",
+    iconBgColor: "bg-purple-600",
     Icon: <Fan color="white" size={19} />,
     Title: "Fan coil units",
     Description: "Providing efficient temperature control",
