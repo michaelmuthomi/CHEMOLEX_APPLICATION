@@ -19,6 +19,9 @@ import {
   Clock,
   GalleryVertical,
   ListTodo,
+  CloudSnow,
+  Wind,
+  Fan,
 } from "lucide-react-native";
 import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
@@ -35,21 +38,21 @@ const { width } = Dimensions.get("window");
 const stats = [
   {
     iconBgColor: "bg-blue-600",
-    Icon: <GalleryVertical color="white" size={19} />,
+    Icon: <CloudSnow color="white" size={19} />,
     Title: "Chillers",
     Description: "Industrial Cooling Solutions",
   },
   {
     iconBgColor: "bg-orange-600",
-    Icon: <ListTodo color="white" size={19} />,
+    Icon: <Wind color="white" size={19} />,
     Title: "Air Handling Units",
     Description: "Commercial HVAC Systems",
   },
   {
     iconBgColor: "bg-orange-600",
-    Icon: <ListTodo color="white" size={19} />,
-    Title: "Air Handling Units",
-    Description: "Commercial HVAC Systems",
+    Icon: <Fan color="white" size={19} />,
+    Title: "Fan coil units",
+    Description: "Providing efficient temperature control",
   },
 ];
 
