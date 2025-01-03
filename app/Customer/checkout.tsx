@@ -225,19 +225,8 @@ export default function CheckoutScreen({ navigation }) {
       }
 
       displayNotification("Order Placed!", "success");
-      Alert.alert(
-        "Order Placed!",
-        "Thank you for your order. You will receive a confirmation email shortly.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              clearCart();
-              navigation.navigate("index");
-            },
-          },
-        ]
-      );
+      clearCart()
+      navigation.navigate("index");
     }
     PlaceOrder();
   };

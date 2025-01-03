@@ -185,6 +185,8 @@ export default function Screen() {
                 { label: "Service Manager", value: "service_manager" },
                 { label: "Supervisor", value: "supervisor" },
                 { label: "Technician", value: "technician" },
+                { label: "Supplier", value: "supplier" },
+                { label: "Finance", value: "finance" },
               ]}
               maxHeight={300}
               labelField="label"
@@ -215,7 +217,7 @@ export default function Screen() {
             className="text-center text-lg pt-4 color-[#b3b3b3]"
             style={{ fontFamily: "Inter_400Regular" }}
           >
-            Create your account and start managing {'\n'} your air conditioning
+            Create your account and start managing {"\n"} your air conditioning
             solutions
           </P>
         </View>

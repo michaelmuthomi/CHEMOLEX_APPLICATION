@@ -40,6 +40,7 @@ interface customer {
   email: string;
   phone: string;
   address: string;
+  user_id: number;
 }
 
 interface OrderItem {
@@ -153,7 +154,13 @@ export default function Tab() {
   const navigation = useNavigation();
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [customer, setCustomerDetails] = useState([]);
+  const [customer, setCustomerDetails] = useState<customer>({
+    full_name: "",
+    email: "",
+    phone: "",
+    address: "",
+    user_id: 0,
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -161,14 +168,16 @@ export default function Tab() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  const handleMenuPress = (screen) => {
+  const handleMenuPress = (screen:any) => {
     setActiveModal(screen);
   };
 
   useEffect(() => {
     async function fetchUserDetails() {
-      const response = await checkUser(emailContext?.email);
-      setCustomerDetails(response);
+      if (emailContext?.email) {        
+        const response = await checkUser(emailContext?.email);
+        setCustomerDetails(response);
+      }
     }
     fetchUserDetails();
   }, [emailContext]);
@@ -176,7 +185,7 @@ export default function Tab() {
   useEffect(() => {
     async function fetchOrders() {
       if (customer.user_id) {
-        const response = await fetchCustomerOrders(customer.user_id);
+        const response:any = await fetchCustomerOrders(customer.user_id);
         console.log("Orders Fetched", response);
         setOrders(response);
       }
@@ -219,7 +228,7 @@ export default function Tab() {
     setSelectedOrder(null);
   };
 
-  const handleSubmitReview = async (order) => {
+  const handleSubmitReview = async (order:any) => {
     const feedback = {
       user_id: customer.user_id,
       // service_id: order.product_id,
