@@ -8,10 +8,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import { Minus, Plus, MoreHorizontal } from "lucide-react-native";
+import { Minus, Plus, MoreHorizontal, Trash } from "lucide-react-native";
 import { useCart } from "~/lib/cart-context";
 import { formatPrice } from "~/lib/format-price";
-import { H1, H3, H4, P } from "~/components/ui/typography";
+import { H1, H3, H4, H5, H6, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useNavigation } from "expo-router";
 
@@ -21,49 +21,54 @@ export default function Tab() {
 
   return (
     <SafeAreaView className="flex-1 pt-14 p-4">
-      <ScrollView>
+      <ScrollView className="flex-1 h-full">
         <H1>Cart</H1>
 
         {items.map((item) => (
           <View key={item.product_id}>
             <View className="flex-row items-center gap-4 py-4">
-              <View className="flex-1 h-28">
-                <H4 style={styles.productName}>{item.name}</H4>
-                <P style={styles.price}>{formatPrice(item.price)}</P>
+              <View className="flex-1 flex-row gap-2 h-28">
+                <Image
+                  source={{ uri: item.image_url }}
+                  className="w-10 h-10 mt-[10px] rounded-full"
+                />
+                <View className="flex-1">
+                  <H3>{item.name}</H3>
+                  <H6>{formatPrice(item.price)}</H6>
 
-                <View className="flex-row items-center gap-2 mt-auto">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onPress={() =>
-                      updateQuantity(item.product_id, item.quantity - 1)
-                    }
-                  >
-                    <Minus size={20} color="#fff" />
-                  </Button>
-                  <P style={styles.quantityText}>{item.quantity}</P>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onPress={() =>
-                      updateQuantity(item.product_id, item.quantity + 1)
-                    }
-                  >
-                    <Plus size={20} color="#fff" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onPress={() => removeFromCart(item.product_id)}
-                  >
-                    <MoreHorizontal size={20} color="#fff" />
-                  </Button>
+                  <View className="flex-row items-center gap-4 mt-auto w-full">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-0"
+                      onPress={() =>
+                        updateQuantity(item.product_id, item.quantity - 1)
+                      }
+                    >
+                      <Minus size={20} color="#fff" />
+                    </Button>
+                    <P className="color-white text-3xl">{item.quantity}</P>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-0"
+                      onPress={() =>
+                        updateQuantity(item.product_id, item.quantity + 1)
+                      }
+                    >
+                      <Plus size={20} color="#fff" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onPress={() => removeFromCart(item.product_id)}
+                      className="ml-auto border-0"
+                    >
+                      <Trash size={20} color="#fff" />
+                    </Button>
+                  </View>
                 </View>
               </View>
-              <Image
-                source={{ uri: item.image_url }}
-                style={styles.productImage}
-              />
             </View>
           </View>
         ))}
@@ -71,7 +76,7 @@ export default function Tab() {
         {items.length > 0 ? (
           <Button
             variant="outline"
-            className="p-4 rounded-full flex-row justify-between items-center"
+            className="p-4 rounded-full flex-row justify-between items-center mt-auto"
             onPress={() => navigation.navigate("checkout")}
           >
             <P className="text-white">Continue to checkout</P>
@@ -88,9 +93,7 @@ export default function Tab() {
             <H4 className="text-center text-zinc-400 leading-relaxed">
               Looks like you haven't added anything {"\n"} to your cart yet
             </H4>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("index")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("index")}>
               <H4 className="text-orange-400 text-base text-center">
                 Start Shopping
               </H4>

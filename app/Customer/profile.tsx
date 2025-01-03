@@ -22,7 +22,7 @@ import {
   X,
   Star,
 } from 'lucide-react-native';
-import { H2, H3, H4, P } from '~/components/ui/typography';
+import { H2, H3, H4, H5, P } from '~/components/ui/typography';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { useEmail } from '~/app/EmailContext';
@@ -600,7 +600,11 @@ export default function Tab() {
             </TouchableOpacity>
           </View>
           <H3 className="mt-4 text-white">
-            {customer === "" ? <View className="animate-pulse w-10 h-10 bg-slate-900" /> : customer.full_name}
+            {customer === "" ? (
+              <View className="animate-pulse w-10 h-10 bg-slate-900" />
+            ) : (
+              customer.full_name
+            )}
           </H3>
           <P className="text-zinc-500">{customer.email}</P>
         </View>
@@ -628,13 +632,16 @@ export default function Tab() {
         {/* Logout Button */}
         <View className="p-4 pt-8">
           <Button
-            variant="outline"
-            className="flex-row items-center justify-center space-x-2 p-4 gap-4"
             onPress={() => {
               navigation.navigate("LoginScreen");
             }}
+            className="w-full rounded-full"
+            size={"lg"}
+            variant="default"
           >
-            <P className="uppercase text-white">Log Out Now</P>
+            <H5 className=" text-black">
+              {"Logout Now "}
+            </H5>
           </Button>
         </View>
       </ScrollView>

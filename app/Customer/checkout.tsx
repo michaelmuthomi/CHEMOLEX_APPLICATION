@@ -242,6 +242,14 @@ export default function CheckoutScreen({ navigation }) {
     PlaceOrder();
   };
 
+  const handleBackStep = () => {
+    if (currentStep === "payment") {
+      setCurrentStep("shipping");
+    } else if (currentStep === "review") {
+      setCurrentStep("payment");
+    }
+  };
+
   const renderShippingForm = () => (
     <View className="gap-10 my-4">
       <View>
@@ -353,11 +361,16 @@ export default function CheckoutScreen({ navigation }) {
 
   const renderPaymentForm = () => (
     <View className="gap-10">
-      <View>
-        <H3>Choose a Payment Method</H3>
-        <P className="text-gray-500">
-          You will not be charged untill you complete the transaction
-        </P>
+      <View className="flex-row items-center gap-2">
+        <TouchableOpacity onPress={handleBackStep}>
+          <ChevronLeft size={24} color="#fff" />
+        </TouchableOpacity>
+        <View>
+          <H3>Choose a Payment Method</H3>
+          <P className="text-gray-500">
+            You will not be charged untill you complete the transaction
+          </P>
+        </View>
       </View>
       <View className="gap-6">
         <View className="gap-2">
@@ -445,12 +458,17 @@ export default function CheckoutScreen({ navigation }) {
 
   const renderOrderReview = () => (
     <View className="gap-10">
-      <View>
-        <H3>Please confirm and submit order</H3>
-        <P className="text-gray-500">
-          By clicking submit, your account will be charges and the product(s)
-          dispatched.
-        </P>
+      <View className="flex-row items-center gap-2">
+        <TouchableOpacity onPress={handleBackStep}>
+          <ChevronLeft size={24} color="#fff" />
+        </TouchableOpacity>
+        <View>
+          <H3>Please confirm and submit order</H3>
+          <P className="text-gray-500">
+            By clicking submit, your account will be charges and the product(s)
+            dispatched.
+          </P>
+        </View>
       </View>
       <View>
         <View className="gap-4">
@@ -504,14 +522,14 @@ export default function CheckoutScreen({ navigation }) {
             <H4>{formatPrice(getCartTotal())}</H4>
           </View>
         </View>
-      <Button
-        onPress={handlePlaceOrder}
-        className="w-full rounded-full"
-        size={"lg"}
-        variant="default"
-      >
-        <H5 className=" text-black">{"Place Order"}</H5>
-      </Button>
+        <Button
+          onPress={handlePlaceOrder}
+          className="w-full rounded-full"
+          size={"lg"}
+          variant="default"
+        >
+          <H5 className=" text-black">{"Place Order"}</H5>
+        </Button>
       </View>
     </View>
   );
