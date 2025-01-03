@@ -18,7 +18,7 @@ import {
 } from "lucide-react-native";
 import { useCart } from "~/lib/cart-context";
 import { formatPrice } from "~/lib/format-price";
-import { H1, H3, H4, P } from "~/components/ui/typography";
+import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 
@@ -38,7 +38,9 @@ export default function Tab() {
   console.log("Product via Path: ", product);
 
   const handleQuantityChange = (change: number) => {
-    setQuantity((prev) => Math.max(1, prev + change));
+    setQuantity((prev) =>
+      Math.min(Math.max(1, prev + change), product.stock_quantity)
+    );
   };
 
   const handleAddToCart = () => {
@@ -57,34 +59,44 @@ export default function Tab() {
           />
         </View>
 
-        <View className="p-4 gap-6">
+        <View className="p-4 gap-10">
           <View>
-            <P style={styles.subtitle} className="uppercase text-gray-500">
+            <P
+              style={styles.subtitle}
+              className="uppercase text-sm text-gray-500"
+            >
               {product.category || "Beauty Product"}
             </P>
 
-            <H3 style={styles.title}>{product.name}</H3>
+            <H2 className="border-b-0">{product.name}</H2>
 
             <View className="flex-row justify-between items-center">
-              <P>{formatPrice(product.price)}</P>
-              <P>{product.stock_quantity || "Not available"} in stock</P>
+              <H3 className="text-xl text-neutral-200">
+                {formatPrice(product.price)}
+              </H3>
+              <P className="text-neutral-500">
+                {product.stock_quantity || "Not available"} in stock
+              </P>
             </View>
           </View>
           <View className="gap-2">
-            <P>{product.description || "No description available"}</P>
+            <P className="uppercase text-sm text-gray-500">Product Details</P>
+            <H4 className="text-neutral-200 text-lg leading-relaxed">
+              {product.description || "No description available"}
+            </H4>
           </View>
         </View>
       </ScrollView>
 
-      <View className="flex-row items-center justify-between p-4 border-t-[1px] border-gray-900">
-        <View className="flex-row w-1/4 items-center">
+      <View className="flex-row items-center justify-between p-4 border-t-[1px] border-zinc-800 w-full">
+        <View className="flex-row w-auto items-center gap-4">
           <TouchableOpacity
             style={styles.quantityButton}
             onPress={() => handleQuantityChange(-1)}
           >
             <Minus size={20} color="#fff" />
           </TouchableOpacity>
-          <P style={styles.quantityText}>{quantity}</P>
+          <P className="color-white text-2xl">{quantity}</P>
           <TouchableOpacity
             style={styles.quantityButton}
             onPress={() => handleQuantityChange(1)}
@@ -94,12 +106,13 @@ export default function Tab() {
         </View>
         <Button
           onPress={handleAddToCart}
-          variant="outline"
-          className="w-3/4 rounded-full"
+          className="flex-1 rounded-full"
+          size={"lg"}
+          variant="default"
         >
-          <P className="text-white">
-            Add to Cart - {formatPrice(product.price * quantity)}
-          </P>
+          <H5 className=" text-black">
+            {"Add to Cart"} {formatPrice(product.price * quantity)}
+          </H5>
         </Button>
       </View>
     </SafeAreaView>
