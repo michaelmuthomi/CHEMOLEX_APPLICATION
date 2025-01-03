@@ -29,6 +29,7 @@ import { useEmail } from '~/app/EmailContext';
 import { checkUser, fetchCustomerOrders, submitFeedback } from '~/lib/supabase';
 import { formatPrice } from '~/lib/format-price';
 import displayNotification from '~/lib/Notification';
+import { useNavigation } from 'expo-router';
 
 interface customer {
   full_name: string;
@@ -135,7 +136,8 @@ const mockOrders: Order[] = [
   },
 ];
 
-export default function Tab({ navigation }:{navigation: any}) {
+export default function Tab() {
+  const navigation = useNavigation()
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [customer, setCustomerDetails] = useState([]);
@@ -629,7 +631,7 @@ export default function Tab({ navigation }:{navigation: any}) {
             variant="outline"
             className="flex-row items-center justify-center space-x-2 p-4 gap-4"
             onPress={() => {
-              navigation.navigate("../LoginScreen");
+              navigation.navigate("LoginScreen");
             }}
           >
             <P className="uppercase text-white">Log Out Now</P>

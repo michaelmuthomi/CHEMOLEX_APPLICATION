@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import { useCart } from '~/lib/cart-context';
 import { formatPrice } from '~/lib/format-price';
-import { H3, H4, P } from '~/components/ui/typography';
-import { Button } from '~/components/ui/button';
-import { ChevronLeft } from 'lucide-react-native';
-import { Input } from '~/components/ui/input';
-import { useEmail } from '~/app/EmailContext';
-import { checkUser, placeAnOrder } from '~/lib/supabase'
-import displayNotification from '~/lib/Notification';
+import { H3, H4, H5, P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
+import { Barcode, CalendarRange, ChevronLeft, ClipboardEdit, CreditCard, Earth, LocateFixedIcon, MapPin, MapPinned, PhoneCallIcon, User, WalletCards } from "lucide-react-native";
+import { Input } from "~/components/ui/input";
+import { useEmail } from "~/app/EmailContext";
+import { checkUser, placeAnOrder } from "~/lib/supabase";
+import displayNotification from "~/lib/Notification";
 
 interface ValidationError {
   field: string;
@@ -42,44 +42,49 @@ interface PaymentInfo {
 const validateShippingInfo = (info: ShippingInfo): ValidationError[] => {
   const errors: ValidationError[] = [];
 
-  
-
   return errors;
 };
 
 const validatePaymentInfo = (info: PaymentInfo): ValidationError[] => {
   const errors: ValidationError[] = [];
 
-
-
   // Expiry Date validation (MM/YY format)
   const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
   if (!info.expiryDate.trim()) {
-    errors.push({ field: 'expiryDate', message: 'Expiry date is required' });
+    errors.push({ field: "expiryDate", message: "Expiry date is required" });
   } else if (!expiryRegex.test(info.expiryDate)) {
-    errors.push({ field: 'expiryDate', message: 'Please enter a valid expiry date (MM/YY)' });
+    errors.push({
+      field: "expiryDate",
+      message: "Please enter a valid expiry date (MM/YY)",
+    });
   } else {
     // Check if card is expired
-    const [month, year] = info.expiryDate.split('/');
+    const [month, year] = info.expiryDate.split("/");
     const expiry = new Date(2000 + parseInt(year), parseInt(month) - 1);
     if (expiry < new Date()) {
-      errors.push({ field: 'expiryDate', message: 'Card has expired' });
+      errors.push({ field: "expiryDate", message: "Card has expired" });
     }
   }
 
   // CVV validation
   const cvvRegex = /^[0-9]{3,4}$/;
   if (!info.cvv.trim()) {
-    errors.push({ field: 'cvv', message: 'CVV is required' });
+    errors.push({ field: "cvv", message: "CVV is required" });
   } else if (!cvvRegex.test(info.cvv)) {
-    errors.push({ field: 'cvv', message: 'Please enter a valid CVV' });
+    errors.push({ field: "cvv", message: "Please enter a valid CVV" });
   }
 
   // Cardholder Name validation
   if (!info.cardHolderName.trim()) {
-    errors.push({ field: 'cardHolderName', message: 'Cardholder name is required' });
+    errors.push({
+      field: "cardHolderName",
+      message: "Cardholder name is required",
+    });
   } else if (info.cardHolderName.length < 2) {
-    errors.push({ field: 'cardHolderName', message: 'Please enter a valid cardholder name' });
+    errors.push({
+      field: "cardHolderName",
+      message: "Please enter a valid cardholder name",
+    });
   }
 
   return errors;
@@ -90,42 +95,44 @@ export default function CheckoutScreen({ navigation }) {
   const [customer, setCustomerDetails] = useState([]);
   const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
   const { items, getCartTotal, clearCart } = useCart();
-  const [currentStep, setCurrentStep] = useState<'shipping' | 'payment' | 'review'>('shipping');
+  const [currentStep, setCurrentStep] = useState<
+    "shipping" | "payment" | "review"
+  >("shipping");
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({
-    full_name: '',
-    address: '',
-    city: '',
-    state: '',
+    full_name: "",
+    address: "",
+    city: "",
+    state: "",
     zipCode: 30100,
-    phone: '',
+    phone: "",
   });
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardHolderName: '',
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardHolderName: "",
   });
 
   useEffect(() => {
-    async function fetchUserDetails(){
+    async function fetchUserDetails() {
       const response = await checkUser(emailContext?.email);
-      console.log("Username", response.full_name)
-      setCustomerDetails(response)
+      console.log("Username", response.full_name);
+      setCustomerDetails(response);
     }
-    fetchUserDetails()
-  }, [emailContext])
+    fetchUserDetails();
+  }, [emailContext]);
 
   const handleShippingSubmit = () => {
     const validationErrors = validateShippingInfo(shippingInfo);
     setErrors(validationErrors);
 
     if (validationErrors.length > 0) {
-      displayNotification(validationErrors[0].message, 'warning');
+      displayNotification(validationErrors[0].message, "warning");
       return;
     }
 
-    setCurrentStep('payment');
+    setCurrentStep("payment");
   };
 
   const handlePaymentSubmit = () => {
@@ -133,29 +140,29 @@ export default function CheckoutScreen({ navigation }) {
     setErrors(validationErrors);
 
     if (validationErrors.length > 0) {
-      displayNotification(validationErrors[0].message, 'warning');
+      displayNotification(validationErrors[0].message, "warning");
       return;
     }
 
-    setCurrentStep('review');
+    setCurrentStep("review");
   };
 
   const formatCardNumber = (text: string) => {
     // Remove all non-digits
-    const cleaned = text.replace(/\D/g, '');
+    const cleaned = text.replace(/\D/g, "");
     // Add space after every 4 digits
-    const formatted = cleaned.replace(/(\d{4})/g, '$1 ').trim();
+    const formatted = cleaned.replace(/(\d{4})/g, "$1 ").trim();
     return formatted.substring(0, 19); // Limit to 16 digits + 3 spaces
   };
 
   const formatPhone = (text: string) => {
     // Remove all non-digits
-    const cleaned = text.replace(/\D/g, '');
+    const cleaned = text.replace(/\D/g, "");
     // Format as (XXX) XXX-XXXX
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (match) {
       const parts = [match[1], match[2], match[3]].filter(Boolean);
-      if (parts.length === 0) return '';
+      if (parts.length === 0) return "";
       if (parts.length === 1) return `(${parts[0]}`;
       if (parts.length === 2) return `(${parts[0]}) ${parts[1]}`;
       return `(${parts[0]}) ${parts[1]}-${parts[2]}`;
@@ -165,7 +172,7 @@ export default function CheckoutScreen({ navigation }) {
 
   const formatExpiryDate = (text: string) => {
     // Remove all non-digits
-    const cleaned = text.replace(/\D/g, '');
+    const cleaned = text.replace(/\D/g, "");
     // Add slash after 2 digits
     if (cleaned.length >= 2) {
       return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
@@ -174,11 +181,11 @@ export default function CheckoutScreen({ navigation }) {
   };
 
   const getFieldError = (fieldName: string) => {
-    const error = errors.find(error => error.field === fieldName)?.message;
+    const error = errors.find((error) => error.field === fieldName)?.message;
     if (error) {
       return {
-        style: { borderColor: '#ef4444' },  // Red border for error state
-        className: "border-red-500"
+        style: { borderColor: "#ef4444" }, // Red border for error state
+        className: "border-red-500",
       };
     }
     return {};
@@ -187,8 +194,11 @@ export default function CheckoutScreen({ navigation }) {
   const handlePlaceOrder = () => {
     async function PlaceOrder() {
       // Calculate total amount as a single value
-      const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      
+      const total = items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+
       // Create an order for each item
       for (const item of items) {
         const details = {
@@ -204,26 +214,26 @@ export default function CheckoutScreen({ navigation }) {
 
         try {
           const response = await placeAnOrder(details);
-          if (typeof response === 'string' && response.startsWith("Error")) {
+          if (typeof response === "string" && response.startsWith("Error")) {
             displayNotification(response, "danger");
             return;
           }
         } catch (error) {
-          displayNotification('Failed to place order', "danger");
+          displayNotification("Failed to place order", "danger");
           return;
         }
       }
-      
-      displayNotification('Order Placed!', 'success');
+
+      displayNotification("Order Placed!", "success");
       Alert.alert(
-        'Order Placed!',
-        'Thank you for your order. You will receive a confirmation email shortly.',
+        "Order Placed!",
+        "Thank you for your order. You will receive a confirmation email shortly.",
         [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => {
               clearCart();
-              navigation.navigate('index');
+              navigation.navigate("index");
             },
           },
         ]
@@ -233,220 +243,351 @@ export default function CheckoutScreen({ navigation }) {
   };
 
   const renderShippingForm = () => (
-    <View className="gap-6 my-4">
-      <H3>Shipping Information</H3>
-      <View className="gap-2">
-        <Input
-          placeholder="Full Name"
-          placeholderTextColor="#666"
-          value={customer.full_name}
-          onChangeText={(text) =>
-            setShippingInfo({ ...customer, full_name: text })
-          }
-          {...getFieldError('full_name')}
-        />  
-        <Input
-          placeholder="Address"
-          placeholderTextColor="#666"
-          value={customer.address}
-          onChangeText={(text) =>
-            setShippingInfo({ ...customer, address: text })
-          }
-          {...getFieldError('address')}
-        />
-        <View className="flex-row gap-2">
-          <Input
-            placeholder="City"
-            className="flex-1"
-            placeholderTextColor="#666"
-            value={customer.city}
-            onChangeText={(text) =>
-              setShippingInfo({ ...customer, city: text })
-            }
-            {...getFieldError('city')}
-          />
-          <Input
-            placeholder="State"
-            className="flex-1"
-            placeholderTextColor="#666"
-            value={customer.state}
-            onChangeText={(text) =>
-              setShippingInfo({ ...customer, state: text.toUpperCase().slice(0, 2) })
-            }
-            {...getFieldError('state')}
-          />
+    <View className="gap-10 my-4">
+      <View>
+        <H3>Shipping Information</H3>
+        <P className="text-gray-500">
+          Please fill in your shipping details below
+        </P>
+      </View>
+      <View className="gap-6">
+        <View className="gap-2">
+          <H5>Full Name</H5>
+          <View className="flex-row items-center rounded-md">
+            <User size={16} color={"#aaaaaa"} />
+            <Input
+              placeholder="Full Name"
+              placeholderTextColor="#666"
+              value={customer.full_name}
+              onChangeText={(text) =>
+                setShippingInfo({ ...customer, full_name: text })
+              }
+              {...getFieldError("full_name")}
+              className="border-0 flex-1"
+            />
+          </View>
+        </View>
+        <View className="gap-2">
+          <H5>Address</H5>
+          <View className="flex-row items-center rounded-md">
+            <MapPin size={16} color={"#aaaaaa"} />
+            <Input
+              placeholder="Address"
+              placeholderTextColor="#666"
+              value={customer.address}
+              onChangeText={(text) =>
+                setShippingInfo({ ...customer, address: text })
+              }
+              {...getFieldError("address")}
+              className="border-0 flex-1"
+            />
+          </View>
         </View>
         <View className="flex-row gap-2">
-          <Input
-            className="flex-auto"
-            placeholder="Phone"
-            placeholderTextColor="#666"
-            keyboardType="phone-pad"
-            value={customer.phone_number}
-            onChangeText={(text) =>
-              setShippingInfo({ ...customer, phone_number: text })
-            }
-            {...getFieldError('phone')}
-          />
+          <View className="gap-2 w-1/2">
+            <H5>City</H5>
+            <View className="flex-row items-center rounded-md">
+              <MapPinned size={16} color={"#aaaaaa"} />
+              <Input
+                placeholder="City"
+                placeholderTextColor="#666"
+                value={customer.city}
+                onChangeText={(text) =>
+                  setShippingInfo({ ...customer, city: text })
+                }
+                {...getFieldError("city")}
+                required={true}
+                className="border-0 flex-1"
+              />
+            </View>
+          </View>
+          <View className="gap-2 flex-1">
+            <H5>State</H5>
+            <View className="flex-row items-center rounded-md">
+              <Earth size={16} color={"#aaaaaa"} />
+              <Input
+                placeholder="State"
+                placeholderTextColor="#666"
+                value={customer.state}
+                required={true}
+                onChangeText={(text) =>
+                  setShippingInfo({
+                    ...customer,
+                    state: text.toUpperCase().slice(0, 2),
+                  })
+                }
+                {...getFieldError("state")}
+                className="border-0 flex-1"
+              />
+            </View>
+          </View>
+        </View>
+        <View className="gap-2">
+          <H5>Phone Number</H5>
+          <View className="flex-row items-center rounded-md w-full">
+            <PhoneCallIcon size={16} color={"#aaaaaa"} />
+            <Input
+              placeholder="Phone"
+              placeholderTextColor="#666"
+              keyboardType="phone-pad"
+              value={customer.phone_number}
+              onChangeText={(text) =>
+                setShippingInfo({ ...customer, phone_number: text })
+              }
+              {...getFieldError("phone")}
+              className="border-0 flex-1"
+            />
+          </View>
         </View>
       </View>
       <Button
-        variant="default"
         onPress={handleShippingSubmit}
+        className="w-full rounded-full"
+        size={"lg"}
+        variant="default"
       >
-        <P className="uppercase text-black">Continue to Payment</P>
+        <H5 className=" text-black">{"Continue to Payment"}</H5>
       </Button>
     </View>
   );
 
   const renderPaymentForm = () => (
-    <View className='gap-6'>
-      <H4>Payment Information</H4>
-      <View className="gap-2">
-        <Input
-          placeholder="Card Number"
-          placeholderTextColor="#666"
-          keyboardType="numeric"
-          value={formatCardNumber(paymentInfo.cardNumber)}
-          onChangeText={(text) =>
-            setPaymentInfo({ ...paymentInfo, cardNumber: text })
-          }
-          {...getFieldError('cardNumber')}
-        />
-        <View className="flex-row gap-2">
-          <Input
-            placeholder="MM/YY"
-            placeholderTextColor="#666"
-            value={formatExpiryDate(paymentInfo.expiryDate)}
-            onChangeText={(text) =>
-              setPaymentInfo({ ...paymentInfo, expiryDate: text })
-            }
-            {...getFieldError('expiryDate')}
-          />
-          <Input
-            placeholder="CVV"
-            placeholderTextColor="#666"
-            keyboardType="numeric"
-            secureTextEntry
-            value={paymentInfo.cvv}
-            onChangeText={(text) =>
-              setPaymentInfo({ ...paymentInfo, cvv: text.slice(0, 4) })
-            }
-            {...getFieldError('cvv')}
-          />
-        </View>
-        <Input
-          placeholder="Cardholder Name"
-          placeholderTextColor="#666"
-          value={paymentInfo.cardHolderName}
-          onChangeText={(text) =>
-            setPaymentInfo({ ...paymentInfo, cardHolderName: text })
-          }
-          {...getFieldError('cardHolderName')}
-        />
+    <View className="gap-10">
+      <View>
+        <H3>Choose a Payment Method</H3>
+        <P className="text-gray-500">
+          You will not be charged untill you complete the transaction
+        </P>
       </View>
-      <Button
-        variant="default"
-        onPress={handlePaymentSubmit}
-      >
-        <P className="uppercase text-black">Review Order</P>
-      </Button>
-    </View>
-  );
-
-  const renderOrderReview = () => (
-    <View style={styles.orderReview}>
-      <H4>Order Review</H4>
-      <View style={styles.orderReviewFields}>
-        <View style={styles.orderReviewSection}>
-          <H4>Shipping To</H4>
-          <P>{customer.full_name}</P>
-          <P>{customer.address}</P>
-          <P>{`${customer.city}, ${customer.state}`}</P>
-          <P>{customer.phone}</P>
+      <View className="gap-6">
+        <View className="gap-2">
+          <H5>Name on Card</H5>
+          <View className="flex-row items-center rounded-md w-full">
+            <ClipboardEdit size={16} color={"#aaaaaa"} />
+            <Input
+              placeholder="Cardholder Name"
+              placeholderTextColor="#666"
+              value={paymentInfo.cardHolderName}
+              onChangeText={(text) =>
+                setPaymentInfo({ ...paymentInfo, cardHolderName: text })
+              }
+              {...getFieldError("cardHolderName")}
+              className="border-0 flex-1"
+            />
+          </View>
         </View>
-
-        <View style={styles.orderReviewSection}>
-          <H4>Payment Method</H4>
-          <P>Card ending in {paymentInfo.cardNumber.slice(-4)}</P>
-          <P>{paymentInfo.cardHolderName}</P>
+        <View className="gap-2">
+          <H5>Card Number</H5>
+          <View className="flex-row items-center rounded-md w-full">
+            <CreditCard size={16} color={"#aaaaaa"} />
+            <Input
+              placeholder="Card Number"
+              placeholderTextColor="**** **** **** ****"
+              keyboardType="numeric"
+              value={formatCardNumber(paymentInfo.cardNumber)}
+              onChangeText={(text) =>
+                setPaymentInfo({ ...paymentInfo, cardNumber: text })
+              }
+              {...getFieldError("cardNumber")}
+              className="border-0 flex-1"
+            />
+          </View>
         </View>
-
-        <View style={styles.orderReviewSection}>
-          <H4>Order Summary</H4>
-          {items.map((item) => (
-            <View key={item.product_id} style={styles.orderReviewItem}>
-              <P>{`${item.quantity}x ${item.name}`}</P>
-              <P>{formatPrice(item.price * item.quantity)}</P>
+        <View className="flex-row gap-2">
+          <View className="gap-2 w-1/2">
+            <H5>Expiration date</H5>
+            <View className="flex-row items-center rounded-md w-full">
+              <CalendarRange size={16} color={"#aaaaaa"} />
+              <View className="flex-row gap-2">
+                <Input
+                  placeholder="MM/YY"
+                  placeholderTextColor="#666"
+                  value={formatExpiryDate(paymentInfo.expiryDate)}
+                  onChangeText={(text) =>
+                    setPaymentInfo({ ...paymentInfo, expiryDate: text })
+                  }
+                  {...getFieldError("expiryDate")}
+                  className="border-0 flex-1"
+                />
+              </View>
             </View>
-          ))}
-          <View style={styles.orderReviewTotal}>
-            <View style={styles.orderReviewTotalItem}>
-              <P>Subtotal</P>
-              <P>{formatPrice(getCartTotal())}</P>
-            </View>
-            <View style={styles.orderReviewTotalItem}>
-              <P>Shipping</P>
-              <P>Free</P>
-            </View>
-            <View style={styles.orderReviewTotalItem}>
-              <H4>Total</H4>
-              <H4>{formatPrice(getCartTotal())}</H4>
+          </View>
+          <View className="gap-2 flex-1">
+            <H5>Security code</H5>
+            <View className="flex-row items-center rounded-md w-full">
+              <Barcode size={16} color={"#aaaaaa"} />
+              <Input
+                placeholder="CVV"
+                placeholderTextColor="#666"
+                keyboardType="numeric"
+                secureTextEntry
+                value={paymentInfo.cvv}
+                onChangeText={(text) =>
+                  setPaymentInfo({ ...paymentInfo, cvv: text.slice(0, 4) })
+                }
+                {...getFieldError("cvv")}
+                className="border-0 flex-1"
+              />
             </View>
           </View>
         </View>
       </View>
       <Button
+        onPress={handlePaymentSubmit}
+        className="w-full rounded-full"
+        size={"lg"}
         variant="default"
-        onPress={handlePlaceOrder}
       >
-        <P className="uppercase text-black">Place Order</P>
+        <H5 className=" text-black">{"Review Order"}</H5>
       </Button>
     </View>
   );
 
+  const renderOrderReview = () => (
+    <View className="gap-10">
+      <View>
+        <H3>Please confirm and submit order</H3>
+        <P className="text-gray-500">
+          By clicking submit, your account will be charges and the product(s)
+          dispatched.
+        </P>
+      </View>
+      <View>
+        <View className="gap-4">
+          <H3 className="text-xl">Shipping address</H3>
+          <View className="gap-2">
+            <View className="flex-row justify-between items-center">
+              <P className="w-1/2">Name</P>
+              <H5 className="text-right">{customer.full_name}</H5>
+            </View>
+            <View className="flex-row justify-between items-center">
+              <P className="w-1/2">Address</P>
+              <H5 className="text-right">{customer.address}</H5>
+            </View>
+            <P>{customer.phone}</P>
+          </View>
+        </View>
+
+        <View>
+          <View className="gap-4">
+            <H3 className="text-xl">Payment method</H3>
+            <View className="flex-row justify-between items-center">
+              <P className="w-1/2">
+                &#183; &#183; &#183; &#183; {paymentInfo.cardNumber.slice(-4)}
+              </P>
+              <H5 className="text-right">
+                {formatExpiryDate(paymentInfo.expiryDate)}
+              </H5>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View>
+        <H3>Order Summary</H3>
+        {items.map((item) => (
+          <View key={item.product_id} style={styles.orderReviewItem}>
+            <P>{`${item.quantity}x ${item.name}`}</P>
+            <P>{formatPrice(item.price * item.quantity)}</P>
+          </View>
+        ))}
+        <View style={styles.orderReviewTotal}>
+          <View style={styles.orderReviewTotalItem}>
+            <P>Subtotal</P>
+            <P>{formatPrice(getCartTotal())}</P>
+          </View>
+          <View style={styles.orderReviewTotalItem}>
+            <P>Shipping</P>
+            <P>Free</P>
+          </View>
+          <View style={styles.orderReviewTotalItem}>
+            <H4>Total</H4>
+            <H4>{formatPrice(getCartTotal())}</H4>
+          </View>
+        </View>
+      <Button
+        onPress={handlePlaceOrder}
+        className="w-full rounded-full"
+        size={"lg"}
+        variant="default"
+      >
+        <H5 className=" text-black">{"Place Order"}</H5>
+      </Button>
+      </View>
+    </View>
+  );
+
   return (
-    <SafeAreaView className='flex-1'>
+    <SafeAreaView className="flex-1">
       <ScrollView style={styles.scrollView}>
-        <View style={styles.steps}>
+        <View style={styles.steps} className="py-10">
           <View style={styles.step}>
             <View
               style={[
-                currentStep === 'shipping' ? styles.stepCircleActive : styles.stepCircleInactive,
+                currentStep === "shipping"
+                  ? styles.stepCircleActive
+                  : styles.stepCircleInactive,
               ]}
-              className='!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center'
+              className="!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center"
             >
-              <P style={currentStep === 'shipping' ? styles.stepTextActive : styles.stepTextInactive}>1</P>
+              <P
+                style={
+                  currentStep === "shipping"
+                    ? styles.stepTextActive
+                    : styles.stepTextInactive
+                }
+              >
+                1
+              </P>
             </View>
             <P style={styles.stepLabel}>Shipping</P>
           </View>
           <View style={styles.step}>
             <View
               style={[
-                currentStep === 'payment' ? styles.stepCircleActive : styles.stepCircleInactive,
+                currentStep === "payment"
+                  ? styles.stepCircleActive
+                  : styles.stepCircleInactive,
               ]}
-              className='!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center'
+              className="!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center"
             >
-              <P style={currentStep === 'payment' ? styles.stepTextActive : styles.stepTextInactive}>2</P>
+              <P
+                style={
+                  currentStep === "payment"
+                    ? styles.stepTextActive
+                    : styles.stepTextInactive
+                }
+              >
+                2
+              </P>
             </View>
             <P style={styles.stepLabel}>Payment</P>
           </View>
           <View style={styles.step}>
             <View
               style={[
-                currentStep === 'review' ? styles.stepCircleActive : styles.stepCircleInactive,
+                currentStep === "review"
+                  ? styles.stepCircleActive
+                  : styles.stepCircleInactive,
               ]}
-              className='!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center'
+              className="!bg-[#2c2c2c] w-8 h-8 rounded-full flex items-center justify-center"
             >
-              <P style={currentStep === 'review' ? styles.stepTextActive : styles.stepTextInactive}>3</P>
+              <P
+                style={
+                  currentStep === "review"
+                    ? styles.stepTextActive
+                    : styles.stepTextInactive
+                }
+              >
+                3
+              </P>
             </View>
             <P style={styles.stepLabel}>Review</P>
           </View>
         </View>
 
-        {currentStep === 'shipping' && renderShippingForm()}
-        {currentStep === 'payment' && renderPaymentForm()}
-        {currentStep === 'review' && renderOrderReview()}
+        {currentStep === "shipping" && renderShippingForm()}
+        {currentStep === "payment" && renderPaymentForm()}
+        {currentStep === "review" && renderOrderReview()}
       </ScrollView>
     </SafeAreaView>
   );

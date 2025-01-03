@@ -12,6 +12,7 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useCart } from "~/lib/cart-context";
+import { BackpackIcon } from "lucide-react-native";
 
 export default function CustomerTabs() {
   const { getCartQuantity } = useCart();
@@ -89,6 +90,8 @@ export default function CustomerTabs() {
             name="checkout"
             options={{
               href: null,
+              headerShown: true,
+              headerTitle: "" 
             }}
           />
         </Tabs>

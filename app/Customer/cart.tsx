@@ -72,7 +72,7 @@ export default function Tab() {
           <Button
             variant="outline"
             className="p-4 rounded-full flex-row justify-between items-center"
-            onPress={() => navigation.navigate("CheckoutScreen")}
+            onPress={() => navigation.navigate("checkout")}
           >
             <P className="text-white">Continue to checkout</P>
             <P className="text-white">{formatPrice(getCartTotal())}</P>
