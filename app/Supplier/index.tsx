@@ -41,7 +41,6 @@ const SupplierPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -98,7 +97,6 @@ const SupplierPage: React.FC = () => {
     const product = products.find((p) => p.product_id === productId);
     if (product) {
       setSelectedProduct(product);
-      setIsModalVisible(true);
     }
   };
 
@@ -111,7 +109,7 @@ const SupplierPage: React.FC = () => {
 
       if (error) throw error;
 
-      setIsModalVisible(false);
+      setSelectedProduct(null);
       fetchProducts();
       Alert.alert("Success", "Stock updated successfully");
     } catch (err) {
@@ -195,19 +193,20 @@ const SupplierPage: React.FC = () => {
         </View>
         <View className="flex-1 py-4">
           {filteredProducts.map((product) => (
-            <ProductDetailsModal
-              sheetTrigger={
-                <ProductCard
-                  key={product.product_id}
-                  product={product}
-                  onViewDetails={handleViewDetails}
-                />
-              }
-              visible={isModalVisible}
-              product={selectedProduct}
-              onClose={() => setIsModalVisible(false)}
-              onUpdateStock={handleUpdateStock}
-            />
+            <React.Fragment key={product.product_id}>
+              <ProductDetailsModal
+                sheetTrigger={
+                  <ProductCard
+                    product={product}
+                    onViewDetails={handleViewDetails}
+                  />
+                }
+                visible={selectedProduct?.product_id === product.product_id}
+                product={product}
+                onClose={() => setSelectedProduct(null)}
+                onUpdateStock={handleUpdateStock}
+              />
+            </React.Fragment>
           ))}
         </View>
       </ScrollView>

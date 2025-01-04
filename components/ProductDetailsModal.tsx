@@ -59,14 +59,16 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             <DetailItem label="Category" value={product.category} />
             <DetailItem label="Description" value={product.description} />
             <DetailItem label="Price" value={`$${product.price.toFixed(2)}`} />
-            <DetailItem
+            {/* <DetailItem
               label="Current Stock"
-              value={product.stock_quantity.toString()}
+              value={
+                product.stock_quantity && product.stock_quantity.toString()
+              }
             />
             <DetailItem
               label="Reorder Level"
-              value={product.reorder_level.toString()}
-            />
+              value={product.reorder_level && product.reorder_level.toString()}
+            /> */}
 
             <Text className="text-lg font-bold mt-4 mb-2">Update Stock</Text>
             <View className="flex-row items-center">

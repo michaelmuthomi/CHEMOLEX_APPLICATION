@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchSuppliers, insertNewProductToDB } from "~/lib/supabase";
+import { fetchSuppliers, insertNewProductToDB, supabase } from "~/lib/supabase";
 import { Value } from "@rn-primitives/select";
 
 interface Supplier {
@@ -35,17 +35,16 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({
 }) => (
   <View className="mb-4">
     <H5 className="text-sm text-gray-600 mb-1">{label}</H5>
-    <H5 className="text-base text-gray-800">{value}</H5>
+    <H5 className="text-base text-white">{value}</H5>
   </View>
 );
 
 type ProductDetailsModalProps = {
   visible: boolean;
-  product: Product | null;
+  product: any;
   onClose: () => void;
   onUpdateStock: (productId: number, newStock: number) => void;
 };
-
 
 export function ProductDetailsModal({
   sheetTrigger,
@@ -55,153 +54,112 @@ export function ProductDetailsModal({
   onUpdateStock,
 }: {
   sheetTrigger: React.ReactNode;
-  visible: any;
+  visible: boolean;
   product: any;
-  onClose: any;
-  onUpdateStock: any;
+  onClose: () => void;
+  onUpdateStock: (productId: number, newStock: number) => void;
 }) {
-  // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [supplier, setSupplier] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState("");
-  const [stockQuantity, setStockQuantity] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [suppliers, setSuppliers] = useState([]);
-
-  async function handleAddProduct() {
-    setLoading(true);
-    if (
-      name &&
-      description &&
-      supplier &&
-      category &&
-      price &&
-      stockQuantity &&
-      imageUrl
-    ) {
-      const response = await insertNewProductToDB(
-        name,
-        description,
-        Number(price),
-        Number(supplier),
-        Number(stockQuantity),
-        category,
-        imageUrl
-      );
-      if (response.startsWith("Success")) {
-        displayNotification("Products added Successfully", "success");
-        bottomSheetModalRef.current?.dismiss();
-        setLoading(false);
-        return;
-      } else {
-        displayNotification(response, "danger");
-        setLoading(false);
-      }
-      setLoading(false);
-    } else {
-      displayNotification("Please fill in all the fields", "danger");
-    }
-    setLoading(false);
-  }
-
+  // Add useEffect to handle visibility changes
   useEffect(() => {
-    async function fetchAllSuppliers() {
-      const response = await fetchSuppliers();
-      setSuppliers(response);
-      console.log("Suppliers fetched: ", response);
+    if (visible) {
+      bottomSheetModalRef.current?.present();
+    } else {
+      bottomSheetModalRef.current?.dismiss();
     }
-    fetchAllSuppliers();
-  }, []); // Run only once when the component mounts
+  }, [visible]);
 
-  const insets = useSafeAreaInsets();
-  const contentInsets = {
-    top: insets.top,
-    bottom: insets.bottom,
-    left: 12,
-    right: 12,
+  const handleSheetChanges = useCallback(
+    (index: number) => {
+      if (index === -1) {
+        // Modal is closed
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  const [newStock, setNewStock] = useState("");
+
+  const handleUpdateStockPress = () => {
+    const newStockNumber = parseInt(newStock);
+    if (!isNaN(newStockNumber)) {
+      onUpdateStock(product.product_id, newStockNumber);
+      setNewStock("");
+    }
   };
 
   return (
     <>
       {React.cloneElement(sheetTrigger as React.ReactElement, {
-        onPress: handlePresentModalPress,
+        onPress: () => bottomSheetModalRef.current?.present(),
       })}
       <BottomSheetModal
         ref={bottomSheetModalRef}
         onChange={handleSheetChanges}
         backgroundStyle={{ backgroundColor: "#111" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
+        snapPoints={["75%"]}
       >
         <BottomSheetView className="p-6 gap-6">
-          {/* Title and Subtitle */}
-          <View className="items-center mb-8">
-            <H3 className="text-2xl mb-2 text-center">Add new product</H3>
-            <P className="text-gray-500 text-center">
-              Please fill in the form to add a new product
-            </P>
-          </View>
-          <View className="flex-1 justify-end bg-black bg-opacity-50">
-            <View className="bg-white rounded-t-3xl p-6 h-5/6">
-              <View className="flex-row justify-between items-center mb-4">
-                <H4 className="text-2xl font-bold">Product Details</H4>
-                <TouchableOpacity>
-                  <ShieldCloseIcon className="w-6 h-6 text-gray-500" />
-                </TouchableOpacity>
-              </View>
-              <ScrollView>
-                {/* <Image
-                  source={{ uri: product.image_url }}
-                  className="w-full h-48 rounded-lg mb-4"
-                /> */}
-                <DetailItem label="Name" value={product.name} />
-                <DetailItem label="Category" value={product.category} />
-                <DetailItem label="Description" value={product.description} />
-                <DetailItem
-                  label="Price"
-                  value={`$${product.price.toFixed(2)}`}
-                />
-                <DetailItem
-                  label="Current Stock"
-                  value={product.stock_quantity.toString()}
-                />
-                <DetailItem
-                  label="Reorder Level"
-                  value={product.reorder_level.toString()}
-                />
+          <View>
+            <View className="flex-row justify-between items-center mb-4">
+              <H4 className="text-xl">Product Details</H4>
+              <TouchableOpacity onPress={onClose}>
+                <ShieldCloseIcon className="w-6 h-6 text-gray-500" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              <Image
+                source={{ uri: product.image_url }}
+                className="w-full h-48 rounded-lg mb-4"
+              />
+              <DetailItem label="Name" value={product.name} />
+              <DetailItem label="Category" value={product.category} />
+              <DetailItem label="Description" value={product.description} />
+              <DetailItem
+                label="Price"
+                value={`$${product.price.toFixed(2)}`}
+              />
+              <DetailItem
+                label="Current Stock"
+                value={
+                  product.stock_quantity && product.stock_quantity.toString()
+                }
+              />
+              <DetailItem
+                label="Reorder Level"
+                value={
+                  product.reorder_level && product.reorder_level.toString()
+                }
+              />
 
-                <H5 className="text-lg font-bold mt-4 mb-2">Update Stock</H5>
-                <View className="flex-row items-center">
+              <View className="border-t-[1px] border-zinc-900">
+                <H5 className="text-lg mt-4 mb-2">Update Stock</H5>
+                <View className="flex-row items-center rounded-md w-full gap-2">
+                  <SquareStack size={16} color={"#aaaaaa"} />
                   <Input
-                    className="border border-gray-300 rounded-lg px-3 py-2 flex-1 mr-2"
-                    placeholder="Enter new stock quantity"
+                    className="border-0 flex-1 bg-transparent"
+                    placeholder="Enter new quantity"
                     keyboardType="numeric"
                     value={newStock}
                     onChangeText={setNewStock}
                   />
-                  <TouchableOpacity
-                    className="bg-blue-500 px-4 py-2 rounded-lg"
-                    onPress={handleUpdateStock}
+                  <Button
+                    onPress={handleUpdateStockPress}
+                    className="flex-1 rounded-full"
+                    size={"lg"}
+                    variant="default"
                   >
-                    <H5 className="text-white font-semibold">Update</H5>
-                  </TouchableOpacity>
+                    <H5 className="text-black">
+                      {"Update"}
+                    </H5>
+                  </Button>
                 </View>
-              </ScrollView>
-            </View>
+              </View>
+            </ScrollView>
           </View>
-          ;
         </BottomSheetView>
       </BottomSheetModal>
     </>
