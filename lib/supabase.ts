@@ -522,3 +522,25 @@ export async function insertNewProductToDB(
     return "Success:" + data;
   }
 }
+
+export async function updateUserProfile(
+  email: string,
+  updates: {
+    full_name?: string;
+    username?: string;
+    phone_number?: string;
+    address?: string;
+  }
+) {
+  const { data, error } = await supabase
+    .from("users")
+    .update(updates)
+    .eq("email", email)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  return data;
+}

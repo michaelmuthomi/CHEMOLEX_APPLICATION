@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { H1, H2, H3, H5, P } from "~/components/ui/typography";
 import { useEmail } from "~/app/EmailContext";
-import { checkUser } from "~/lib/supabase";
+import { checkUser, updateUserProfile } from "~/lib/supabase";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,7 +17,7 @@ import { useNavigation } from "expo-router";
 import displayNotification from "~/lib/Notification";
 
 export default function ProfileScreen() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
   const [isEditing, setIsEditing] = useState(false);
@@ -30,10 +30,22 @@ export default function ProfileScreen() {
     fetchUserDetails();
   }, [emailContext]);
 
-  const handleSavecustomer = () => {
-    // TODO: Implement API call to save user info
-    displayNotification("Profile updated successfully", 'success');
-    setIsEditing(false);
+  const handleSavecustomer = async () => {
+    try {
+      const updates = {
+        full_name: customer.full_name,
+        username: customer.username,
+        phone_number: customer.phone_number,
+        address: customer.address,
+      };
+
+      await updateUserProfile(emailContext?.email, updates);
+      displayNotification("Profile updated successfully", "success");
+      setIsEditing(false);
+    } catch (error) {
+      displayNotification("Failed to update profile", "error");
+      console.error("Error updating profile:", error);
+    }
   };
   return (
     <ScrollView className="bg-[#060606] flex-1 gap-10">
@@ -131,7 +143,31 @@ export default function ProfileScreen() {
                 </View>
               </View>
             </View>
-
+            <View className="gap-2">
+              <H5>Username</H5>
+              <View
+                className={`
+                  flex-row items-center rounded-md
+                  ${isEditing ? "border-[1px]" : "border-0"}
+                `}
+              >
+                <User size={14} color={isEditing ? "white" : "gray"} />
+                <Input
+                  placeholder="Username"
+                  value={customer.username}
+                  onChangeText={(text) =>
+                    setCustomerDetails({ ...customer, username: text })
+                  }
+                  keyboardType="default"
+                  editable={isEditing}
+                  className={
+                    !isEditing
+                      ? "bg-transparent border-0 flex-1"
+                      : "border-0 flex-1"
+                  }
+                />
+              </View>
+            </View>
             <View className="gap-2">
               <H5>Email</H5>
               <View
@@ -175,6 +211,7 @@ export default function ProfileScreen() {
                   }
                   keyboardType="phone-pad"
                   editable={isEditing}
+                  maxLength={10}
                   className={
                     !isEditing
                       ? "bg-transparent border-0 flex-1"
