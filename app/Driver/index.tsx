@@ -11,11 +11,20 @@ import {
 import { checkUser, supabase } from "~/lib/supabase";
 import { DispatchCard } from "~/components/DispatchCard";
 import { DispatchDetailsModal } from "~/components/DispatchDetailsModal";
-import { GalleryVertical, ListChecks, ListTodo, MessageCircle, Search, SearchIcon } from "lucide-react-native";
+import {
+  GalleryVertical,
+  ListChecks,
+  ListTodo,
+  MessageCircle,
+  Search,
+  SearchIcon,
+} from "lucide-react-native";
 import { useEmail } from "../EmailContext";
 import { H3 } from "~/components/ui/typography";
 import StatsCard from "~/components/StatsCard";
 import { Input } from "~/components/ui/input";
+import { P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
 
 type DispatchStatus = "Pending" | "In Transit" | "Delivered";
 
@@ -47,6 +56,8 @@ type Dispatch = {
   };
 };
 
+const DISPATCHES_PER_PAGE = 6;
+
 const DriversPage: React.FC = () => {
   const [dispatches, setDispatches] = useState<Dispatch[]>([]);
   const [filteredDispatches, setFilteredDispatches] = useState<Dispatch[]>([]);
@@ -59,6 +70,7 @@ const DriversPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchDispatches();
@@ -75,7 +87,7 @@ const DriversPage: React.FC = () => {
       subscription.unsubscribe();
     };
   }, []);
-  
+
   useEffect(() => {
     async function fetchUserDetails() {
       const response = await checkUser(emailContext?.email);
@@ -154,6 +166,25 @@ const DriversPage: React.FC = () => {
     }
   };
 
+  const paginatedDispatches = filteredDispatches.slice(
+    (currentPage - 1) * DISPATCHES_PER_PAGE,
+    currentPage * DISPATCHES_PER_PAGE
+  );
+
+  const totalPages = Math.ceil(filteredDispatches.length / DISPATCHES_PER_PAGE);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -218,7 +249,7 @@ const DriversPage: React.FC = () => {
       </View>
       <View className="p-6">
         <View className="flex-row items-center rounded-lg py-2">
-          <SearchIcon color={'white'} size={18} />
+          <SearchIcon color={"white"} size={18} />
           <Input
             className="flex-1 text-base border-0"
             placeholder="Search for assignments"
@@ -229,16 +260,36 @@ const DriversPage: React.FC = () => {
       </View>
 
       <ScrollView className="flex-1 p-4">
-        <H3 className="text-xl mb-4">
-          Assignments
-        </H3>
-        {filteredDispatches.map((dispatch) => (
+        <H3 className="text-xl mb-4">Assignments</H3>
+        {paginatedDispatches.map((dispatch) => (
           <DispatchCard
             key={dispatch.order_id}
             dispatch={dispatch}
             onViewDetails={handleViewDetails}
           />
         ))}
+
+        <View className="flex-row items-center justify-between my-4">
+          <Button
+            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+            onPress={handlePreviousPage}
+            disabled={currentPage === 1}
+          >
+            <P className="text-white">&larr; Previous</P>
+          </Button>
+
+          <P className="text-white mx-4">
+            Page {currentPage} of {totalPages}
+          </P>
+
+          <Button
+            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+            onPress={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            <P className="text-white">Next &rarr;</P>
+          </Button>
+        </View>
       </ScrollView>
 
       <DispatchDetailsModal

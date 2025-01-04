@@ -22,6 +22,8 @@ import { H3 } from "~/components/ui/typography";
 import StatsCard from "~/components/StatsCard";
 import { Input } from "~/components/ui/input";
 import displayNotification from "~/lib/Notification";
+import { P } from "~/components/ui/typography";
+import { Button } from "~/components/ui/button";
 
 type Product = {
   product_id: number;
@@ -36,6 +38,8 @@ type Product = {
   image_url: string;
 };
 
+const PRODUCTS_PER_PAGE = 6;
+
 const SupplierPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -43,6 +47,7 @@ const SupplierPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchProducts();
@@ -112,10 +117,32 @@ const SupplierPage: React.FC = () => {
 
       setSelectedProduct(null);
       fetchProducts();
-      displayNotification("Stock updated successfully", 'success');
+      displayNotification("Stock updated successfully", "success");
     } catch (err) {
       console.error("Error updating stock:", err);
-      displayNotification("Failed to update stock. Please try again.", 'danger');
+      displayNotification(
+        "Failed to update stock. Please try again.",
+        "danger"
+      );
+    }
+  };
+
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
   };
 
@@ -193,7 +220,7 @@ const SupplierPage: React.FC = () => {
           />
         </View>
         <View className="flex-1 py-4">
-          {filteredProducts.map((product) => (
+          {paginatedProducts.map((product) => (
             <React.Fragment key={product.product_id}>
               <ProductDetailsModal
                 sheetTrigger={
@@ -209,6 +236,27 @@ const SupplierPage: React.FC = () => {
               />
             </React.Fragment>
           ))}
+        </View>
+        <View className="flex-row items-center justify-between my-4 px-2">
+          <Button
+            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+            onPress={handlePreviousPage}
+            disabled={currentPage === 1}
+          >
+            <P className="text-white">&larr; Previous</P>
+          </Button>
+
+          <P className="text-white mx-4">
+            Page {currentPage} of {totalPages}
+          </P>
+
+          <Button
+            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+            onPress={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            <P className="text-white">Next &rarr;</P>
+          </Button>
         </View>
       </ScrollView>
     </View>
