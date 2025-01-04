@@ -23,6 +23,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { fetchSuppliers, insertNewProductToDB, supabase } from "~/lib/supabase";
 import { Value } from "@rn-primitives/select";
+import { formatPrice } from "~/lib/format-price";
 
 interface Supplier {
   user_id: Number;
@@ -60,15 +61,17 @@ export function ProductDetailsModal({
   onUpdateStock: (productId: number, newStock: number) => void;
 }) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [productData, setProductData] = useState(product);
 
-  // Add useEffect to handle visibility changes
   useEffect(() => {
     if (visible) {
       bottomSheetModalRef.current?.present();
+      setProductData(product);
     } else {
       bottomSheetModalRef.current?.dismiss();
     }
-  }, [visible]);
+  }, [visible, product]);
 
   const handleSheetChanges = useCallback(
     (index: number) => {
@@ -111,53 +114,68 @@ export function ProductDetailsModal({
               </TouchableOpacity>
             </View>
             <ScrollView>
-              <Image
-                source={{ uri: product.image_url }}
-                className="w-full h-48 rounded-lg mb-4"
-              />
-              <DetailItem label="Name" value={product.name} />
-              <DetailItem label="Category" value={product.category} />
-              <DetailItem label="Description" value={product.description} />
-              <DetailItem
-                label="Price"
-                value={`$${product.price.toFixed(2)}`}
-              />
-              <DetailItem
-                label="Current Stock"
-                value={
-                  product.stock_quantity && product.stock_quantity.toString()
-                }
-              />
-              <DetailItem
-                label="Reorder Level"
-                value={
-                  product.reorder_level && product.reorder_level.toString()
-                }
-              />
-
-              <View className="border-t-[1px] border-zinc-900">
-                <H5 className="text-lg mt-4 mb-2">Update Stock</H5>
-                <View className="flex-row items-center rounded-md w-full gap-2">
-                  <SquareStack size={16} color={"#aaaaaa"} />
-                  <Input
-                    className="border-0 flex-1 bg-transparent"
-                    placeholder="Enter new quantity"
-                    keyboardType="numeric"
-                    value={newStock}
-                    onChangeText={setNewStock}
-                  />
-                  <Button
-                    onPress={handleUpdateStockPress}
-                    className="flex-1 rounded-full"
-                    size={"lg"}
-                    variant="default"
-                  >
-                    <H5 className="text-black">
-                      {"Update"}
-                    </H5>
-                  </Button>
+              {isLoading ? (
+                <View className="flex items-center justify-center h-48">
+                  <H5 className="text-gray-500">Loading...</H5>
                 </View>
-              </View>
+              ) : (
+                <>
+                  <Image
+                    source={{ uri: productData.image_url }}
+                    className="w-full h-48 rounded-lg mb-4"
+                  />
+                  <DetailItem label="Name" value={productData.name} />
+                  <DetailItem label="Category" value={productData.category} />
+                  <DetailItem
+                    label="Description"
+                    value={productData.description}
+                  />
+                  <DetailItem
+                    label="Price"
+                    value={`${formatPrice(productData.price.toFixed(2))}`}
+                  />
+                  <View className="flex-row w-full">
+                    <View className='w-1/2'>
+                      <DetailItem
+                        label="Current Stock"
+                        value={
+                          productData.stock_quantity &&
+                          productData.stock_quantity.toString()
+                        }
+                      />
+                    </View>
+                    <DetailItem
+                      label="Reorder Level"
+                      value={
+                        productData.reorder_level &&
+                        productData.reorder_level.toString()
+                      }
+                    />
+                  </View>
+
+                  <View className="border-t-[1px] border-zinc-900">
+                    <H5 className="text-lg mt-4 mb-2">Update Stock</H5>
+                    <View className="flex-row items-center rounded-md w-full gap-2">
+                      <SquareStack size={16} color={"#aaaaaa"} />
+                      <Input
+                        className="border-0 flex-1 bg-transparent"
+                        placeholder="Enter new quantity"
+                        keyboardType="numeric"
+                        value={newStock}
+                        onChangeText={setNewStock}
+                      />
+                      <Button
+                        onPress={handleUpdateStockPress}
+                        className="rounded-full w-auto"
+                        size={"lg"}
+                        variant="default"
+                      >
+                        <H4 className="text-lg text-black">{"Update"}</H4>
+                      </Button>
+                    </View>
+                  </View>
+                </>
+              )}
             </ScrollView>
           </View>
         </BottomSheetView>

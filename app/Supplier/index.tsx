@@ -21,6 +21,7 @@ import {
 import { H3 } from "~/components/ui/typography";
 import StatsCard from "~/components/StatsCard";
 import { Input } from "~/components/ui/input";
+import displayNotification from "~/lib/Notification";
 
 type Product = {
   product_id: number;
@@ -111,10 +112,10 @@ const SupplierPage: React.FC = () => {
 
       setSelectedProduct(null);
       fetchProducts();
-      Alert.alert("Success", "Stock updated successfully");
+      displayNotification("Stock updated successfully", 'success');
     } catch (err) {
       console.error("Error updating stock:", err);
-      Alert.alert("Error", "Failed to update stock. Please try again.");
+      displayNotification("Failed to update stock. Please try again.", 'danger');
     }
   };
 
