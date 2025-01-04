@@ -584,3 +584,19 @@ export async function fetchDriverById(driverId: string) {
   }
   return data;
 }
+
+// Fetch delivered product IDs from the dispatches table
+export async function fetchDeliveredProductIds() {
+  const { data, error } = await supabase
+    .from("dispatches")
+    .select("order_id")
+    .eq("status", "delivered");
+
+  if (error) {
+    console.error("Error fetching delivered product IDs:", error);
+    return []; // Return an empty array in case of error
+  }
+
+  return data.map((dispatch) => dispatch.order_id); // Return an array of order IDs
+}
+

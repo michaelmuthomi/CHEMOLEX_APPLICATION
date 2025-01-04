@@ -27,6 +27,7 @@ import {
   checkUser,
   fetchDispatchedByOrderId,
   fetchDriverById,
+  fetchDeliveredProductIds,
 } from "~/lib/supabase";
 import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
@@ -55,6 +56,7 @@ export default function Tab({ navigation }: { navigation: any }) {
   const [availableDrivers, setAvailableDrivers] = useState([]);
   const [customer, setCustomerDetails] = useState([]);
   const [driverNames, setDriverNames] = useState<{ [key: string]: string }>({});
+  const [sortedOrders, setSortedOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     async function fetchCustomerOrders() {
@@ -97,14 +99,20 @@ export default function Tab({ navigation }: { navigation: any }) {
     },
   ];
 
-  const getSortedOrders = () => {
+  const getSortedOrders = async () => {
     switch (sortBy) {
       case "dispatched":
         return orders.filter((order) => order.dispatch_status === "dispatched");
       case "pending":
         return orders.filter((order) => order.dispatch_status === "pending");
       case "delivered":
-        return orders.filter((order) => order.assignedTo !== null);
+        const deliveredProductIds = await fetchDeliveredProductIds();
+        console.log("Delivered Products: ", deliveredProductIds);
+        const deliveredOrders = orders.filter((order) =>
+          deliveredProductIds.includes(order.order_id)
+        );
+        setSortedOrders(deliveredOrders);
+        return deliveredOrders;
       default:
         return orders;
     }
@@ -134,6 +142,16 @@ export default function Tab({ navigation }: { navigation: any }) {
 
     fetchDriversForOrders();
   }, [orders]); // Run this effect when orders change
+
+  // Fetch sorted orders when the component mounts or when orders or sortBy changes
+  useEffect(() => {
+    const fetchSortedOrders = async () => {
+      const orders = await getSortedOrders(); // Call the async function
+      setSortedOrders(orders); // Update state with the fetched orders
+    };
+
+    fetchSortedOrders();
+  }, [orders, sortBy]); // Dependencies to re-fetch when orders or sortBy changes
 
   return (
     <View className="flex-1">
@@ -202,7 +220,7 @@ export default function Tab({ navigation }: { navigation: any }) {
         <View className="flex-1 p-4">
           <View className="gap-4">
             <FlatList
-              data={getSortedOrders()}
+              data={sortedOrders}
               keyExtractor={(item) => item.id}
               ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               renderItem={({ item }) => (
@@ -214,7 +232,11 @@ export default function Tab({ navigation }: { navigation: any }) {
                         className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
                           item.dispatch_status === "pending"
                             ? "bg-orange-300"
-                            : "bg-green-300"
+                            : sortBy === "dispatched"
+                            ? "bg-purple-300"
+                            : sortBy === "delivered"
+                            ? "bg-green-300"
+                            : "bg-orange-300"
                         }`}
                       >
                         <Clock
@@ -232,7 +254,11 @@ export default function Tab({ navigation }: { navigation: any }) {
                               : "text-green-900"
                           } ml-2 text-base capitalize`}
                         >
-                          {item.dispatch_status}
+                          {sortBy === "dispatched"
+                            ? "dispatched"
+                            : sortBy === "delivered"
+                            ? "delivered"
+                            : item.dispatch_status}
                         </H5>
                       </View>
                     </View>
@@ -254,7 +280,10 @@ export default function Tab({ navigation }: { navigation: any }) {
                     {item.dispatch_status === "dispatched" ? (
                       <View className="bg-gray-100 py-2 px-4 rounded-lg mt-4">
                         <H4 className="text-gray-700 text-base">
-                          Assigned to: {driverNames[item.id] || "Loading..."}
+                          {sortBy === "delivered"
+                            ? "Delivered by: "
+                            : "Assigned to: "}
+                          {driverNames[item.id] || "Loading..."}{" "}
                         </H4>
                       </View>
                     ) : (
