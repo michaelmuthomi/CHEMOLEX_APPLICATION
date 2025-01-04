@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { ProductCard } from "~/components/ProductCard";
-import { ProductDetailsModal } from "~/components/ProductDetailsModal";
+import { ProductDetailsModal } from "~/components/sheets/productdetails";
 import {
   GalleryVertical,
   ListChecks,
@@ -195,10 +195,18 @@ const SupplierPage: React.FC = () => {
         </View>
         <View className="flex-1 py-4">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.product_id}
-              product={product}
-              onViewDetails={handleViewDetails}
+            <ProductDetailsModal
+              sheetTrigger={
+                <ProductCard
+                  key={product.product_id}
+                  product={product}
+                  onViewDetails={handleViewDetails}
+                />
+              }
+              visible={isModalVisible}
+              product={selectedProduct}
+              onClose={() => setIsModalVisible(false)}
+              onUpdateStock={handleUpdateStock}
             />
           ))}
         </View>
