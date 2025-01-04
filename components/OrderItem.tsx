@@ -7,56 +7,73 @@ import { formatTime } from "~/lib/format-time";
 import { Button } from "./ui/button";
 
 type OrderItemProps = {
-  order: Order;
+  order: any;
   onAssign: (orderId: number) => void;
 };
 
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   return (
-    <View className="p-4 h-40 flex ">
-      <View>
-        <View className="flex-row justify-end items-center mb-2">
-          {/* <H6 className="text-sm text-gray-800">Order #{order.id}</H6> */}
-        </View>
-        <H3 className="text-white mb-2">{order.services.name}</H3>
-        <View className="flex-row items-center mb-1 gap-2">
-          <Calendar size={14} color={"#4b5563"} />
-          <H5 className="text-sm text-gray-600">
-            {formatDate(order.created_at)}
-          </H5>
-          <P className="text-sm text-gray-600">{formatTime(order.time)}</P>
-          <P
-            className={`text-sm capitalize ml-auto ${
-              order.status === "pending" ? "text-yellow-500" : "text-green-500"
+    <TouchableOpacity className="bg-white rounded-lg shadow-sm p-4 mb-4">
+      <View className="w-full relative overflow-clip">
+        <View className="flex items-start absolute right-[-14px] top-[-14px]">
+          <View
+            className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
+              order.status === "pending" ? "bg-orange-300" : "bg-green-300"
             }`}
           >
-            {order.status}
-          </P>
-        </View>
-        <View className="mt-auto">
-          {order.status === "pending" && (
-            <Button
-              onPress={() => onAssign(order.id)}
-              className="w-full rounded-full"
-              size={"default"}
-              variant="default"
-              disabled={loading}
+            <Clock
+              color={order.status === "pending" ? "#9a3412" : "#166534"}
+              size={14}
+            />
+            <H5
+              className={`${
+                order.status === "pending"
+                  ? "text-orange-900"
+                  : "text-green-900"
+              } ml-2 text-base capitalize`}
             >
-              <H5 className=" text-black">
-                {loading ? "Logging In" : "Assign Technician"}
+              {order.status}
+            </H5>
+          </View>
+        </View>
+
+        <View className="mb-6">
+          <H3 className="text-lg text-gray-800 mb-2">{order.services.name}</H3>
+          <H4 className="text-gray-600 text-base w-3/4" numberOfLines={3}>
+            {order.services.description}
+          </H4>
+        </View>
+
+        {order.status === "pending" ? (
+          <View className="flex-row w-full gap-6 justify-between">
+            <Button
+              className="rounded-full border-black bg-transparent px-0"
+              size={"lg"}
+              variant="default"
+              disabled
+            >
+              <H5 className="text-black text-left">
+                {formatDate(order.created_at)} &#8226; {formatTime(order.created_at)}
               </H5>
             </Button>
-          )}
-        </View>
+            <Button
+              onPress={() => onAssign(order.id)}
+              className="rounded-full flex-1 bg-green-800"
+              size={"lg"}
+              variant="default"
+            >
+              <H5 className=" text-white">{"Assign"}</H5>
+            </Button>
+          </View>
+        ) : (
+          <View className="bg-gray-100 py-2 px-4 rounded-lg mt-4">
+            <Text className="text-gray-700">
+              Assigned to: {order.assignedTo}
+            </Text>
+          </View>
+        )}
       </View>
-      {order.status === "Assigned" && (
-        <View className="bg-gray-100 py-2 px-4 rounded-lg mt-auto">
-          <Text className="text-gray-700 text-center">
-            Assigned to: {order.assignedTo}
-          </Text>
-        </View>
-      )}
-    </View>
+    </TouchableOpacity>
   );
 };

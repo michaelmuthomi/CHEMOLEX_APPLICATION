@@ -11,7 +11,14 @@ import { supabase } from "~/lib/supabase";
 import { OrderItem } from "~/components/OrderItem";
 import { TechnicianModal } from "~/components/TechnicianModal";
 import { Filter } from "lucide-react-native";
-import { H1, H3, P } from "~/components/ui/typography";
+import { H1, H3, H4, P } from "~/components/ui/typography";
+import {
+  GalleryVertical,
+  ListChecks,
+  ListTodo,
+  MessageCircle,
+} from "lucide-react-native";
+import StatsCard from "~/components/StatsCard";
 
 type Order = {
   id: number;
@@ -19,7 +26,7 @@ type Order = {
   date: string;
   time: string;
   customerName: string;
-  status: "Pending" | "Assigned" | "Completed";
+  status: "pending" | "assigned" | "completed";
   assignedTo?: string;
 };
 
@@ -37,7 +44,7 @@ const ServiceManagerPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [filterStatus, setFilterStatus] = useState<
-    "All" | "Pending" | "Assigned"
+    "All" | "pending" | "assigned"
   >("All");
   const skeletons = [0, 1, 2, 3, 4, 5, 6];
 
@@ -107,7 +114,7 @@ const ServiceManagerPage: React.FC = () => {
 
       const { error } = await supabase
         .from("orders")
-        .update({ status: "Assigned", assignedTo: technician.name })
+        .update({ status: "assigned", assignedTo: technician.name })
         .eq("id", selectedOrderId);
 
       if (error) throw error;
@@ -128,6 +135,43 @@ const ServiceManagerPage: React.FC = () => {
     return order.status === filterStatus;
   });
 
+  const calculateStats = (orders: Order[]) => {
+    return [
+      {
+        iconBgColor: "bg-blue-600",
+        Icon: <GalleryVertical color="white" size={19} />,
+        Title: "Total Orders",
+        Description: `${orders.length} orders`,
+      },
+      {
+        iconBgColor: "bg-orange-600",
+        Icon: <ListTodo color="white" size={19} />,
+        Title: "Pending",
+        Description: `${
+          orders.filter((o) => o.status === "pending").length
+        } orders`,
+      },
+      {
+        iconBgColor: "bg-green-600",
+        Icon: <ListChecks color="white" size={19} />,
+        Title: "Assigned",
+        Description: `${
+          orders.filter((o) => o.status === "assigned").length
+        } orders`,
+      },
+      {
+        iconBgColor: "bg-purple-600",
+        Icon: <MessageCircle color="white" size={19} />,
+        Title: "Completed",
+        Description: `${
+          orders.filter((o) => o.status === "completed").length
+        } orders`,
+      },
+    ];
+  };
+
+  const stats = calculateStats(orders);
+
   if (error) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -143,50 +187,72 @@ const ServiceManagerPage: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 ">
-      <View className="bg-blue-800 p-6">
-        <View className="flex-row justify-between items-center">
-          {/* <H3 className="text-white text-lg">Filter by Status:</H3> */}
-          <View className="flex-row">
-            {(["All", "pending", "assigned"] as const).map((status) => (
-              <TouchableOpacity
-                key={status}
-                className={`px-3 py-1 rounded-md ${
-                  filterStatus === status ? "bg-white" : "bg-blue-700"
-                }`}
-                onPress={() => setFilterStatus(status)}
-              >
-                <P
-                  className={`capitalize ${
-                    filterStatus === status ? "text-blue-800" : "text-white"
-                  }`}
-                >
-                  {status}
-                </P>
-              </TouchableOpacity>
+    <View className="flex-1">
+      <ScrollView className="flex-1">
+        <View className="bg-white p-4 gap-6">
+          <H3 className="text-black">Statistics</H3>
+          <View className="flex-row flex-wrap gap-y-6 justify-between">
+            {stats.map((stat, index) => (
+              <StatsCard
+                key={index}
+                iconBgColor={stat.iconBgColor}
+                Icon={stat.Icon}
+                Title={stat.Title}
+                Description={stat.Description}
+              />
             ))}
           </View>
         </View>
-      </View>
 
-      <ScrollView className="flex-1">
-        <View className="gap-4">
-          {isLoading ? (
-            skeletons.map((skeleton) => (
-              <View
-                className="w-full h-32 bg-zinc-900 animate-pulse"
-                key={skeleton}
-              />
-            ))
-          ) : filteredOrders.length === 0 ? ( 
-            <View>
-              <H1 className="text-white !text-[40px]">No results {'\n'}Found</H1>
+        <View className="py-6 px-4">
+          <View className="flex-row justify-between items-center">
+            <View className="flex-row gap-2">
+              {(["All", "pending", "assigned"] as const).map((status) => (
+                <TouchableOpacity
+                  key={status}
+                  className={`px-3 py-2 rounded-md ${
+                    filterStatus === status ? "bg-white" : "bg-zinc-900"
+                  }`}
+                  onPress={() => setFilterStatus(status)}
+                >
+                  <H4
+                    className={`capitalize text-lg px-2 ${
+                      filterStatus === status ? "text-black" : "text-white"
+                    }`}
+                  >
+                    {status}
+                  </H4>
+                </TouchableOpacity>
+              ))}
             </View>
-          ) : (
-            filteredOrders.map((order) => (
-              <OrderItem key={order.id} order={order} onAssign={handleAssign} />
-            ))
-          )}
+          </View>
+        </View>
+
+        <View className="flex-1 p-4">
+          <View className="gap-4">
+            {isLoading ? (
+              skeletons.map((skeleton) => (
+                <View
+                  className="w-full h-32 bg-zinc-900 animate-pulse rounded-lg"
+                  key={skeleton}
+                />
+              ))
+            ) : filteredOrders.length === 0 ? (
+              <View className="p-4">
+                <H1 className="text-white !text-[40px]">
+                  No results {"\n"}Found
+                </H1>
+              </View>
+            ) : (
+              filteredOrders.map((order) => (
+                <OrderItem
+                  key={order.id}
+                  order={order}
+                  onAssign={handleAssign}
+                />
+              ))
+            )}
+          </View>
         </View>
       </ScrollView>
 
