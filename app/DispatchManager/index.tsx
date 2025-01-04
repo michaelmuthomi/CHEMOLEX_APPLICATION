@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -21,8 +21,13 @@ import {
   ListTodo,
   ListChecks,
 } from "lucide-react-native";
-import { fetchOrders, fetchDrivers, checkUser } from "~/lib/supabase";
-import { useEffect } from "react";
+import {
+  fetchOrders,
+  fetchDrivers,
+  checkUser,
+  fetchDispatchedByOrderId,
+  fetchDriverById,
+} from "~/lib/supabase";
 import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useEmail } from "~/app/EmailContext";
@@ -31,14 +36,25 @@ import StatsCard from "~/components/StatsCard";
 import { formatDate } from "~/lib/format-date";
 import { formatTime } from "~/lib/format-time";
 
+type Order = {
+  id: string;
+  dispatch_status: string;
+  driver_id: string;
+  driver?: {
+    full_name: string;
+  };
+  // ... other fields
+};
+
 const drivers = ["Driver A", "Driver B", "Driver C"];
 
 export default function Tab({ navigation }: { navigation: any }) {
   const emailContext = useEmail();
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [sortBy, setSortBy] = useState("all-orders");
   const [availableDrivers, setAvailableDrivers] = useState([]);
   const [customer, setCustomerDetails] = useState([]);
+  const [driverNames, setDriverNames] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     async function fetchCustomerOrders() {
@@ -81,6 +97,44 @@ export default function Tab({ navigation }: { navigation: any }) {
     },
   ];
 
+  const getSortedOrders = () => {
+    switch (sortBy) {
+      case "dispatched":
+        return orders.filter((order) => order.dispatch_status === "dispatched");
+      case "pending":
+        return orders.filter((order) => order.dispatch_status === "pending");
+      case "delivered":
+        return orders.filter((order) => order.assignedTo !== null);
+      default:
+        return orders;
+    }
+  };
+
+  const fetchDriverName = async (orderId: number) => {
+    // Fetch driver_id from dispatched table using orderId
+    const dispatchedResponse = await fetchDispatchedByOrderId(orderId);
+    const driverId = dispatchedResponse.driver_id;
+
+    // Fetch driver's full_name from users table using driverId
+    const driverResponse = await fetchDriverById(driverId);
+    return driverResponse.full_name || "Unknown Driver";
+  };
+
+  // Fetch driver names for dispatched orders
+  useEffect(() => {
+    const fetchDriversForOrders = async () => {
+      const dispatchedOrders = orders.filter(
+        (order) => order.dispatch_status === "dispatched"
+      );
+      for (const order of dispatchedOrders) {
+        const driverName = await fetchDriverName(order.order_id);
+        setDriverNames((prev) => ({ ...prev, [order.id]: driverName }));
+      }
+    };
+
+    fetchDriversForOrders();
+  }, [orders]); // Run this effect when orders change
+
   return (
     <View className="flex-1">
       <ScrollView className="flex-1">
@@ -106,7 +160,7 @@ export default function Tab({ navigation }: { navigation: any }) {
               showsHorizontalScrollIndicator={false}
               className="flex-row gap-2"
             >
-              {["all-orders", "dispatched", "pending", "assigned"].map(
+              {["all-orders", "dispatched", "pending", "delivered"].map(
                 (sort) => (
                   <TouchableOpacity
                     key={sort}
@@ -148,7 +202,7 @@ export default function Tab({ navigation }: { navigation: any }) {
         <View className="flex-1 p-4">
           <View className="gap-4">
             <FlatList
-              data={orders}
+              data={getSortedOrders()}
               keyExtractor={(item) => item.id}
               ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               renderItem={({ item }) => (
@@ -199,9 +253,9 @@ export default function Tab({ navigation }: { navigation: any }) {
                     {/* Action Buttons */}
                     {item.dispatch_status === "dispatched" ? (
                       <View className="bg-gray-100 py-2 px-4 rounded-lg mt-4">
-                        <Text className="text-gray-700">
-                          Assigned to: {item.assignedTo}
-                        </Text>
+                        <H4 className="text-gray-700 text-base">
+                          Assigned to: {driverNames[item.id] || "Loading..."}
+                        </H4>
                       </View>
                     ) : (
                       <View className="flex-row w-full gap-6 justify-between">

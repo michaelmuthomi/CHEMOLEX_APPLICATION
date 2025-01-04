@@ -300,7 +300,7 @@ export async function fetchProductInCategory(category_name: string) {
   }
 }
 
-// Fetch 
+// Fetch
 export async function fetchSubmittedRepairs(supervisor_id: number) {
   const { data, error } = await supabase
     .from("repairs")
@@ -336,10 +336,8 @@ export async function fetchAssignedRepairs(technician_id: number) {
 
 // Fetch productName and quantity in stock
 export async function fetchProductNamesAndQuantity() {
-  const { data, error } = await supabase
-    .from("products")
-    .select("*");
-  
+  const { data, error } = await supabase.from("products").select("*");
+
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
@@ -352,8 +350,10 @@ export async function fetchProductNamesAndQuantity() {
 export async function fetchServiceRequests() {
   const { data, error } = await supabase
     .from("repairs")
-    .select("*, users:customer_id(full_name), services(name, description, service_type)");
-  
+    .select(
+      "*, users:customer_id(full_name), services(name, description, service_type)"
+    );
+
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
@@ -367,8 +367,8 @@ export async function fetchTechnicians() {
   const { data, error } = await supabase
     .from("users")
     .select("*")
-  .eq("role", "technician");
-  
+    .eq("role", "technician");
+
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
   } else {
@@ -381,7 +381,9 @@ export async function fetchTechnicians() {
 export async function fetchOrders() {
   const { data, error } = await supabase
     .from("orders")
-    .select("*, users:user_id(full_name), products:product_id(name, image_url, description)");
+    .select(
+      "*, users:user_id(full_name), products:product_id(name, image_url, description)"
+    );
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
@@ -392,9 +394,7 @@ export async function fetchOrders() {
 
 // Place user orders
 export async function placeAnOrder(details: any) {
-  const { data, error } = await supabase
-    .from("orders")
-    .insert(details);
+  const { data, error } = await supabase.from("orders").insert(details);
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
@@ -427,9 +427,7 @@ export async function submitFeedback(feedback: {
   rating: number;
   comments: string;
 }) {
-  const { data, error } = await supabase
-    .from("feedback")
-    .insert([feedback]);
+  const { data, error } = await supabase.from("feedback").insert([feedback]);
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
@@ -438,7 +436,6 @@ export async function submitFeedback(feedback: {
     return data;
   }
 }
-
 
 // Fetch available drivers
 export async function fetchDrivers() {
@@ -475,7 +472,9 @@ export async function fetchDrivers() {
 
 // Fetch Products and their quantity in stock
 export async function fetchProductsAndQuantityFromDB() {
-  const { data, error } = await supabase.from("products").select("product_id, name, price, stock_quantity, image_url");
+  const { data, error } = await supabase
+    .from("products")
+    .select("product_id, name, price, stock_quantity, image_url");
 
   if (error) {
     return `Error: ${error.message || JSON.stringify(error)}`;
@@ -489,7 +488,7 @@ export async function fetchProductsAndQuantityFromDB() {
 export async function fetchSuppliers() {
   const { data, error } = await supabase
     .from("suppliers")
-    .select("*, users(*)") 
+    .select("*, users(*)")
     .eq("users.role", "supplier");
 
   if (error) {
@@ -512,11 +511,21 @@ export async function insertNewProductToDB(
 ) {
   const { data, error } = await supabase
     .from("products")
-    .insert([{ name, description, price, supplier_id, stock_quantity, category, image_url }])
+    .insert([
+      {
+        name,
+        description,
+        price,
+        supplier_id,
+        stock_quantity,
+        category,
+        image_url,
+      },
+    ])
     .single();
 
   if (error) {
-    console.error(error)
+    console.error(error);
     return "Error:" + error;
   } else {
     return "Success:" + data;
@@ -541,6 +550,37 @@ export async function updateUserProfile(
 
   if (error) {
     throw error;
+  }
+  return data;
+}
+
+// Fetch driver_id from dispatched table using orderId
+export async function fetchDispatchedByOrderId(orderId: number) {
+  console.log('Order Id', orderId)
+  const { data, error } = await supabase
+    .from("dispatches")
+    .select("driver_id")
+    .eq("order_id", orderId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching dispatched by order ID:", error);
+    return null; // or handle the error as needed
+  }
+  return data;
+}
+
+// Fetch driver's full_name from users table using driverId
+export async function fetchDriverById(driverId: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("full_name")
+    .eq("user_id", driverId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching driver by ID:", error);
+    return null; // or handle the error as needed
   }
   return data;
 }
