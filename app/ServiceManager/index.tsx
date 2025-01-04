@@ -9,8 +9,7 @@ import {
 } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { OrderItem } from "~/components/OrderItem";
-import { TechnicianModal } from "~/components/TechnicianModal";
-import { Filter } from "lucide-react-native";
+import { ArrowDownNarrowWide, Filter, GalleryVerticalEnd } from "lucide-react-native";
 import { H1, H3, H4, P } from "~/components/ui/typography";
 import {
   GalleryVertical,
@@ -19,6 +18,7 @@ import {
   MessageCircle,
 } from "lucide-react-native";
 import StatsCard from "~/components/StatsCard";
+import { AssignTechnicianModal } from "~/components/sheets/assignTechnician";
 
 type Order = {
   id: number;
@@ -28,6 +28,7 @@ type Order = {
   customerName: string;
   status: "pending" | "assigned" | "completed";
   assignedTo?: string;
+  products: any;
 };
 
 type Technician = {
@@ -71,7 +72,7 @@ const ServiceManagerPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from("repairs")
-        .select("*, services(*), users:customer_id(full_name)")
+        .select("*, services(*), users:customer_id(full_name), products:product_id(*)")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -206,25 +207,41 @@ const ServiceManagerPage: React.FC = () => {
 
         <View className="py-6 px-4">
           <View className="flex-row justify-between items-center">
-            <View className="flex-row gap-2">
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
               {(["All", "pending", "assigned"] as const).map((status) => (
                 <TouchableOpacity
                   key={status}
-                  className={`px-3 py-2 rounded-md ${
-                    filterStatus === status ? "bg-white" : "bg-zinc-900"
+                  className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                    filterStatus === status ? "border-white" : "border-zinc-900"
                   }`}
                   onPress={() => setFilterStatus(status)}
                 >
+                  {status === "All" ? (
+                    <GalleryVerticalEnd
+                      size={16}
+                      color={filterStatus === status ? "#fff" : "#3f3f46"}
+                    />
+                  ) : status === "pending" ? (
+                    <ListTodo
+                      size={16}
+                      color={filterStatus === status ? "#fff" : "#3f3f46"}
+                    />
+                  ) : (
+                    <ListChecks
+                      size={16}
+                      color={filterStatus === status ? "#fff" : "#3f3f46"}
+                    />
+                  )}
                   <H4
                     className={`capitalize text-lg px-2 ${
-                      filterStatus === status ? "text-black" : "text-white"
+                      filterStatus === status ? "text-white" : "text-zinc-700"
                     }`}
                   >
-                    {status}
+                    {status === 'All'? 'All Requests' : status}
                   </H4>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
           </View>
         </View>
 
@@ -245,23 +262,21 @@ const ServiceManagerPage: React.FC = () => {
               </View>
             ) : (
               filteredOrders.map((order) => (
-                <OrderItem
+                <AssignTechnicianModal
                   key={order.id}
-                  order={order}
-                  onAssign={handleAssign}
+                  sheetTrigger={
+                    <OrderItem order={order} onAssign={handleAssign} />
+                  }
+                  visible={modalVisible && selectedOrderId === order.id} // Pass the visibility condition
+                  product={order.products}
+                  technicians={technicians}
+                  onAssign={(technicianId) => assignTechnician(technicianId)}
                 />
               ))
             )}
           </View>
         </View>
       </ScrollView>
-
-      <TechnicianModal
-        visible={modalVisible}
-        technicians={technicians}
-        onAssign={assignTechnician}
-        onClose={() => setModalVisible(false)}
-      />
     </View>
   );
 };
