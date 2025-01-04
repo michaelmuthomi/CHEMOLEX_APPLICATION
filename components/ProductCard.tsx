@@ -27,33 +27,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             }`}
           >
             <ListTodo
-              color={`${product.stock_quantity <= 10 ? "#fdba74" : "#86efac"}`}
+              color={`${product.stock_quantity <= 10 ? "#9a3412" : "#166534"}`}
               size={19}
             />
-            <P
+            <H5
               className={`${
                 product.stock_quantity <= 10
-                  ? "text-orange-300"
-                  : "text-green-300"
-              }`}
+                  ? "text-orange-900"
+                  : "text-green-900"
+              } ml-2 text-base`}
             >
-              Stock {product.stock_quantity}
-            </P>
+              InStock {product.stock_quantity}
+            </H5>
           </TouchableOpacity>
         </View>
         <View className="flex-row justify-between items-center mb-2">
           <H3 className="text-lg text-gray-800">{product.name}</H3>
-          {isLowStock && (
-            <View className="bg-red-100 px-2 py-1 rounded-full">
-              <H5 className="text-xs text-red-600">Low Stock</H5>
-            </View>
-          )}
         </View>
         <H4 className="text-gray-600 text-base mb-2 w-3/4" numberOfLines={3}>
           {product.description}
         </H4>
-        <View className='flex-row items-center justify-between w-full'>
-          <H4 className="text-blue-600 w-1/2 text-base">Manage Stock</H4>
+        <View className="flex-row items-center justify-between w-full">
+          <H4 className="text-blue-600 w-1/2 text-base">
+            {product.stock_quantity <= 10 ? "ReStock Now" : "Manage Stock"}
+          </H4>
           <H4 className="text-blue-600 text-right text-lg">&rarr;</H4>
         </View>
         <View
