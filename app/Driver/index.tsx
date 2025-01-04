@@ -45,7 +45,7 @@ type Dispatch = {
   order_id: number;
   user_id: number;
   dispatch_date: string;
-  status: DispatchStatus;
+  status: string;
   delivery_address: string;
   tracking_number: string;
   created_at: string;
@@ -185,6 +185,48 @@ const DriversPage: React.FC = () => {
     }
   };
 
+  const calculateStats = () => {
+    const totalAssignments = filteredDispatches.length;
+    const pending = filteredDispatches.filter(
+      (d) => d.status === "pending"
+    ).length;
+    const delivered = filteredDispatches.filter(
+      (d) => d.status === "delivered"
+    ).length;
+    const inTransit = filteredDispatches.filter(
+      (d) => d.status === "intransit"
+    ).length;
+
+    return [
+      {
+        iconBgColor: "bg-blue-600",
+        Icon: <GalleryVertical color="white" size={19} />,
+        Title: "Assignments",
+        Description: `${totalAssignments} total`,
+      },
+      {
+        iconBgColor: "bg-orange-600",
+        Icon: <ListTodo color="white" size={19} />,
+        Title: "Pending",
+        Description: `${pending} dispatches`,
+      },
+      {
+        iconBgColor: "bg-green-600",
+        Icon: <ListChecks color="white" size={19} />,
+        Title: "Delivered",
+        Description: `${delivered} dispatches`,
+      },
+      {
+        iconBgColor: "bg-purple-600",
+        Icon: <MessageCircle color="white" size={19} />,
+        Title: "In Transit",
+        Description: `${inTransit} dispatches`,
+      },
+    ];
+  };
+
+  const stats = calculateStats();
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -206,34 +248,9 @@ const DriversPage: React.FC = () => {
       </View>
     );
   }
-  const stats = [
-    {
-      iconBgColor: "bg-blue-600",
-      Icon: <GalleryVertical color="white" size={19} />,
-      Title: "Assignement",
-      Description: "10 components",
-    },
-    {
-      iconBgColor: "bg-orange-600",
-      Icon: <ListTodo color="white" size={19} />,
-      Title: "Pending",
-      Description: "10 components",
-    },
-    {
-      iconBgColor: "bg-red-600",
-      Icon: <ListChecks color="white" size={19} />,
-      Title: "Complete",
-      Description: "10 components",
-    },
-    {
-      iconBgColor: "bg-purple-600",
-      Icon: <MessageCircle color="white" size={19} />,
-      Title: "Redo",
-      Description: "10 components",
-    },
-  ];
+
   return (
-    <View className="flex-1">
+    <ScrollView className="flex-1">
       <View className="bg-white p-4 gap-6">
         <H3 className="text-black">Statistics</H3>
         <View className="flex-row flex-wrap gap-y-6 justify-between">
@@ -298,7 +315,7 @@ const DriversPage: React.FC = () => {
         onClose={() => setIsModalVisible(false)}
         onUpdateStatus={handleUpdateStatus}
       />
-    </View>
+    </ScrollView>
   );
 };
 

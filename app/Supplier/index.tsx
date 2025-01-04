@@ -146,6 +146,41 @@ const SupplierPage: React.FC = () => {
     }
   };
 
+  const calculateStats = (products: Product[]) => {
+    return [
+      {
+        iconBgColor: "bg-blue-600",
+        Icon: <GalleryVertical color="white" size={19} />,
+        Title: "Total Products",
+        Description: `${products.length} items`,
+      },
+      {
+        iconBgColor: "bg-orange-600",
+        Icon: <ListTodo color="white" size={19} />,
+        Title: "Low Stock",
+        Description: `${
+          products.filter((p) => p.stock_quantity <= 10).length
+        } items`,
+      },
+      {
+        iconBgColor: "bg-red-600",
+        Icon: <ListChecks color="white" size={19} />,
+        Title: "Out of Stock",
+        Description: `${
+          products.filter((p) => p.stock_quantity === 0).length
+        } items`,
+      },
+      {
+        iconBgColor: "bg-purple-600",
+        Icon: <MessageCircle color="white" size={19} />,
+        Title: "Categories",
+        Description: `${new Set(products.map((p) => p.category)).size} total`,
+      },
+    ];
+  };
+
+  const stats = calculateStats(products);
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -167,32 +202,6 @@ const SupplierPage: React.FC = () => {
       </View>
     );
   }
-  const stats = [
-    {
-      iconBgColor: "bg-blue-600",
-      Icon: <GalleryVertical color="white" size={19} />,
-      Title: "Assignement",
-      Description: "10 components",
-    },
-    {
-      iconBgColor: "bg-orange-600",
-      Icon: <ListTodo color="white" size={19} />,
-      Title: "Pending",
-      Description: "10 components",
-    },
-    {
-      iconBgColor: "bg-red-600",
-      Icon: <ListChecks color="white" size={19} />,
-      Title: "Complete",
-      Description: "10 components",
-    },
-    {
-      iconBgColor: "bg-purple-600",
-      Icon: <MessageCircle color="white" size={19} />,
-      Title: "Redo",
-      Description: "10 components",
-    },
-  ];
 
   return (
     <View className="flex-1">
