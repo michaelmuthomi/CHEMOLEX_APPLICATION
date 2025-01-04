@@ -51,12 +51,12 @@ export default function TabsLayout() {
               headerTitle: () => (
                 <View>
                   <H2 className="text-2xl border-b-0 leading-0">
-                    Hi there,{" "}
+                    Hi there,
                     {customer.username ? (
                       customer.username
                     ) : (
                       <View className="animate-pulse w-20 h-4 rounded-sm bg-zinc-800" />
-                    )}{" "}
+                    )}
                     👋
                   </H2>
                   <H5 className="text-zinc-400 text-sm border-b-0 capitalize">

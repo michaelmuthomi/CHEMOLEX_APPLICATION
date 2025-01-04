@@ -5,96 +5,110 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  TextInput,
   Alert,
 } from "react-native";
 import { checkUser, supabase } from "~/lib/supabase";
-import { RepairCard } from "~/components/RepairCard";
-import { RepairDetailsModal } from "~/components/RepairManagerModal";
+import { DispatchCard } from "~/components/DispatchCard";
+import { DispatchDetailsModal } from "~/components/DispatchDetailsModal";
+import { GalleryVertical, ListChecks, ListTodo, MessageCircle, Search, SearchIcon } from "lucide-react-native";
 import { useEmail } from "../EmailContext";
-import { H2, H3, H4, H5, P } from "~/components/ui/typography";
-import {
-  GalleryVertical,
-  ListChecks,
-  ListTodo,
-  MessageCircle,
-} from "lucide-react-native";
+import { H3 } from "~/components/ui/typography";
 import StatsCard from "~/components/StatsCard";
+import { Input } from "~/components/ui/input";
 
-type RepairStatus = "Assigned" | "In Progress" | "Completed";
+type DispatchStatus = "Pending" | "In Transit" | "Delivered";
 
-type Repair = {
-  id: number;
-  deviceName: string;
-  deviceType: string;
-  issueDescription: string;
-  status: RepairStatus;
-  dueDate: string;
-  requiredProducts: { name: string; quantity: number }[];
-  repairNotes: string;
+type Order = {
+  order_id: number;
+  product_id: number;
+  // ... other order fields
 };
 
-const DriverPage: React.FC = () => {
-  const emailContext = useEmail();
-  const [repairs, setRepairs] = useState<Repair[]>([]);
+type Product = {
+  product_id: number;
+  name: string;
+  description: string;
+  // ... other product fields
+};
+
+type Dispatch = {
+  order_id: number;
+  user_id: number;
+  dispatch_date: string;
+  status: DispatchStatus;
+  delivery_address: string;
+  tracking_number: string;
+  created_at: string;
+  driver_id: number;
+  order: Order;
+  order_details: {
+    product: Product;
+  };
+};
+
+const DriversPage: React.FC = () => {
+  const [dispatches, setDispatches] = useState<Dispatch[]>([]);
+  const [filteredDispatches, setFilteredDispatches] = useState<Dispatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
+  const [selectedDispatch, setSelectedDispatch] = useState<Dispatch | null>(
+    null
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [technicianId, setTechnicianId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [customer, setCustomerDetails] = useState([]);
+  const emailContext = useEmail();
 
   useEffect(() => {
-    fetchRepairs();
+    fetchDispatches();
     const subscription = supabase
-      .channel("repairs")
+      .channel("dispatches")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "repairs" },
-        handleRepairChange
+        { event: "*", schema: "public", table: "dispatches" },
+        handleDispatchChange
       )
       .subscribe();
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [technicianId]); // Add technicianId as a dependency
-
+  }, []);
+  
   useEffect(() => {
     async function fetchUserDetails() {
-      if (!emailContext || !emailContext.email) {
-        console.error("Email context is not available");
-        return;
-      }
-
-      const response = await checkUser(emailContext.email);
-      if (!response || !response.user_id) {
-        console.error("User  details could not be fetched");
-        return;
-      }
-
-      console.log("Username", response.full_name);
-      const userId = response.user_id;
-
-      setTechnicianId(userId);
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
     }
     fetchUserDetails();
-  }, [emailContext]);
+    const filtered = dispatches.filter((dispatch) => {
+      return true;
+    });
+    setFilteredDispatches(filtered);
+  }, [searchQuery, dispatches]);
 
-  const fetchRepairs = async () => {
-    if (!technicianId) return; // Don't fetch repairs if technicianId is not set
-
+  const fetchDispatches = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const { data, error } = await supabase
-        .from("repairs")
+        .from("dispatches")
         .select(
-          "*, services:service_id(name, description), products:product_id(name)"
+          `
+      *,
+      order:orders (
+        *,
+        product:products(*)
+      )
+    `
         )
-        .eq("technician_id", technicianId); // Use technicianId to fetch repairs
+        .eq("driver_id", customer.user_id);
 
       if (error) throw error;
-      setRepairs(data || []);
-      console.log("repairs", repairs);
+      setDispatches(data || []);
+      console.log("Dispatch Data: ", JSON.stringify(data, null, 2)); // Use JSON.stringify to see the full structure
+      setFilteredDispatches(data || []);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -104,38 +118,38 @@ const DriverPage: React.FC = () => {
     }
   };
 
-  const handleRepairChange = (payload: any) => {
-    fetchRepairs();
+  const handleDispatchChange = (payload: any) => {
+    fetchDispatches();
   };
 
-  const handleViewDetails = (repairId: number) => {
-    const repair = repairs.find((r) => r.id === repairId);
-    if (repair) {
-      console.log("Selected repair", repair);
-      setSelectedRepair(repair);
+  const handleViewDetails = (orderId: number) => {
+    const dispatch = dispatches.find((d) => d.order_id === orderId);
+    if (dispatch) {
+      setSelectedDispatch(dispatch);
       setIsModalVisible(true);
     }
   };
 
   const handleUpdateStatus = async (
-    repairId: number,
-    newStatus: RepairStatus
+    orderId: number,
+    newStatus: DispatchStatus
   ) => {
     try {
       const { error } = await supabase
-        .from("repairs")
+        .from("dispatches")
         .update({ status: newStatus })
-        .eq("id", repairId);
+        .eq("order_id", orderId);
 
       if (error) throw error;
 
-      Alert.alert("Success", `Repair status updated to ${newStatus}`);
       setIsModalVisible(false);
-      fetchRepairs();
+      fetchDispatches();
+      Alert.alert("Success", `Dispatch status updated to ${newStatus}`);
     } catch (err) {
+      console.error("Error updating dispatch status:", err);
       Alert.alert(
         "Error",
-        err instanceof Error ? err.message : "An unknown error occurred"
+        "Failed to update dispatch status. Please try again."
       );
     }
   };
@@ -154,14 +168,13 @@ const DriverPage: React.FC = () => {
         <Text className="text-red-500 text-lg">{error}</Text>
         <TouchableOpacity
           className="mt-4 bg-blue-500 px-4 py-2 rounded-lg"
-          onPress={fetchRepairs}
+          onPress={fetchDispatches}
         >
           <Text className="text-white font-bold">Retry</Text>
         </TouchableOpacity>
       </View>
     );
   }
-
   const stats = [
     {
       iconBgColor: "bg-blue-600",
@@ -188,38 +201,49 @@ const DriverPage: React.FC = () => {
       Description: "10 components",
     },
   ];
-
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
-        <View className="bg-white p-4 gap-6">
-          <H3 className="text-black">Statistics</H3>
-          <View className="flex-row flex-wrap gap-y-6 justify-between">
-            {stats.map((stat) => (
-              <StatsCard
-                iconBgColor={stat.iconBgColor}
-                Icon={stat.Icon}
-                Title={stat.Title}
-                Description={stat.Description}
-              />
-            ))}
-          </View>
-        </View>
-        <View className="p-4">
-          <H2 className="text-xl mb-4">Assigned Deliveries</H2>
-          {repairs.map((repair) => (
-            <RepairCard
-              key={repair.id}
-              repair={repair}
-              onViewDetails={handleViewDetails}
+      <View className="bg-white p-4 gap-6">
+        <H3 className="text-black">Statistics</H3>
+        <View className="flex-row flex-wrap gap-y-6 justify-between">
+          {stats.map((stat) => (
+            <StatsCard
+              iconBgColor={stat.iconBgColor}
+              Icon={stat.Icon}
+              Title={stat.Title}
+              Description={stat.Description}
             />
           ))}
         </View>
+      </View>
+      <View className="p-6">
+        <View className="flex-row items-center rounded-lg py-2">
+          <SearchIcon color={'white'} size={18} />
+          <Input
+            className="flex-1 text-base border-0"
+            placeholder="Search for assignments"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+      </View>
+
+      <ScrollView className="flex-1 p-4">
+        <H3 className="text-xl mb-4">
+          Assignments
+        </H3>
+        {filteredDispatches.map((dispatch) => (
+          <DispatchCard
+            key={dispatch.order_id}
+            dispatch={dispatch}
+            onViewDetails={handleViewDetails}
+          />
+        ))}
       </ScrollView>
 
-      <RepairDetailsModal
+      <DispatchDetailsModal
         visible={isModalVisible}
-        repair={selectedRepair}
+        dispatch={selectedDispatch}
         onClose={() => setIsModalVisible(false)}
         onUpdateStatus={handleUpdateStatus}
       />
@@ -227,4 +251,4 @@ const DriverPage: React.FC = () => {
   );
 };
 
-export default DriverPage;
+export default DriversPage;
