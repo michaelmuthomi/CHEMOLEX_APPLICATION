@@ -54,7 +54,9 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
           variant="default"
           disabled
         >
-          <H5 className=" text-black">&larr; {" Decline"}</H5>
+          <H5 className=" text-black">
+            {"Decline"}
+          </H5>
         </Button>
         <Button
           // onPress={handleShippingSubmit}

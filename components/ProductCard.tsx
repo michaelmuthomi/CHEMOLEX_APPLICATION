@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import { Package, AlertTriangle } from "lucide-react-native";
-import { H3, H5, P } from "./ui/typography";
+import { Package, AlertTriangle, ListTodo } from "lucide-react-native";
+import { H3, H4, H5, P } from "./ui/typography";
 
 type ProductCardProps = {
   product: Product;
@@ -16,14 +16,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <TouchableOpacity
-      className="bg-white shadow-sm mb-4 py-4 flex-row"
+      className="bg-white shadow-sm mb-4 py-4 px-2 flex-row relative"
       onPress={() => onViewDetails(product.product_id)}
     >
-      <Image
-        source={{ uri: product.image_url }}
-        className="w-20 h-20 rounded-lg mr-4"
-      />
-      <View className="flex-1">
+      <View className="w-full relative overflow-clip">
+        <View className="flex items-start absolute right-[-14px] top-[-14px]">
+          <TouchableOpacity
+            className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
+              product.stock_quantity <= 10 ? "bg-orange-300" : "bg-green-300"
+            }`}
+          >
+            <ListTodo
+              color={`${product.stock_quantity <= 10 ? "#fdba74" : "#86efac"}`}
+              size={19}
+            />
+            <P
+              className={`${
+                product.stock_quantity <= 10
+                  ? "text-orange-300"
+                  : "text-green-300"
+              }`}
+            >
+              Stock {product.stock_quantity}
+            </P>
+          </TouchableOpacity>
+        </View>
         <View className="flex-row justify-between items-center mb-2">
           <H3 className="text-lg text-gray-800">{product.name}</H3>
           {isLowStock && (
@@ -32,20 +49,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </View>
           )}
         </View>
-        <H5 className="text-gray-600 mb-2">{product.category}</H5>
-        <View className="flex-row w-full justify-between items-center mt-8">
-          <View className="flex-row items-center mb-1 gap-2">
-            <Package color={"#4b5563"} size={14} />
-            <P className="text-sm text-gray-600">
-              Stock: {product.stock_quantity}
-            </P>
-          </View>
-          <View className="flex-row items-center gap-2">
-            <AlertTriangle color={"#4b5563"} size={14} />
-            <P className="text-sm text-gray-600">
-              Reorder at: {product.reorder_level}
-            </P>
-          </View>
+        <H4 className="text-gray-600 text-base mb-2 w-3/4" numberOfLines={3}>
+          {product.description}
+        </H4>
+        <View className='flex-row items-center justify-between w-full'>
+          <H4 className="text-blue-600 w-1/2 text-base">Manage Stock</H4>
+          <H4 className="text-blue-600 text-right text-lg">&rarr;</H4>
+        </View>
+        <View
+          className={`rounded-md overflow-0 mt-6 pt-6 pl-6 h-48 ${
+            product.stock_quantity <= 10 ? "bg-orange-300" : "bg-purple-300"
+          }`}
+        >
+          <Image
+            source={{ uri: product.image_url }}
+            className="w-full rounded-tl-md h-full object-cover mix-blend-multiply bg-neutral-400"
+          />
         </View>
       </View>
     </TouchableOpacity>
