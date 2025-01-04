@@ -5,96 +5,82 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  TextInput,
   Alert,
 } from "react-native";
-import { checkUser, supabase } from "~/lib/supabase";
-import { RepairCard } from "~/components/RepairCard";
-import { RepairDetailsModal } from "~/components/RepairManagerModal";
-import { useEmail } from "../EmailContext";
-import { H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { supabase } from "~/lib/supabase";
+import { ProductCard } from "~/components/ProductCard";
+import { ProductDetailsModal } from "~/components/ProductDetailsModal";
 import {
   GalleryVertical,
   ListChecks,
   ListTodo,
   MessageCircle,
+  Search,
 } from "lucide-react-native";
+import { H3 } from "~/components/ui/typography";
 import StatsCard from "~/components/StatsCard";
+import { Input } from "~/components/ui/input";
 
-type RepairStatus = "Assigned" | "In Progress" | "Completed";
-
-type Repair = {
-  id: number;
-  deviceName: string;
-  deviceType: string;
-  issueDescription: string;
-  status: RepairStatus;
-  dueDate: string;
-  requiredProducts: { name: string; quantity: number }[];
-  repairNotes: string;
+type Product = {
+  product_id: number;
+  name: string;
+  description: string;
+  supplier_id: number;
+  category: string;
+  price: number;
+  stock_quantity: number;
+  reorder_level: number;
+  created_at: string;
+  image_url: string;
 };
 
 const SupplierPage: React.FC = () => {
-  const emailContext = useEmail();
-  const [repairs, setRepairs] = useState<Repair[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [technicianId, setTechnicianId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchRepairs();
+    fetchProducts();
     const subscription = supabase
-      .channel("repairs")
+      .channel("products")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "repairs" },
-        handleRepairChange
+        { event: "*", schema: "public", table: "products" },
+        handleProductChange
       )
       .subscribe();
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [technicianId]); // Add technicianId as a dependency
+  }, []);
 
   useEffect(() => {
-    async function fetchUserDetails() {
-      if (!emailContext || !emailContext.email) {
-        console.error("Email context is not available");
-        return;
-      }
+    const filtered = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [searchQuery, products]);
 
-      const response = await checkUser(emailContext.email);
-      if (!response || !response.user_id) {
-        console.error("User  details could not be fetched");
-        return;
-      }
-
-      console.log("Username", response.full_name);
-      const userId = response.user_id;
-
-      setTechnicianId(userId);
-    }
-    fetchUserDetails();
-  }, [emailContext]);
-
-  const fetchRepairs = async () => {
-    if (!technicianId) return; // Don't fetch repairs if technicianId is not set
-
+  const fetchProducts = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const { data, error } = await supabase
-        .from("repairs")
-        .select(
-          "*, services:service_id(name, description), products:product_id(name)"
-        )
-        .eq("technician_id", technicianId); // Use technicianId to fetch repairs
+        .from("products")
+        .select("*")
+        .order("name", { ascending: true });
 
       if (error) throw error;
-      setRepairs(data || []);
-      console.log("repairs", repairs);
+      setProducts(data || []);
+      setFilteredProducts(data || []);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -104,39 +90,33 @@ const SupplierPage: React.FC = () => {
     }
   };
 
-  const handleRepairChange = (payload: any) => {
-    fetchRepairs();
+  const handleProductChange = (payload: any) => {
+    fetchProducts();
   };
 
-  const handleViewDetails = (repairId: number) => {
-    const repair = repairs.find((r) => r.id === repairId);
-    if (repair) {
-      console.log("Selected repair", repair);
-      setSelectedRepair(repair);
+  const handleViewDetails = (productId: number) => {
+    const product = products.find((p) => p.product_id === productId);
+    if (product) {
+      setSelectedProduct(product);
       setIsModalVisible(true);
     }
   };
 
-  const handleUpdateStatus = async (
-    repairId: number,
-    newStatus: RepairStatus
-  ) => {
+  const handleUpdateStock = async (productId: number, newStock: number) => {
     try {
       const { error } = await supabase
-        .from("repairs")
-        .update({ status: newStatus })
-        .eq("id", repairId);
+        .from("products")
+        .update({ stock_quantity: newStock })
+        .eq("product_id", productId);
 
       if (error) throw error;
 
-      Alert.alert("Success", `Repair status updated to ${newStatus}`);
       setIsModalVisible(false);
-      fetchRepairs();
+      fetchProducts();
+      Alert.alert("Success", "Stock updated successfully");
     } catch (err) {
-      Alert.alert(
-        "Error",
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
+      console.error("Error updating stock:", err);
+      Alert.alert("Error", "Failed to update stock. Please try again.");
     }
   };
 
@@ -154,14 +134,13 @@ const SupplierPage: React.FC = () => {
         <Text className="text-red-500 text-lg">{error}</Text>
         <TouchableOpacity
           className="mt-4 bg-blue-500 px-4 py-2 rounded-lg"
-          onPress={fetchRepairs}
+          onPress={fetchProducts}
         >
           <Text className="text-white font-bold">Retry</Text>
         </TouchableOpacity>
       </View>
     );
   }
-
   const stats = [
     {
       iconBgColor: "bg-blue-600",
@@ -205,24 +184,25 @@ const SupplierPage: React.FC = () => {
             ))}
           </View>
         </View>
-        <View className="p-4">
-          <H2 className="text-xl mb-4">Assigned Repairs</H2>
-          {repairs.map((repair) => (
-            <RepairCard
-              key={repair.id}
-              repair={repair}
+        <View className="flex-row items-center rounded-lg p-4">
+          <Search color={"white"} size={14} />
+          <Input
+            className="flex-1 text-base border-0"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+        <View className="flex-1 py-4">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.product_id}
+              product={product}
               onViewDetails={handleViewDetails}
             />
           ))}
         </View>
       </ScrollView>
-
-      <RepairDetailsModal
-        visible={isModalVisible}
-        repair={selectedRepair}
-        onClose={() => setIsModalVisible(false)}
-        onUpdateStatus={handleUpdateStatus}
-      />
     </View>
   );
 };
