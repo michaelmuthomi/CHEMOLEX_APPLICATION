@@ -11,14 +11,22 @@ import { supabase } from "~/lib/supabase";
 import { WorkflowStatistics } from "~/components/WorkflowStatistics";
 import { RepairItem } from "~/components/RepairItem";
 import { RepairDetailsModal } from "~/components/RepairDetailsModal";
-import { H3 } from "~/components/ui/typography";
+import { H3, H4 } from "~/components/ui/typography";
+import {
+  GalleryVertical,
+  ListTodo,
+  ListChecks,
+  MessageCircle,
+  GalleryVerticalEnd,
+} from "lucide-react-native";
+import StatsCard from "~/components/StatsCard";
 
 type Repair = {
   id: number;
   productName: string;
   customerName: string;
   technicianName: string;
-  status: "Pending Approval" | "In Progress" | "Completed";
+  status: "pending" | "inprogress" | "completed";
   estimatedCompletion: string;
   description: string;
   repairNotes: string;
@@ -31,6 +39,7 @@ const SupervisorPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sortBy, setSortBy] = useState("all-repairs");
 
   useEffect(() => {
     fetchRepairs();
@@ -54,7 +63,7 @@ const SupervisorPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from("repairs")
-        .select("*")
+        .select("*, products:product_id(*), users:technician_id(*)");
 
       if (error) throw error;
       setRepairs(data || []);
@@ -83,7 +92,7 @@ const SupervisorPage: React.FC = () => {
     try {
       const { error } = await supabase
         .from("repairs")
-        .update({ status: "Completed" })
+        .update({ status: "completed" })
         .eq("id", repairId);
 
       if (error) throw error;
@@ -102,13 +111,26 @@ const SupervisorPage: React.FC = () => {
     }
   };
 
-  const pendingApprovalRepairs = repairs.filter(
-    (r) => r.status === "Pending Approval"
-  );
-  const inProgressRepairs = repairs.filter((r) => r.status === "In Progress");
+  const getSortedRepairs = () => {
+    switch (sortBy) {
+      case "pending":
+        return repairs.filter((repair) => repair.status === "pending");
+      case "inprogress":
+        return repairs.filter((repair) => repair.status === "inprogress");
+      case "completed":
+        return repairs.filter((repair) => repair.status === "completed");
+      default:
+        return repairs;
+    }
+  };
+
+  const sortedRepairs = getSortedRepairs();
+
+  const pendingApprovalRepairs = repairs.filter((r) => r.status === "pending");
+  const inProgressRepairs = repairs.filter((r) => r.status === "inprogress");
   const completedToday = repairs.filter(
     (r) =>
-      r.status === "Completed" &&
+      r.status === "completed" &&
       new Date(r.estimatedCompletion).toDateString() ===
         new Date().toDateString()
   ).length;
@@ -137,35 +159,92 @@ const SupervisorPage: React.FC = () => {
 
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1 p-4">
-        <WorkflowStatistics
-          totalRepairs={repairs.length}
-          pendingApproval={pendingApprovalRepairs.length}
-          inProgress={inProgressRepairs.length}
-          completedToday={completedToday}
-        />
+      <ScrollView className="flex-1">
+        <View className="bg-white p-4 gap-6">
+          <H3 className="text-black">Statistics</H3>
+          <View className="flex-row flex-wrap gap-y-6 justify-between">
+            <StatsCard
+              iconBgColor="bg-blue-600"
+              Icon={<GalleryVertical color="white" size={19} />}
+              Title="Total Repairs"
+              Description={`${repairs.length} repairs`}
+            />
+            <StatsCard
+              iconBgColor="bg-orange-600"
+              Icon={<ListTodo color="white" size={19} />}
+              Title="pending"
+              Description={`${pendingApprovalRepairs.length} repairs`}
+            />
+            <StatsCard
+              iconBgColor="bg-green-600"
+              Icon={<ListChecks color="white" size={19} />}
+              Title="inprogress"
+              Description={`${inProgressRepairs.length} repairs`}
+            />
+            <StatsCard
+              iconBgColor="bg-purple-600"
+              Icon={<MessageCircle color="white" size={19} />}
+              Title="completed Today"
+              Description={`${completedToday} repairs`}
+            />
+          </View>
+        </View>
 
-        <H3 className="text-xl text-white mt-6 mb-4">
-          Pending Approval
-        </H3>
-        {pendingApprovalRepairs.map((repair) => (
-          <RepairItem
-            key={repair.id}
-            repair={repair}
-            onViewDetails={handleViewDetails}
-          />
-        ))}
+        <View className="flex-row p-2 pt-4 justify-between items-center">
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="flex-row gap-2"
+          >
+            {["all-repairs", "pending", "inprogress", "completed"].map(
+              (sort) => (
+                <TouchableOpacity
+                  key={sort}
+                  className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                    sortBy === sort ? "border-white" : "border-zinc-900"
+                  }`}
+                  onPress={() => setSortBy(sort)}
+                >
+                  {sort === "all-repairs" ? (
+                    <GalleryVerticalEnd
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  ) : sort === "pending" ? (
+                    <ListTodo
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  ) : (
+                    <ListChecks
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  )}
+                  <H4
+                    className={`capitalize text-lg px-2 ${
+                      sortBy === sort ? "text-white" : "text-zinc-700"
+                    }`}
+                  >
+                    {sort.replace("-", " ")}
+                  </H4>
+                </TouchableOpacity>
+              )
+            )}
+          </ScrollView>
+        </View>
 
-        <H3 className="text-xl text-white mt-6 mb-4">
-          In Progress
-        </H3>
-        {inProgressRepairs.map((repair) => (
-          <RepairItem
-            key={repair.id}
-            repair={repair}
-            onViewDetails={handleViewDetails}
-          />
-        ))}
+        <View className="flex-1 p-4">
+          {sortedRepairs
+            .filter((repair) => repair.status === "pending")
+            .map((repair) => (
+              <RepairItem
+                key={repair.id}
+                repair={repair}
+                onViewDetails={handleViewDetails}
+              />
+            ))}
+        </View>
       </ScrollView>
 
       <RepairDetailsModal
