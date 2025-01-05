@@ -63,6 +63,7 @@ export function ProductDetailsModal({
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(product);
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     if (visible) {
@@ -86,11 +87,13 @@ export function ProductDetailsModal({
   const [newStock, setNewStock] = useState("");
 
   const handleUpdateStockPress = () => {
+    setUpdating(true)
     const newStockNumber = parseInt(newStock);
     if (!isNaN(newStockNumber)) {
       onUpdateStock(product.product_id, newStockNumber);
       setNewStock("");
     }
+    setUpdating(false)
   };
 
   return (
@@ -103,7 +106,6 @@ export function ProductDetailsModal({
         onChange={handleSheetChanges}
         backgroundStyle={{ backgroundColor: "#111" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
-        snapPoints={["75%"]}
       >
         <BottomSheetView className="p-6 gap-6">
           <View>
@@ -135,7 +137,7 @@ export function ProductDetailsModal({
                     value={`${formatPrice(productData.price.toFixed(2))}`}
                   />
                   <View className="flex-row w-full">
-                    <View className='w-1/2'>
+                    <View className="w-1/2">
                       <DetailItem
                         label="Current Stock"
                         value={
@@ -154,23 +156,25 @@ export function ProductDetailsModal({
                   </View>
 
                   <View className="border-t-[1px] border-zinc-900">
-                    <H5 className="text-lg mt-4 mb-2">Update Stock</H5>
+                    <H4 className="text-lg mt-4 mb-2">Update Stock</H4>
                     <View className="flex-row items-center rounded-md w-full gap-2">
                       <SquareStack size={16} color={"#aaaaaa"} />
                       <Input
                         className="border-0 flex-1 bg-transparent"
                         placeholder="Enter new quantity"
                         keyboardType="numeric"
-                        value={newStock}
                         onChangeText={setNewStock}
                       />
                       <Button
                         onPress={handleUpdateStockPress}
                         className="rounded-full w-auto"
                         size={"lg"}
-                        variant="default"
+                          variant="default"
+                          disabled={updating}
                       >
-                        <H4 className="text-lg text-black">{"Update"}</H4>
+                        <H4 className="text-lg text-black">
+                          {updating ? "Updating" : 'Update'}
+                        </H4>
                       </Button>
                     </View>
                   </View>
