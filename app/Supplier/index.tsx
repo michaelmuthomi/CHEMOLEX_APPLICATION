@@ -211,6 +211,7 @@ const SupplierPage: React.FC = () => {
           <View className="flex-row flex-wrap gap-y-6 justify-between">
             {stats.map((stat) => (
               <StatsCard
+                key={stat.Title}
                 iconBgColor={stat.iconBgColor}
                 Icon={stat.Icon}
                 Title={stat.Title}
