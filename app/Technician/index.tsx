@@ -12,10 +12,10 @@ import { RepairCard } from "~/components/RepairCard";
 import { RepairDetailsModal } from "~/components/RepairManagerModal";
 import { useEmail } from "../EmailContext";
 import { H2, H3, H4, H5, P } from "~/components/ui/typography";
-import { GalleryVertical, ListChecks, ListTodo, MessageCircle } from "lucide-react-native";
+import { GalleryVertical, GalleryVerticalEnd, ListChecks, ListTodo, MessageCircle } from "lucide-react-native";
 import StatsCard from "~/components/StatsCard";
 
-type RepairStatus = "Assigned" | "In Progress" | "Completed";
+type RepairStatus = "assigned" | "pending" | "complete";
 
 type Repair = {
   id: number;
@@ -36,6 +36,8 @@ const TechnicianPage: React.FC = () => {
   const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [technicianId, setTechnicianId] = useState<string | null>(null);
+  const [stats, setStats] = useState<any[]>([]);
+  const [sortBy, setSortBy] = useState("all-repairs");
 
   useEffect(() => {
     fetchRepairs();
@@ -60,7 +62,7 @@ const TechnicianPage: React.FC = () => {
         return;
       }
 
-      const response = await checkUser (emailContext.email);
+      const response = await checkUser(emailContext.email);
       if (!response || !response.user_id) {
         console.error("User  details could not be fetched");
         return;
@@ -82,12 +84,48 @@ const TechnicianPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from("repairs")
-        .select("*, services:service_id(name, description), products:product_id(name)")
+        .select(
+          "*, services:service_id(name, description), products:product_id(name)"
+        )
         .eq("technician_id", technicianId); // Use technicianId to fetch repairs
 
       if (error) throw error;
       setRepairs(data || []);
-      console.log("repairs", repairs)
+
+      // Update stats based on fetched repairs
+      const assignmentCount = data.filter(
+        (r) => r.status === "assigned"
+      ).length;
+      const pendingCount = data.filter((r) => r.status === "pending").length;
+      const completeCount = data.filter((r) => r.status === "complete").length;
+      const redoCount = data.filter((r) => r.status === "redo").length;
+
+      setStats([
+        {
+          iconBgColor: "bg-blue-600",
+          Icon: <GalleryVertical color="white" size={19} />,
+          Title: "Assignment",
+          Description: `${assignmentCount} repairs`,
+        },
+        {
+          iconBgColor: "bg-orange-600",
+          Icon: <ListTodo color="white" size={19} />,
+          Title: "Pending",
+          Description: `${pendingCount} repairs`,
+        },
+        {
+          iconBgColor: "bg-red-600",
+          Icon: <ListChecks color="white" size={19} />,
+          Title: "Complete",
+          Description: `${completeCount} repairs`,
+        },
+        {
+          iconBgColor: "bg-purple-600",
+          Icon: <MessageCircle color="white" size={19} />,
+          Title: "Redo",
+          Description: `${redoCount} repairs`,
+        },
+      ]);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -104,7 +142,7 @@ const TechnicianPage: React.FC = () => {
   const handleViewDetails = (repairId: number) => {
     const repair = repairs.find((r) => r.id === repairId);
     if (repair) {
-      console.log('Selected repair', repair)
+      console.log("Selected repair", repair);
       setSelectedRepair(repair);
       setIsModalVisible(true);
     }
@@ -133,6 +171,23 @@ const TechnicianPage: React.FC = () => {
     }
   };
 
+  const getSortedRepairs = () => {
+    switch (sortBy) {
+      case "assigned":
+        return repairs.filter((repair) => repair.status === "assigned");
+      case "pending":
+        return repairs.filter((repair) => repair.status === "pending");
+      case "complete":
+        return repairs.filter((repair) => repair.status === "complete");
+      case "redo":
+        return repairs.filter((repair) => repair.status === "redo");
+      default:
+        return repairs;
+    }
+  };
+
+  const sortedRepairs = getSortedRepairs();
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -155,47 +210,69 @@ const TechnicianPage: React.FC = () => {
     );
   }
 
-  const stats = [
-    {
-      iconBgColor: 'bg-blue-600',
-      Icon: <GalleryVertical color="white" size={19} />,
-      Title: 'Assignement',
-      Description: '10 components'
-    },
-    {
-      iconBgColor: 'bg-orange-600',
-      Icon: <ListTodo color="white" size={19} />,
-      Title: 'Pending',
-      Description: '10 components'
-    },
-    {
-      iconBgColor: 'bg-red-600',
-      Icon: <ListChecks color="white" size={19} />,
-      Title: 'Complete',
-      Description: '10 components'
-    },
-    {
-      iconBgColor: 'bg-purple-600',
-      Icon: <MessageCircle color="white" size={19} />,
-      Title: 'Redo',
-      Description: '10 components'
-    },
-  ]
-
   return (
     <View className="flex-1">
       <ScrollView className="flex-1">
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
-            {stats.map(stat => (
-              <StatsCard iconBgColor={stat.iconBgColor} Icon={stat.Icon} Title={stat.Title} Description={stat.Description} />
+            {stats.map((stat) => (
+              <StatsCard
+                iconBgColor={stat.iconBgColor}
+                Icon={stat.Icon}
+                Title={stat.Title}
+                Description={stat.Description}
+              />
             ))}
           </View>
         </View>
+
+        <View className="flex-row p-2 pt-4 justify-between items-center">
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="flex-row gap-2"
+          >
+            {["all-repairs", "assigned", "pending", "complete", "redo"].map(
+              (sort) => (
+                <TouchableOpacity
+                  key={sort}
+                  className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                    sortBy === sort ? "border-white" : "border-zinc-900"
+                  }`}
+                  onPress={() => setSortBy(sort)}
+                >
+                  {sort === "all-repairs" ? (
+                    <GalleryVerticalEnd
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  ) : sort === "pending" ? (
+                    <ListTodo
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  ) : (
+                    <ListChecks
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  )}
+                  <H4
+                    className={`capitalize text-lg px-2 ${
+                      sortBy === sort ? "text-white" : "text-zinc-700"
+                    }`}
+                  >
+                    {sort.replace("-", " ")}
+                  </H4>
+                </TouchableOpacity>
+              )
+            )}
+          </ScrollView>
+        </View>
+
         <View className="p-4">
-          <H2 className="text-xl mb-4">Assigned Repairs</H2>
-          {repairs.map((repair) => (
+          {sortedRepairs.map((repair) => (
             <RepairCard
               key={repair.id}
               repair={repair}
