@@ -119,7 +119,7 @@ useEffect(() => {
           <View>
             <View className="flex-row justify-between items-center mb-4">
               <H4 className="text-xl">Product Details</H4>
-              <TouchableOpacity >
+              <TouchableOpacity>
                 <ShieldCloseIcon className="w-6 h-6 text-gray-500" />
               </TouchableOpacity>
             </View>
@@ -163,47 +163,41 @@ useEffect(() => {
                     />
                   </View>
 
-                  {/* <View className="border-t-[1px] border-zinc-900">
-                    <H5 className="text-lg mt-4 mb-2">Update Stock</H5>
-                    <View className="flex-row items-center rounded-md w-full gap-2">
-                      <SquareStack size={16} color={"#aaaaaa"} />
-                      <Input
-                        className="border-0 flex-1 bg-transparent"
-                        placeholder="Enter new quantity"
-                        keyboardType="numeric"
-                        value={newStock}
-                        onChangeText={setNewStock}
-                      />
-                      <Button
-                        onPress={handleUpdateStockPress}
-                        className="rounded-full w-auto"
-                        size={"lg"}
-                        variant="default"
-                      >
-                        <H4 className="text-lg text-black">{"Update"}</H4>
-                      </Button>
-                    </View>
-                  </View> */}
-                  <Select
-                    value={selectedTechnician}
-                    onValueChange={setSelectedTechnician}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a technician" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Available Technicians</SelectLabel>
-                        {technicians.map((tech) => (
-                          <SelectItem
-                            key={tech.id}
-                            label={`${tech.name} (${tech.speciality})`}
-                            value={tech.id.toString()}
-                          />
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <View className="flex-row items-center gap-2 w-full">
+                    <Select
+                      value={selectedTechnician}
+                        onValueChange={setSelectedTechnician}
+                        className="flex-1"
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder="Select a technician"
+                          className="text-white"
+                          style={{ fontFamily: "Inter_500Medium" }}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Available Technicians</SelectLabel>
+                          {technicians.map((tech) => (
+                            <SelectItem
+                              key={tech.id}
+                              label={`${tech.users.username} (${tech.specialization})`}
+                              value={tech.technician_id.toString()}
+                            />
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      // disabled={dispatch.status === "delivered" ? true : false}
+                      className="rounded-full w-auto bg-green-800 disabled:bg-green-400"
+                      size={"lg"}
+                      variant="default"
+                    >
+                      <H5 className=" text-white">{"Assign"}</H5>
+                    </Button>
+                  </View>
                 </>
               )}
             </ScrollView>

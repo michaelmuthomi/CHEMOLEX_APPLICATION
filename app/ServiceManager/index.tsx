@@ -88,7 +88,7 @@ const ServiceManagerPage: React.FC = () => {
 
   const fetchTechnicians = async () => {
     try {
-      const { data, error } = await supabase.from("technicians").select("*");
+      const { data, error } = await supabase.from("technicians").select("*, users:user_id(username)");
 
       if (error) throw error;
       setTechnicians(data || []);
