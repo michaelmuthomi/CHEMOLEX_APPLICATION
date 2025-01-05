@@ -122,9 +122,7 @@ const DriversPage: React.FC = () => {
       console.log("Dispatch Data: ", JSON.stringify(data, null, 2)); // Use JSON.stringify to see the full structure
       setFilteredDispatches(data || []);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
+      
     } finally {
       setIsLoading(false);
     }
@@ -256,6 +254,7 @@ const DriversPage: React.FC = () => {
         <View className="flex-row flex-wrap gap-y-6 justify-between">
           {stats.map((stat) => (
             <StatsCard
+              key={stat.Title}
               iconBgColor={stat.iconBgColor}
               Icon={stat.Icon}
               Title={stat.Title}
