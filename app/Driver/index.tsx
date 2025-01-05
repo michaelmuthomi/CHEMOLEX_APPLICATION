@@ -285,13 +285,6 @@ const DriversPage: React.FC = () => {
           </Button>
         </View>
       </ScrollView>
-
-      {/* <DispatchDetailsModal
-        visible={isModalVisible}
-        dispatch={selectedDispatch}
-        onClose={() => setIsModalVisible(false)}
-        onUpdateStatus={handleUpdateStatus}
-      /> */}
     </ScrollView>
   );
 };

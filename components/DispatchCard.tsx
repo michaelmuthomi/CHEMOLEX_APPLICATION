@@ -61,11 +61,10 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
         <DispatchDetails
           sheetTrigger={
             <Button
-              // onPress={handleBackStep}
-              className="rounded-full border-2 border-black bg-transparent"
+              disabled={dispatch.status === "delivered" ? true : false}
+              className="rounded-full border-2 border-black bg-transparent disabled:opacity-50"
               size={"lg"}
               variant="default"
-              disabled
             >
               <H5 className=" text-black">{"Decline"}</H5>
             </Button>
@@ -76,8 +75,8 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
         <DispatchDetails
           sheetTrigger={
             <Button
-              // onPress={handleShippingSubmit}
-              className="rounded-full flex-1 bg-green-800"
+              disabled={dispatch.status === "delivered" ? true : false}
+              className="rounded-full flex-1 bg-green-800 disabled:bg-green-400"
               size={"lg"}
               variant="default"
             >
