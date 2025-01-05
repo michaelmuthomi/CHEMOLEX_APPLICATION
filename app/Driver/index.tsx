@@ -25,6 +25,7 @@ import StatsCard from "~/components/StatsCard";
 import { Input } from "~/components/ui/input";
 import { P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
+import { DispatchDetails } from "~/components/sheets/dispatchDetails";
 
 type DispatchStatus = "Pending" | "In Transit" | "Delivered";
 
@@ -103,24 +104,25 @@ const DriversPage: React.FC = () => {
   const fetchDispatches = async () => {
     setIsLoading(true);
     setError(null);
-    try {
-      const { data, error } = await supabase
-        .from("dispatches")
-        .select(
-          `
+    const user = await checkUser(emailContext?.email);
+    const { data, error } = await supabase
+      .from("dispatches")
+      .select(
+        `
+    *,
+    order:orders (
       *,
-      order:orders (
-        *,
-        product:products(*)
+      product:products(*)
+    )
+  `
       )
-    `
-        )
-        .eq("driver_id", customer.user_id);
+      .eq("driver_id", user.user_id);
 
-      if (error) throw error;
-      setDispatches(data || []);
-      console.log("Dispatch Data: ", JSON.stringify(data, null, 2)); // Use JSON.stringify to see the full structure
-      setFilteredDispatches(data || []);
+    if (error) throw error;
+    setDispatches(data || []);
+    console.log("Dispatch Data: ", JSON.stringify(data, null, 2)); // Use JSON.stringify to see the full structure
+    setFilteredDispatches(data || []);
+    try {
     } catch (err) {
       
     } finally {
@@ -137,30 +139,6 @@ const DriversPage: React.FC = () => {
     if (dispatch) {
       setSelectedDispatch(dispatch);
       setIsModalVisible(true);
-    }
-  };
-
-  const handleUpdateStatus = async (
-    orderId: number,
-    newStatus: DispatchStatus
-  ) => {
-    try {
-      const { error } = await supabase
-        .from("dispatches")
-        .update({ status: newStatus })
-        .eq("order_id", orderId);
-
-      if (error) throw error;
-
-      setIsModalVisible(false);
-      fetchDispatches();
-      Alert.alert("Success", `Dispatch status updated to ${newStatus}`);
-    } catch (err) {
-      console.error("Error updating dispatch status:", err);
-      Alert.alert(
-        "Error",
-        "Failed to update dispatch status. Please try again."
-      );
     }
   };
 
@@ -308,12 +286,12 @@ const DriversPage: React.FC = () => {
         </View>
       </ScrollView>
 
-      <DispatchDetailsModal
+      {/* <DispatchDetailsModal
         visible={isModalVisible}
         dispatch={selectedDispatch}
         onClose={() => setIsModalVisible(false)}
         onUpdateStatus={handleUpdateStatus}
-      />
+      /> */}
     </ScrollView>
   );
 };

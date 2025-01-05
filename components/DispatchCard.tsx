@@ -5,6 +5,7 @@ import { H3, H4, H5, P } from './ui/typography';
 import { formatDate } from '~/lib/format-date';
 import { formatTime } from '~/lib/format-time';
 import { Button } from './ui/button';
+import { DispatchDetails } from './sheets/dispatchDetails';
 
 type DispatchCardProps = {
   dispatch: any;
@@ -13,10 +14,7 @@ type DispatchCardProps = {
 
 export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDetails }) => {
   return (
-    <TouchableOpacity
-      className="bg-white rounded-lg shadow-sm p-4 mb-4"
-      onPress={() => onViewDetails(dispatch.order_id)}
-    >
+    <View className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="flex-row justify-between w-full relative overflow-clip">
         <View className="flex-row items-center mb-1">
           <H3 className="text-xl text-gray-600">
@@ -25,10 +23,23 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
         </View>
         <View className="flex items-start absolute right-[-14px] top-[-14px]">
           <TouchableOpacity
-            className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto bg-orange-300`}
+            className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
+              dispatch.status === "pending" ? "bg-orange-300" : "bg-green-300"
+            }`}
           >
-            <ListTodo color="#ea580c" size={19} />
-            <P className="text-orange-600"> {"Pending"} </P>
+            <ListTodo
+              color={`${dispatch.status === "pending" ? "#9a3412" : "#166534"}`}
+              size={19}
+            />
+            <H5
+              className={`${
+                dispatch.status === "pending"
+                  ? "text-orange-900"
+                  : "text-green-900"
+              } ml-2 text-base capitalize`}
+            >
+              {dispatch.status}
+            </H5>
           </TouchableOpacity>
         </View>
       </View>
@@ -47,27 +58,37 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
       </View>
 
       <View className="flex-row gap-4 w-full justify-between">
-        <Button
-          // onPress={handleBackStep}
-          className="rounded-full border-2 border-black bg-transparent"
-          size={"lg"}
-          variant="default"
-          disabled
-        >
-          <H5 className=" text-black">
-            {"Decline"}
-          </H5>
-        </Button>
-        <Button
-          // onPress={handleShippingSubmit}
-          className="rounded-full flex-1 bg-green-800"
-          size={"lg"}
-          variant="default"
-        >
-          <H5 className=" text-white">{"Accept"}</H5>
-        </Button>
+        <DispatchDetails
+          sheetTrigger={
+            <Button
+              // onPress={handleBackStep}
+              className="rounded-full border-2 border-black bg-transparent"
+              size={"lg"}
+              variant="default"
+              disabled
+            >
+              <H5 className=" text-black">{"Decline"}</H5>
+            </Button>
+          }
+          action="decline"
+          dispatch={dispatch}
+        />
+        <DispatchDetails
+          sheetTrigger={
+            <Button
+              // onPress={handleShippingSubmit}
+              className="rounded-full flex-1 bg-green-800"
+              size={"lg"}
+              variant="default"
+            >
+              <H5 className=" text-white">{"Accept"}</H5>
+            </Button>
+          }
+          action="accept"
+          dispatch={dispatch}
+        />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
