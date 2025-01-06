@@ -13,40 +13,6 @@ type Transaction = {
 };
 
 const FinancialStatusPage = () => {
-  const [pendingTransactions, setPendingTransactions] = useState<Transaction[]>(
-    [
-      {
-        id: 1,
-        date: "2023-06-16",
-        description: "Client Invoice #1001",
-        amount: "$10,000",
-        verified: false,
-      },
-      {
-        id: 2,
-        date: "2023-06-17",
-        description: "Supplier Payment #2001",
-        amount: "-$5,000",
-        verified: false,
-      },
-      {
-        id: 3,
-        date: "2023-06-18",
-        description: "Client Invoice #1002",
-        amount: "$7,500",
-        verified: false,
-      },
-    ]
-  );
-
-  const verifyTransaction = (id: number) => {
-    setPendingTransactions((prevTransactions) =>
-      prevTransactions.map((transaction) =>
-        transaction.id === id ? { ...transaction, verified: true } : transaction
-      )
-    );
-  };
-
   const stats = [
     {
       iconBgColor: "bg-green-600",
@@ -85,30 +51,7 @@ const FinancialStatusPage = () => {
             ))}
           </View>
         </View>
-
-        <View className="py-6 px-4">
-          <View className="flex-row justify-between items-center">
-            <H3 className="text-black">Recent Transactions</H3>
-          </View>
-          <View className="flex-1 p-4">
-            <View className="gap-4">
-              {pendingTransactions.map((transaction) => (
-                <PendingTransactionItem
-                  key={transaction.id}
-                  transaction={transaction}
-                  onVerify={() => verifyTransaction(transaction.id)}
-                />
-              ))}
-            </View>
-          </View>
-        </View>
-
-        <View className="bg-white mb-4 p-4 shadow">
-          <H3 className="text-xl mb-3 text-black">Financial Trends</H3>
-          <View className="h-48 bg-gray-100 rounded-lg items-center justify-center">
-            <P className="text-gray-500">Chart Placeholder</P>
-          </View>
-        </View>
+        
       </ScrollView>
     </View>
   );
