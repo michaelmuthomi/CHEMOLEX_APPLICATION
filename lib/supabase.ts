@@ -600,3 +600,16 @@ export async function fetchDeliveredProductIds() {
   return data.map((dispatch) => dispatch.order_id); // Return an array of order IDs
 }
 
+// Fetch financial records
+export async function fetchAllFinancialRecords() {
+  const { data, error } = await supabase
+    .from("financial_records")
+    .select("*")
+
+  if (error) {
+    console.error("Error fetching finance records:", error);
+    return []; // Return an empty array in case of error
+  }
+
+  return data
+}
