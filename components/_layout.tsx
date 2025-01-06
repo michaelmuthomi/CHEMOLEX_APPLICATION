@@ -78,7 +78,7 @@ export default function TabsLayout() {
               headerShown: true,
             }}
           />
-          <Tabs.Screen
+          {/* <Tabs.Screen
             name="insight"
             options={{
               headerTitle: () => <H3>Insights</H3>,
@@ -87,7 +87,7 @@ export default function TabsLayout() {
               ),
               headerShown: true,
             }}
-          />
+          /> */}
           <Tabs.Screen
             name="settings"
             options={{

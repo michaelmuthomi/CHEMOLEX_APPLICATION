@@ -382,7 +382,7 @@ export async function fetchOrders() {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "*, users:user_id(full_name), products:product_id(name, image_url, description)"
+      "*, users:user_id(full_name), products:product_id(*)"
     );
 
   if (error) {

@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Box, Clock, Clock1, Clock10, Smartphone } from "lucide-react-native";
 import { H3, H4, H5, H6, P } from "./ui/typography";
 import { formatDate } from "~/lib/format-date";
 import { Button } from "./ui/button";
 import { formatTime } from "~/lib/format-time";
-
+import { RepairDetailsModal } from "./sheets/repairDetails";
 
 export const RepairCard = ({
   repair,
@@ -13,7 +13,9 @@ export const RepairCard = ({
 }: {
   repair: any;
   onViewDetails: any;
-}) => {
+  }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   return (
     <TouchableOpacity className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="w-full relative overflow-clip">
@@ -58,14 +60,22 @@ export const RepairCard = ({
               {formatTime(repair.created_at)}
             </H5>
           </Button>
-          <Button
-            // onPress={() => onAssign(order.id)}
-            className="rounded-full flex-1 bg-green-800"
-            size={"lg"}
-            variant="default"
-          >
-            <H5 className=" text-white">{"Approve"}</H5>
-          </Button>
+          <RepairDetailsModal
+            sheetTrigger={
+              <Button
+                // onPress={() => onAssign(order.id)}
+                className="rounded-full flex-1 bg-green-800"
+                size={"lg"}
+                variant="default"
+              >
+                <H5 className=" text-white">{"Details"}</H5>
+              </Button>
+            }
+            product={repair.products}
+            repair={repair}
+            visible={modalVisible && selectedOrderId === repair.id}
+            onAssign={() => console.log('Assigned')}
+          />
         </View>
       </View>
     </TouchableOpacity>

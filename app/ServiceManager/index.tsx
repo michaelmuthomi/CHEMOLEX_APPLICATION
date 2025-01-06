@@ -267,7 +267,7 @@ const ServiceManagerPage: React.FC = () => {
                   sheetTrigger={
                     <OrderItem order={order} onAssign={handleAssign} />
                   }
-                  visible={modalVisible && selectedOrderId === order.id} // Pass the visibility condition
+                  visible={modalVisible && selectedOrderId === order.id}
                   product={order.products}
                   technicians={technicians}
                   onAssign={(technicianId) => assignTechnician(technicianId)}

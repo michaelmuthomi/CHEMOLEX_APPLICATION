@@ -36,6 +36,7 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import StatsCard from "~/components/StatsCard";
 import { formatDate } from "~/lib/format-date";
 import { formatTime } from "~/lib/format-time";
+import { AssignDriverModal } from "~/components/sheets/assignDriver";
 
 type Order = {
   id: string;
@@ -57,16 +58,16 @@ export default function Tab({ navigation }: { navigation: any }) {
   const [customer, setCustomerDetails] = useState([]);
   const [driverNames, setDriverNames] = useState<{ [key: string]: string }>({});
   const [sortedOrders, setSortedOrders] = useState<Order[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchCustomerOrders() {
       const response = await fetchOrders();
-      // console.log("Orders Fetched", response);
       setOrders(response);
     }
     async function fetchAvailableDrivers() {
       const response = await fetchDrivers();
-      console.log("Available Drivers", response);
       setAvailableDrivers(response);
     }
     async function fetchUserDetails() {
@@ -295,18 +296,25 @@ export default function Tab({ navigation }: { navigation: any }) {
                           disabled
                         >
                           <H5 className="text-black text-left">
-                            {formatDate(item.created_at)} &#8226;
+                            {formatDate(item.created_at)} &#8226;{" "}
                             {formatTime(item.created_at)}
                           </H5>
                         </Button>
-                        <Button
-                          // onPress={() => onAssign(order.id)}
-                          className="rounded-full flex-1 bg-green-800"
-                          size={"lg"}
-                          variant="default"
-                        >
-                          <H5 className=" text-white">{"Assign"}</H5>
-                        </Button>
+                        <AssignDriverModal
+                          sheetTrigger={
+                            <Button
+                              className="rounded-full flex-1 bg-green-800"
+                              size={"lg"}
+                              variant="default"
+                            >
+                              <H5 className=" text-white">{"Assign"}</H5>
+                            </Button>
+                          }
+                          product={item.products}
+                          visible={modalVisible && selectedOrderId === item.id}
+                          drivers={availableDrivers}
+                          onAssign={() => console.log("Assigned")}
+                        />
                       </View>
                     )}
                   </View>

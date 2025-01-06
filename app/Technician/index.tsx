@@ -85,7 +85,7 @@ const TechnicianPage: React.FC = () => {
       const { data, error } = await supabase
         .from("repairs")
         .select(
-          "*, services:service_id(name, description), products:product_id(name)"
+          "*, services:service_id(name, description), products:product_id(*), users:customer_id(*)"
         )
         .eq("technician_id", technicianId); // Use technicianId to fetch repairs
 
