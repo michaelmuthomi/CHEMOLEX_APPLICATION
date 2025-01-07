@@ -75,7 +75,7 @@ const personalInformationModalTrigger = [
 const ordersModalTrigger = [
   {
     id: "orders",
-    title: "Orders & Returns",
+    title: "Track Orders",
     description: "Track orders and manage returns",
     icon: ShoppingBag,
     screen: "orders",
@@ -168,7 +168,7 @@ export default function Tab() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [currentStep, setCurrentStep] = useState('verification')
+  const [currentStep, setCurrentStep] = useState('pending')
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -424,7 +424,7 @@ export default function Tab() {
                           <View className="flex-row items-center gap-2">
                             <View
                               className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                                currentStep === "verification"
+                                currentStep === "pending"
                                   ? "bg-green-500"
                                   : "!bg-[#2c2c2c]"
                               }`}
@@ -433,12 +433,12 @@ export default function Tab() {
                             </View>
                             <H4
                               className={`text-lg capitalize ${
-                                currentStep === "verification"
+                                currentStep === "pending"
                                   ? "text-gray-900"
                                   : "text-gray-500"
                               }`}
                             >
-                              verification
+                              Verification
                             </H4>
                           </View>
                           <View className="flex-row items-center gap-2">
@@ -657,31 +657,58 @@ export default function Tab() {
               ) : (
                 <View className="p-4 space-y-4">
                   {orders.map((order) => (
-                    <TouchableOpacity
+                    <View
                       key={order.order_id}
-                      className="bg-zinc-950 p-4 rounded-xl"
-                      onPress={() => setSelectedProduct(order)}
+                      className="bg-white rounded-lg shadow-sm p-4 mb-4"
                     >
                       <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center flex-1">
-                          <Image
-                            source={{
-                              uri:
-                                order.products?.image_url ||
-                                "https://placeholder.com/150",
-                            }}
-                            className="w-16 h-16 rounded-lg mr-4"
-                          />
-                          <View>
-                            <P className="text-white">{order.products?.name}</P>
-                            <P className="text-zinc-500">
-                              Order #{order.order_id}
-                            </P>
+                        <View className="flex-1">
+                          <View className="flex-row justify-between w-full">
+                            <DetailItem
+                              label="Product Name"
+                              value={order.products.name}
+                            />
+                            <Image
+                              source={{
+                                uri:
+                                  order.products.image_url ||
+                                  "https://placeholder.com/150",
+                              }}
+                              className="w-16 h-16 rounded-lg"
+                            />
+                          </View>
+                          <View className="flex-row w-full">
+                            <View className="w-1/2">
+                              <DetailItem
+                                label="Price"
+                                value={formatPrice(order.unit_price)}
+                              />
+                            </View>
+                            <DetailItem
+                              label="Quantity"
+                              value={order.quantity}
+                            />
+                          </View>
+                          <View className="flex-row w-full gap-2 mt-6">
+                            <View className="w-1/2">
+                              <DetailItem
+                                label="Delivered On"
+                                value={formatDate(order.updated_at)}
+                              />
+                            </View>
+                            <Button
+                              onPress={() => setSelectedProduct(order)}
+                              className="rounded-full flex-1 bg-green-700"
+                              size={"lg"}
+                              variant="default"
+                            >
+                              <H5 className="text-white">{"Review"}</H5>
+                            </Button>
                           </View>
                         </View>
                         <ChevronRight size={20} color="#fff" />
                       </View>
-                    </TouchableOpacity>
+                    </View>
                   ))}
                 </View>
               )}
@@ -769,31 +796,28 @@ export default function Tab() {
             </TouchableOpacity>
           ))}
           {reviewModalTrigger.map((item) => (
-            <ManageReviews
-              sheetTrigger={
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => setActiveModal("review")}
+              className="bg-zinc-950 rounded-2xl gap-2"
+            >
+              <View className="flex items-start">
                 <TouchableOpacity
-                  key={item.id}
-                  className="bg-zinc-950 rounded-2xl gap-2"
+                  className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
                 >
-                  <View className="flex items-start">
-                    <TouchableOpacity
-                      className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
-                    >
-                      <item.icon size={20} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
-                  <View className="flex-row items-center">
-                    <View className="flex-1">
-                      <H4 className="text-white">{item.title}</H4>
-                      <P className="text-sm text-zinc-500 w-3/4">
-                        {item.description}
-                      </P>
-                    </View>
-                    <ArrowRight size={20} color="#aaa" />
-                  </View>
+                  <item.icon size={20} color="#fff" />
                 </TouchableOpacity>
-              }
-            />
+              </View>
+              <View className="flex-row items-center">
+                <View className="flex-1">
+                  <H4 className="text-white">{item.title}</H4>
+                  <P className="text-sm text-zinc-500 w-3/4">
+                    {item.description}
+                  </P>
+                </View>
+                <ArrowRight size={20} color="#aaa" />
+              </View>
+            </TouchableOpacity>
           ))}
         </View>
 
