@@ -208,9 +208,9 @@ const ServiceManagerPage: React.FC = () => {
         <View className="py-6 px-4">
           <View className="flex-row justify-between items-center">
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
-              {(["All", "pending", "assigned"] as const).map((status) => (
+              {(["All", "pending", "assigned"] as const).map((status, index) => (
                 <TouchableOpacity
-                  key={status}
+                  key={index}
                   className={`px-3 pb-2 border-b-2 flex-row items-center ${
                     filterStatus === status ? "border-white" : "border-zinc-900"
                   }`}
@@ -248,10 +248,10 @@ const ServiceManagerPage: React.FC = () => {
         <View className="flex-1 p-4">
           <View className="gap-4">
             {isLoading ? (
-              skeletons.map((skeleton) => (
+              skeletons.map((skeleton, index) => (
                 <View
                   className="w-full h-32 bg-zinc-900 animate-pulse rounded-lg"
-                  key={skeleton}
+                  key={index}
                 />
               ))
             ) : filteredOrders.length === 0 ? (
