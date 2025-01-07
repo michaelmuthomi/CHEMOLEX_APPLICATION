@@ -613,3 +613,32 @@ export async function fetchAllFinancialRecords() {
 
   return data
 }
+
+// Function to insert assigned repair
+export async function insertAssignedRepairToDB(repair_id:number ,technician_id: number, service_id: number) {
+  const { data, error } = await supabase
+    .from("assigned_repairs")
+    .insert([{ technician_id, service_id }])
+    .single();
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return `Success: ${JSON.stringify(data)}`;
+  }
+}
+
+// Function to update assigned repair
+export async function updateAssignedRepair(repair_id: number, technician_id: number) {
+  const { data, error } = await supabase
+    .from("repairs")
+    .update({ technician_id, status: "assigned" })
+    .eq("id", repair_id)
+    .single();
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return `Success: ${JSON.stringify(data)}`;
+  }
+}

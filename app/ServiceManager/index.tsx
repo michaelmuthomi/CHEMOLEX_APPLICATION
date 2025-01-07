@@ -207,40 +207,48 @@ const ServiceManagerPage: React.FC = () => {
 
         <View className="py-6 px-4">
           <View className="flex-row justify-between items-center">
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
-              {(["All", "pending", "assigned"] as const).map((status, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className={`px-3 pb-2 border-b-2 flex-row items-center ${
-                    filterStatus === status ? "border-white" : "border-zinc-900"
-                  }`}
-                  onPress={() => setFilterStatus(status)}
-                >
-                  {status === "All" ? (
-                    <GalleryVerticalEnd
-                      size={16}
-                      color={filterStatus === status ? "#fff" : "#3f3f46"}
-                    />
-                  ) : status === "pending" ? (
-                    <ListTodo
-                      size={16}
-                      color={filterStatus === status ? "#fff" : "#3f3f46"}
-                    />
-                  ) : (
-                    <ListChecks
-                      size={16}
-                      color={filterStatus === status ? "#fff" : "#3f3f46"}
-                    />
-                  )}
-                  <H4
-                    className={`capitalize text-lg px-2 ${
-                      filterStatus === status ? "text-white" : "text-zinc-700"
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="flex-row gap-2"
+            >
+              {(["All", "pending", "assigned"] as const).map(
+                (status, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                      filterStatus === status
+                        ? "border-white"
+                        : "border-zinc-900"
                     }`}
+                    onPress={() => setFilterStatus(status)}
                   >
-                    {status === 'All'? 'All Requests' : status}
-                  </H4>
-                </TouchableOpacity>
-              ))}
+                    {status === "All" ? (
+                      <GalleryVerticalEnd
+                        size={16}
+                        color={filterStatus === status ? "#fff" : "#3f3f46"}
+                      />
+                    ) : status === "pending" ? (
+                      <ListTodo
+                        size={16}
+                        color={filterStatus === status ? "#fff" : "#3f3f46"}
+                      />
+                    ) : (
+                      <ListChecks
+                        size={16}
+                        color={filterStatus === status ? "#fff" : "#3f3f46"}
+                      />
+                    )}
+                    <H4
+                      className={`capitalize text-lg px-2 ${
+                        filterStatus === status ? "text-white" : "text-zinc-700"
+                      }`}
+                    >
+                      {status === "All" ? "All Requests" : status}
+                    </H4>
+                  </TouchableOpacity>
+                )
+              )}
             </ScrollView>
           </View>
         </View>
@@ -261,14 +269,15 @@ const ServiceManagerPage: React.FC = () => {
                 </H1>
               </View>
             ) : (
-              filteredOrders.map((order) => (
+              filteredOrders.map((order, index) => (
                 <AssignTechnicianModal
-                  key={order.id}
+                  key={index}
                   sheetTrigger={
                     <OrderItem order={order} onAssign={handleAssign} />
                   }
                   visible={modalVisible && selectedOrderId === order.id}
                   product={order.products}
+                  repair={order}
                   technicians={technicians}
                   onAssign={(technicianId) => assignTechnician(technicianId)}
                 />

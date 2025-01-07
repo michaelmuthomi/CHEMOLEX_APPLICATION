@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchSuppliers, insertNewProductToDB, supabase } from "~/lib/supabase";
+import { fetchSuppliers, insertAssignedRepairToDB, insertNewProductToDB, supabase, updateAssignedRepair } from "~/lib/supabase";
 import { Value } from "@rn-primitives/select";
 import { formatPrice } from "~/lib/format-price";
 
@@ -57,27 +57,28 @@ export function AssignTechnicianModal({
   sheetTrigger,
   visible,
   product,
+  repair,
   technicians,
   onAssign,
 }: {
   sheetTrigger: React.ReactNode;
   visible: boolean;
   product: any;
+  repair: any;
   technicians: any;
   onAssign: (technicianId: number) => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(product);
 
-useEffect(() => {
-  if (visible) {
-    bottomSheetModalRef.current?.present();
-    setProductData(product);
-  } else {
-    bottomSheetModalRef.current?.dismiss();
-  }
-}, [visible, product]);
-
+  useEffect(() => {
+    if (visible) {
+      bottomSheetModalRef.current?.present();
+      setProductData(product);
+    } else {
+      bottomSheetModalRef.current?.dismiss();
+    }
+  }, [visible, product]);
 
   const [newStock, setNewStock] = useState("");
 
@@ -88,11 +89,27 @@ useEffect(() => {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleAssign = () => {
-    if (selectedTechnician) {
-      onAssign(parseInt(selectedTechnician));
-      bottomSheetModalRef.current?.dismiss();
+  const handleAssign = async () => {
+    if (!selectedTechnician || !repair.id) {
+      displayNotification(
+        "Please select a technician and ensure the service ID is available.",
+        "warning"
+      );
+      return;
     }
+    const technicianId = parseInt(selectedTechnician.value);
+    const repairId = repair.id; 
+
+    // Insert the assignment into the assigned_repairs table
+    const result = await updateAssignedRepair(repairId, technicianId);
+
+    if (result.startsWith("Success")) {
+      displayNotification("Technician assigned successfully.", "success");
+    } else {
+      displayNotification(result, "danger");
+    }
+
+    bottomSheetModalRef.current?.dismiss();
   };
 
   return (
@@ -101,6 +118,7 @@ useEffect(() => {
         onPress: () => bottomSheetModalRef.current?.present(),
       })}
       <BottomSheetModal
+        ref={bottomSheetModalRef}
         backgroundStyle={{ backgroundColor: "#111" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
       >
@@ -172,7 +190,7 @@ useEffect(() => {
                             <SelectItem
                               key={tech.id}
                               label={`${tech.users.username} (${tech.specialization})`}
-                              value={tech.technician_id.toString()}
+                              value={tech.user_id.toString()}
                             />
                           ))}
                         </SelectGroup>

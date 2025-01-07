@@ -14,7 +14,7 @@ type OrderItemProps = {
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
   const [loading, setLoading] = useState(false);
   return (
-    <TouchableOpacity className="bg-white rounded-lg shadow-sm p-4 mb-4">
+    <View className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="w-full relative overflow-clip">
         <View className="flex items-start absolute right-[-14px] top-[-14px]">
           <View
@@ -74,6 +74,6 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
           </View>
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
