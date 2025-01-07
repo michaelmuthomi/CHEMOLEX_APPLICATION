@@ -99,10 +99,10 @@ export default function Tab() {
           </Button>
         </View>
       ) : (
-        <View className="gap-6">
+        <View className="gap-6 align-top">
           <Image
             source={require("~/assets/images/EmptyCart.png")}
-            className="w-full h-full rounded-t-lg scale-90"
+            className="w-full h-1/2 rounded-t-lg scale-90"
             resizeMode="contain"
           />
           <H3 className="text-center">Your Basket is empty :(</H3>
