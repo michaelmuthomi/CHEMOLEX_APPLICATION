@@ -28,6 +28,7 @@ import {
   fetchDispatchedByOrderId,
   fetchDriverById,
   fetchDeliveredProductIds,
+  fetchDispatches,
 } from "~/lib/supabase";
 import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
@@ -63,7 +64,8 @@ export default function Tab({ navigation }: { navigation: any }) {
 
   useEffect(() => {
     async function fetchCustomerOrders() {
-      const response = await fetchOrders();
+      const response = await fetchDispatches();
+      console.log('Dispatches data', response)
       setOrders(response);
     }
     async function fetchAvailableDrivers() {

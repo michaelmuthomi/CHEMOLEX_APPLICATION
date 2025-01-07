@@ -642,3 +642,23 @@ export async function updateAssignedRepair(repair_id: number, technician_id: num
     return `Success: ${JSON.stringify(data)}`;
   }
 }
+
+// Fetch dispatched for the dispatch manager type shi :)
+export async function fetchDispatches() {
+  const { data, error } = await supabase
+    .from("dispatches")
+    .select(`
+      *,
+      users:user_id(full_name),
+      order:order_id (
+        *,
+        product:products(*)
+      )
+    `);
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return data;
+  }
+}
