@@ -96,7 +96,9 @@ export default function Tab({ navigation }: { navigation: any }) {
       iconBgColor: "bg-green-600",
       Icon: <CircleDollarSign color="white" size={19} />,
       Title: "Dispatched Drivers",
-      Description: `${availableDrivers.length} drivers`,
+      Description: `${
+        orders.filter((order) => order.status === "assigned").length
+      } drivers`,
     },
   ];
 
@@ -106,6 +108,8 @@ export default function Tab({ navigation }: { navigation: any }) {
         return orders.filter((order) => order.status === "dispatched");
       case "pending":
         return orders.filter((order) => order.status === "pending");
+      case "assigned":
+        return orders.filter((order) => order.status === "assigned");
       case "delivered":
         const deliveredProductIds = await fetchDeliveredProductIds();
         console.log("Delivered Products: ", deliveredProductIds);
@@ -179,41 +183,45 @@ export default function Tab({ navigation }: { navigation: any }) {
               showsHorizontalScrollIndicator={false}
               className="flex-row gap-2"
             >
-              {["all-orders", "dispatched", "pending", "delivered"].map(
-                (sort) => (
-                  <TouchableOpacity
-                    key={sort}
-                    className={`px-3 pb-2 border-b-2 flex-row items-center ${
-                      sortBy === sort ? "border-white" : "border-zinc-900"
+              {[
+                "all-orders",
+                "dispatched",
+                "pending",
+                "assigned",
+                "delivered",
+              ].map((sort) => (
+                <TouchableOpacity
+                  key={sort}
+                  className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                    sortBy === sort ? "border-white" : "border-zinc-900"
+                  }`}
+                  onPress={() => setSortBy(sort)}
+                >
+                  {sort === "all-orders" ? (
+                    <GalleryVerticalEnd
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  ) : sort === "dispatched" ? (
+                    <ListTodo
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  ) : (
+                    <ListChecks
+                      size={16}
+                      color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    />
+                  )}
+                  <H4
+                    className={`capitalize text-lg px-2 ${
+                      sortBy === sort ? "text-white" : "text-zinc-700"
                     }`}
-                    onPress={() => setSortBy(sort)}
                   >
-                    {sort === "all-orders" ? (
-                      <GalleryVerticalEnd
-                        size={16}
-                        color={sortBy === sort ? "#fff" : "#3f3f46"}
-                      />
-                    ) : sort === "dispatched" ? (
-                      <ListTodo
-                        size={16}
-                        color={sortBy === sort ? "#fff" : "#3f3f46"}
-                      />
-                    ) : (
-                      <ListChecks
-                        size={16}
-                        color={sortBy === sort ? "#fff" : "#3f3f46"}
-                      />
-                    )}
-                    <H4
-                      className={`capitalize text-lg px-2 ${
-                        sortBy === sort ? "text-white" : "text-zinc-700"
-                      }`}
-                    >
-                      {sort.replace("-", " ")}
-                    </H4>
-                  </TouchableOpacity>
-                )
-              )}
+                    {sort.replace("-", " ")}
+                  </H4>
+                </TouchableOpacity>
+              ))}
             </ScrollView>
           </View>
         </View>
@@ -233,6 +241,8 @@ export default function Tab({ navigation }: { navigation: any }) {
                         className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
                           item.status === "pending"
                             ? "bg-orange-300"
+                            : item.status === "assigned"
+                            ? "bg-purple-300"
                             : sortBy === "dispatched"
                             ? "bg-purple-300"
                             : sortBy === "delivered"
@@ -244,6 +254,8 @@ export default function Tab({ navigation }: { navigation: any }) {
                           color={
                             item.status === "pending"
                               ? "#9a3412"
+                              : item.status === "assigned"
+                              ? "#581c87"
                               : "#166534"
                           }
                           size={14}
@@ -252,6 +264,8 @@ export default function Tab({ navigation }: { navigation: any }) {
                           className={`${
                             item.status === "pending"
                               ? "text-orange-900"
+                              : item.status === "assigned"
+                              ? "text-purple-900"
                               : "text-green-900"
                           } ml-2 text-base capitalize`}
                         >
@@ -303,15 +317,18 @@ export default function Tab({ navigation }: { navigation: any }) {
                         <AssignDriverModal
                           sheetTrigger={
                             <Button
-                              className="rounded-full flex-1 bg-green-800"
+                              className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-800"
                               size={"lg"}
-                              variant="default"
+                                variant="default"
+                                disabled={item.status === "assigned"}
                             >
-                              <H5 className=" text-white">{"Assign"}</H5>
+                                <H5 className=" text-white">{
+                                  item.status === "assigned"
+                            ? "Assigned" : 'Assign'}</H5>
                             </Button>
                           }
-                            product={item.order.product}
-                            dispatchId={item.dispatch_id}
+                          product={item.order.product}
+                          dispatchId={item.dispatch_id}
                           visible={modalVisible && selectedOrderId === item.id}
                           drivers={availableDrivers}
                           onAssign={() => console.log("Assigned")}
