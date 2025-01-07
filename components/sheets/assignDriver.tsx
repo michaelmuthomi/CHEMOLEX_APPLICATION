@@ -57,12 +57,14 @@ export function AssignDriverModal({
   sheetTrigger,
   visible,
   product,
+  dispatchId,
   drivers,
   onAssign,
 }: {
   sheetTrigger: React.ReactNode;
   visible: boolean;
   product: any;
+  dispatchId: any;
   drivers: any;
   onAssign: (DriverId: number) => void;
 }) {
@@ -93,11 +95,28 @@ export function AssignDriverModal({
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleAssign = () => {
-    if (selectedDriver) {
-      onAssign(parseInt(selectedDriver));
+  const handleAssign = async (dispatchId: number, driverId: string) => {
+    const { error } = await updateDispatchDriver(dispatchId, driverId.value);
+    if (error) {
+      console.error("Error updating driver:", error);
+    } else {
+      console.log("Driver assigned successfully");
+    }
+  };
+
+  // Function to update the driver_id in the dispatches table
+  const updateDispatchDriver = async (dispatchId: number, driverId: string) => {
+    const { data, error } = await supabase
+      .from("dispatches")
+      .update({ driver_id: driverId, status: "assigned" })
+      .eq("dispatch_id", dispatchId);
+
+    if (!error) {
+      displayNotification("Driver assigned successfully", 'success');
       bottomSheetModalRef.current?.dismiss();
     }
+
+    return { data, error };
   };
 
   return (
@@ -138,9 +157,9 @@ export function AssignDriverModal({
                   />
                   <DetailItem
                     label="Price"
-                    value={`${productData.price && formatPrice(
-                      productData.price
-                    )}`}
+                    value={`${
+                      productData.price && formatPrice(productData.price)
+                    }`}
                   />
                   <View className="flex-row w-full">
                     <View className="w-1/2">
@@ -188,7 +207,7 @@ export function AssignDriverModal({
                       </SelectContent>
                     </Select>
                     <Button
-                      // disabled={dispatch.status === "delivered" ? true : false}
+                      onPress={() => handleAssign(dispatchId, selectedDriver)}
                       className="rounded-full w-auto bg-green-800 disabled:bg-green-400"
                       size={"lg"}
                       variant="default"

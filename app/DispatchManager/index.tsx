@@ -310,7 +310,8 @@ export default function Tab({ navigation }: { navigation: any }) {
                               <H5 className=" text-white">{"Assign"}</H5>
                             </Button>
                           }
-                          product={item.order.product}
+                            product={item.order.product}
+                            dispatchId={item.dispatch_id}
                           visible={modalVisible && selectedOrderId === item.id}
                           drivers={availableDrivers}
                           onAssign={() => console.log("Assigned")}
