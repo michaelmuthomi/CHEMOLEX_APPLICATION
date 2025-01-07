@@ -62,7 +62,7 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
           sheetTrigger={
             <Button
               disabled={dispatch.status === "delivered" ? true : false}
-              className="rounded-full border-2 border-black bg-transparent disabled:opacity-50"
+              className="rounded-full border-2 border-black bg-transparent disabled:opacity-20"
               size={"lg"}
               variant="default"
             >
@@ -76,11 +76,11 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
           sheetTrigger={
             <Button
               disabled={dispatch.status === "delivered" ? true : false}
-              className="rounded-full flex-1 bg-green-800 disabled:bg-green-400"
+              className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-900"
               size={"lg"}
               variant="default"
             >
-              <H5 className=" text-white">{"Accept"}</H5>
+              <H5 className=" text-white disabled:text-black">{"Accept"}</H5>
             </Button>
           }
           action="accept"

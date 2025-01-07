@@ -778,7 +778,7 @@ export default function Tab() {
         </View>
 
         {/* Menu Items */}
-        <View className="p-4 gap-10">
+        <View className="p-4 gap-10 my-6">
           {personalInformationModalTrigger.map((item) => (
             <ManageDetails
               sheetTrigger={
