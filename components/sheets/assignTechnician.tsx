@@ -78,14 +78,6 @@ useEffect(() => {
   }
 }, [visible, product]);
 
-  const handleSheetChanges = useCallback(
-    (index: number) => {
-      if (index === -1) {
-        // Modal is closed
-      }
-    },
-    []
-  );
 
   const [newStock, setNewStock] = useState("");
 
@@ -109,11 +101,8 @@ useEffect(() => {
         onPress: () => bottomSheetModalRef.current?.present(),
       })}
       <BottomSheetModal
-        ref={bottomSheetModalRef}
-        onChange={handleSheetChanges}
         backgroundStyle={{ backgroundColor: "#111" }}
         handleIndicatorStyle={{ backgroundColor: "white" }}
-        snapPoints={["75%"]}
       >
         <BottomSheetView className="p-6 gap-6">
           <View>
@@ -166,8 +155,8 @@ useEffect(() => {
                   <View className="flex-row items-center gap-2 w-full">
                     <Select
                       value={selectedTechnician}
-                        onValueChange={setSelectedTechnician}
-                        className="flex-1"
+                      onValueChange={setSelectedTechnician}
+                      className="flex-1"
                     >
                       <SelectTrigger>
                         <SelectValue
@@ -190,7 +179,7 @@ useEffect(() => {
                       </SelectContent>
                     </Select>
                     <Button
-                      // disabled={dispatch.status === "delivered" ? true : false}
+                      onPress={handleAssign}
                       className="rounded-full w-auto bg-green-800 disabled:bg-green-400"
                       size={"lg"}
                       variant="default"
