@@ -41,15 +41,13 @@ import { AssignDriverModal } from "~/components/sheets/assignDriver";
 
 type Order = {
   id: string;
-  dispatch_status: string;
+  status: string;
   driver_id: string;
   driver?: {
     full_name: string;
   };
   // ... other fields
 };
-
-const drivers = ["Driver A", "Driver B", "Driver C"];
 
 export default function Tab({ navigation }: { navigation: any }) {
   const emailContext = useEmail();
@@ -65,7 +63,7 @@ export default function Tab({ navigation }: { navigation: any }) {
   useEffect(() => {
     async function fetchCustomerOrders() {
       const response = await fetchDispatches();
-      console.log('Dispatches data', response)
+      console.log('Dispatches product data :)', response.order)
       setOrders(response);
     }
     async function fetchAvailableDrivers() {
@@ -105,9 +103,9 @@ export default function Tab({ navigation }: { navigation: any }) {
   const getSortedOrders = async () => {
     switch (sortBy) {
       case "dispatched":
-        return orders.filter((order) => order.dispatch_status === "dispatched");
+        return orders.filter((order) => order.status === "dispatched");
       case "pending":
-        return orders.filter((order) => order.dispatch_status === "pending");
+        return orders.filter((order) => order.status === "pending");
       case "delivered":
         const deliveredProductIds = await fetchDeliveredProductIds();
         console.log("Delivered Products: ", deliveredProductIds);
@@ -135,7 +133,7 @@ export default function Tab({ navigation }: { navigation: any }) {
   useEffect(() => {
     const fetchDriversForOrders = async () => {
       const dispatchedOrders = orders.filter(
-        (order) => order.dispatch_status === "dispatched"
+        (order) => order.status === "dispatched"
       );
       for (const order of dispatchedOrders) {
         const driverName = await fetchDriverName(order.order_id);
@@ -233,7 +231,7 @@ export default function Tab({ navigation }: { navigation: any }) {
                     <View className="flex items-start absolute right-[-14px] top-[-14px]">
                       <View
                         className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
-                          item.dispatch_status === "pending"
+                          item.status === "pending"
                             ? "bg-orange-300"
                             : sortBy === "dispatched"
                             ? "bg-purple-300"
@@ -244,7 +242,7 @@ export default function Tab({ navigation }: { navigation: any }) {
                       >
                         <Clock
                           color={
-                            item.dispatch_status === "pending"
+                            item.status === "pending"
                               ? "#9a3412"
                               : "#166534"
                           }
@@ -252,7 +250,7 @@ export default function Tab({ navigation }: { navigation: any }) {
                         />
                         <H5
                           className={`${
-                            item.dispatch_status === "pending"
+                            item.status === "pending"
                               ? "text-orange-900"
                               : "text-green-900"
                           } ml-2 text-base capitalize`}
@@ -261,7 +259,7 @@ export default function Tab({ navigation }: { navigation: any }) {
                             ? "dispatched"
                             : sortBy === "delivered"
                             ? "delivered"
-                            : item.dispatch_status}
+                            : item.status}
                         </H5>
                       </View>
                     </View>
@@ -269,18 +267,18 @@ export default function Tab({ navigation }: { navigation: any }) {
                     {/* Order Details */}
                     <View className="mb-6">
                       <H3 className="text-lg text-gray-800 mb-2">
-                        {item.products.name}
+                        {item.order.product.name}
                       </H3>
                       <H4
                         className="text-gray-600 text-base w-3/4"
                         numberOfLines={3}
                       >
-                        {item.products.description}
+                        {item.order.product.description}
                       </H4>
                     </View>
 
                     {/* Action Buttons */}
-                    {item.dispatch_status === "dispatched" ? (
+                    {item.status === "dispatched" ? (
                       <View className="bg-gray-100 py-2 px-4 rounded-lg mt-4">
                         <H4 className="text-gray-700 text-base">
                           {sortBy === "delivered"
@@ -312,7 +310,7 @@ export default function Tab({ navigation }: { navigation: any }) {
                               <H5 className=" text-white">{"Assign"}</H5>
                             </Button>
                           }
-                          product={item.products}
+                          product={item.order.product}
                           visible={modalVisible && selectedOrderId === item.id}
                           drivers={availableDrivers}
                           onAssign={() => console.log("Assigned")}

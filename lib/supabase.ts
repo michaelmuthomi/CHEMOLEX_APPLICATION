@@ -442,14 +442,14 @@ export async function fetchDrivers() {
   // Fetch user IDs from dispatches
   const { data: dispatches, error: dispatchesError } = await supabase
     .from("dispatches")
-    .select("user_id");
+    .select("driver_id");
 
   if (dispatchesError) {
     console.error(dispatchesError);
     return;
   }
 
-  const assignedUserIds = dispatches.map((assignment) => assignment.user_id);
+  const assignedDriversIDs = dispatches.map((assignment) => assignment.user_id);
 
   // Fetch all drivers
   const { data: allDrivers, error: driversError } = await supabase
@@ -462,11 +462,12 @@ export async function fetchDrivers() {
     return;
   }
 
-  // Filter drivers to exclude those in assignedUserIds
+  // Filter drivers to exclude those in assignedDriversIDs
   const availableDrivers = allDrivers.filter(
-    (driver) => !assignedUserIds.includes(driver.user_id)
+    (driver) => !assignedDriversIDs.includes(driver.user_id)
   );
 
+  console.log('Available Drivers: ', availableDrivers)
   return availableDrivers;
 }
 
