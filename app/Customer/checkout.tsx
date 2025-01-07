@@ -17,6 +17,7 @@ import { Input } from "~/components/ui/input";
 import { useEmail } from "~/app/EmailContext";
 import { checkUser, placeAnOrder } from "~/lib/supabase";
 import displayNotification from "~/lib/Notification";
+import { useNavigation } from 'expo-router';
 
 interface ValidationError {
   field: string;
@@ -90,7 +91,8 @@ const validatePaymentInfo = (info: PaymentInfo): ValidationError[] => {
   return errors;
 };
 
-export default function CheckoutScreen({ navigation }) {
+export default function CheckoutScreen() {
+  const navigation = useNavigation()
   const emailContext = useEmail();
   const [customer, setCustomerDetails] = useState([]);
   const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
@@ -226,7 +228,7 @@ export default function CheckoutScreen({ navigation }) {
 
       displayNotification("Order Placed!", "success");
       clearCart()
-      navigation.navigate("index");
+      navigation.navigate("profile");
     }
     PlaceOrder();
   };
