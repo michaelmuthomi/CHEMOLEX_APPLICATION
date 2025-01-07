@@ -6,7 +6,8 @@ import {
   ScrollView,
   SafeAreaView,
   Modal,
-} from 'react-native';
+  TouchableWithoutFeedback,
+} from "react-native";
 import {
   User,
   Wallet,
@@ -31,9 +32,9 @@ import { checkUser, fetchCustomerOrders, submitFeedback } from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import displayNotification from "~/lib/Notification";
 import { useNavigation } from "expo-router";
-import { ManageDetails } from '~/components/sheets/manage/details';
-import { ManageOrders } from '~/components/sheets/manage/orders';
-import { ManageReviews } from '~/components/sheets/manage/review';
+import { ManageDetails } from "~/components/sheets/manage/details";
+import { ManageOrders } from "~/components/sheets/manage/orders";
+import { ManageReviews } from "~/components/sheets/manage/review";
 
 interface customer {
   full_name: string;
@@ -68,10 +69,10 @@ const personalInformationModalTrigger = [
     icon: User,
     screen: "personal",
     iconBgColor: "bg-blue-600",
-  }
+  },
 ];
 
-const ordersModalTrigger =[
+const ordersModalTrigger = [
   {
     id: "orders",
     title: "Orders & Returns",
@@ -80,7 +81,7 @@ const ordersModalTrigger =[
     screen: "orders",
     iconBgColor: "bg-orange-600",
   },
-]
+];
 
 const reviewModalTrigger = [
   {
@@ -91,7 +92,7 @@ const reviewModalTrigger = [
     screen: "review",
     iconBgColor: "bg-purple-600",
   },
-]
+];
 
 const mockOrders: Order[] = [
   {
@@ -168,13 +169,13 @@ export default function Tab() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  const handleMenuPress = (screen:any) => {
+  const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
   };
 
   useEffect(() => {
     async function fetchUserDetails() {
-      if (emailContext?.email) {        
+      if (emailContext?.email) {
         const response = await checkUser(emailContext?.email);
         setCustomerDetails(response);
       }
@@ -185,7 +186,7 @@ export default function Tab() {
   useEffect(() => {
     async function fetchOrders() {
       if (customer.user_id) {
-        const response:any = await fetchCustomerOrders(customer.user_id);
+        const response: any = await fetchCustomerOrders(customer.user_id);
         console.log("Orders Fetched", response);
         setOrders(response);
       }
@@ -228,7 +229,7 @@ export default function Tab() {
     setSelectedOrder(null);
   };
 
-  const handleSubmitReview = async (order:any) => {
+  const handleSubmitReview = async (order: any) => {
     const feedback = {
       user_id: customer.user_id,
       // service_id: order.product_id,
@@ -357,6 +358,7 @@ export default function Tab() {
     <Modal
       animationType="slide"
       transparent={true}
+      statusBarTranslucent={true}
       visible={activeModal === "orders"}
       onRequestClose={() => setActiveModal(null)}
     >
@@ -419,7 +421,9 @@ export default function Tab() {
                             className="w-20 h-20 rounded-lg"
                           />
                           <View className="flex-1 ml-4">
-                            <H4 className="text-white">{item.products.name}</H4>
+                            <H4 className="text-white">
+                              {item.products.name}
+                            </H4>
                             <P className="text-zinc-500">
                               Quantity: {item.quantity}
                             </P>
@@ -455,50 +459,68 @@ export default function Tab() {
               ) : (
                 <View className="p-4 space-y-4">
                   {orders.map((order) => (
-                    <TouchableOpacity
+                    <View
                       key={order.order_id}
-                      className="bg-zinc-950 p-4 rounded-xl"
-                      onPress={() => setSelectedOrder(order)}
+                      className="bg-white rounded-lg shadow-sm p-4 mb-4"
                     >
                       <View className="flex-row justify-between items-center">
                         <View>
-                          <H4 className="text-white">
+                          <H4 className="text-lg text-gray-800">
                             Order #{order.order_id}
                           </H4>
-                          <P className="text-zinc-500">
+                          <P className="text-gray-600">
                             {formatDate(order.order_date)}
                           </P>
                         </View>
-                        <View>
-                          <P
-                            className={`uppercase ${getStatusColor(
-                              order.payment_status
-                            )}`}
+                      </View>
+                      <View className="mt-4">
+                        <View className="flex-row justify-between">
+                          <DetailItem
+                            label="Product Name"
+                            value={order.products.name}
+                          />
+                          <Image
+                            source={{
+                              uri:
+                                order.products.image_url ||
+                                "https://placeholder.com/150",
+                            }}
+                            className="w-16 h-16 rounded-lg mr-4"
+                          />
+                        </View>
+                        <View className="flex-row w-full">
+                          <View className="w-1/3">
+                            <DetailItem
+                              label="Price"
+                              value={formatPrice(order.unit_price)}
+                            />
+                          </View>
+                          <DetailItem
+                            label="Quantity"
+                            value={order.quantity}
+                          />
+                        </View>
+                        <View className="flex-row gap-4 w-full justify-between">
+                          <Button
+                            className="rounded-full p-0 bg-transparent"
+                            size={"lg"}
+                            variant="default"
                           >
-                            {order.payment_status}
-                          </P>
+                            <H5 className="text-gray-700 capitalize">
+                              Payment: {order.payment_status}
+                            </H5>
+                          </Button>
+                          <Button
+                            onPress={() => setSelectedOrder(order)}
+                            className="rounded-full flex-1 bg-green-700"
+                            size={"lg"}
+                            variant="default"
+                          >
+                            <H5 className="text-white">{"Manage"}</H5>
+                          </Button>
                         </View>
                       </View>
-                      <View className="mt-4 flex-row items-center">
-                        <Image
-                          source={{
-                            uri:
-                              order.products.image_url ||
-                              "https://placeholder.com/150",
-                          }}
-                          className="w-16 h-16 rounded-lg mr-4"
-                        />
-                        <View>
-                          <P className="text-white">{order.products.name}</P>
-                          <P className="text-zinc-500">
-                            Quantity: {order.quantity}
-                          </P>
-                          <P className="text-white">
-                            {formatPrice(order.unit_price)}
-                          </P>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
+                    </View>
                   ))}
                 </View>
               )}
@@ -665,10 +687,6 @@ export default function Tab() {
             />
           ))}
           {ordersModalTrigger.map((item) => (
-            // <ManageOrders
-            //   sheetTrigger={
-            //   }
-            // />
             <TouchableOpacity
               key={item.id}
               onPress={() => setActiveModal("orders")}
@@ -738,3 +756,13 @@ export default function Tab() {
     </SafeAreaView>
   );
 }
+
+const DetailItem: React.FC<{ label: string; value: string }> = ({
+  label,
+  value,
+}) => (
+  <View className="mb-4">
+    <H5 className="text-sm text-gray-600">{label}</H5>
+    <H5 className="text-base text-gray-900">{value}</H5>
+  </View>
+);
