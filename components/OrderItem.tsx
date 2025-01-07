@@ -13,6 +13,7 @@ type OrderItemProps = {
 
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
   const [loading, setLoading] = useState(false);
+  console.log(order)
   return (
     <View className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="w-full relative overflow-clip">
@@ -54,7 +55,8 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
               disabled
             >
               <H5 className="text-black text-left">
-                {formatDate(order.created_at)} &#8226; {formatTime(order.created_at)}
+                {formatDate(order.created_at)} &#8226;{" "}
+                {formatTime(order.created_at)}
               </H5>
             </Button>
             <Button
@@ -67,11 +69,16 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
             </Button>
           </View>
         ) : (
-          <View className="bg-gray-100 py-2 px-4 rounded-lg mt-4">
-            <Text className="text-gray-700">
-              Assigned to: {order.assignedTo}
-            </Text>
-          </View>
+          <Button
+            className="rounded-full bg-transparent px-0"
+            size={"lg"}
+            variant="default"
+            disabled
+          >
+            <H5 className="text-black">
+              Assigned to: {order.technicians.full_name}
+            </H5>
+          </Button>
         )}
       </View>
     </View>

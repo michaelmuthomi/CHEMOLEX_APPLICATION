@@ -72,7 +72,9 @@ const ServiceManagerPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from("repairs")
-        .select("*, services(*), users:customer_id(full_name), products:product_id(*)")
+        .select(
+          "*, services(*), users:customer_id(full_name), products:product_id(*), technicians:technician_id(full_name)"
+        )
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -114,7 +116,7 @@ const ServiceManagerPage: React.FC = () => {
       if (!technician) throw new Error("Technician not found");
 
       const { error } = await supabase
-        .from("orders")
+        .from("repairs")
         .update({ status: "assigned", assignedTo: technician.name })
         .eq("id", selectedOrderId);
 
