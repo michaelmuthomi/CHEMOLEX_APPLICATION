@@ -73,16 +73,18 @@ export default function Tab() {
       </ScrollView>
       {items.length > 0 ? (
         <View>
-          <View className="w-full gap-4 p-2">
-            <View className="flex-row justify-between">
-              <P>Subtotal</P>
-              <P>{formatPrice(getCartTotal())}</P>
+          <View className="w-full gap-6 p-6">
+            <View className="gap-4">
+              <View className="flex-row justify-between">
+                <P>Subtotal</P>
+                <P>{formatPrice(getCartTotal())}</P>
+              </View>
+              <View className="flex-row justify-between">
+                <P>Shipping</P>
+                <P>Free</P>
+              </View>
             </View>
-            <View className="flex-row justify-between">
-              <P>Shipping</P>
-              <P>Free</P>
-            </View>
-            <View className="flex-row justify-between border-t-[1px] border-zinc-800 pt-2">
+            <View className="flex-row justify-between border-t-[1px] border-zinc-800 pt-4">
               <H4>Total</H4>
               <H4>{formatPrice(getCartTotal())}</H4>
             </View>
