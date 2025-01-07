@@ -8,16 +8,16 @@ const Textarea = React.forwardRef<React.ElementRef<typeof TextInput>, TextInputP
       <TextInput
         ref={ref}
         className={cn(
-          "web:flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base lg:text-sm native:text-lg native:leading-[1.25] text-foreground web:ring-offset-background placeholder:text-muted-foreground web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2",
+          "web:flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm lg:text-sm native:text-base native:leading-[1.25] text-foreground web:ring-offset-background placeholder:text-muted-foreground web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2",
           props.editable === false && "opacity-50 web:cursor-not-allowed",
           className
         )}
-        placeholderClassName={cn("text-zinc-800", placeholderClassName)}
+        placeholderClassName={cn("text-gray-600 text-sm", placeholderClassName)}
         multiline={multiline}
         numberOfLines={numberOfLines}
         textAlignVertical="top"
         {...props}
-        style={{ fontFamily: "Inter_400Regular" }}
+        style={{ fontFamily: "Inter_600SemiBold" }}
       />
     );
   }

@@ -23,6 +23,7 @@ import {
   X,
   Star,
   ArrowRight,
+  MessageCircleDashed,
 } from "lucide-react-native";
 import { H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
@@ -35,6 +36,7 @@ import { useNavigation } from "expo-router";
 import { ManageDetails } from "~/components/sheets/manage/details";
 import { ManageOrders } from "~/components/sheets/manage/orders";
 import { ManageReviews } from "~/components/sheets/manage/review";
+import { Textarea } from "~/components/ui/textarea";
 
 interface customer {
   full_name: string;
@@ -168,7 +170,7 @@ export default function Tab() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [currentStep, setCurrentStep] = useState('pending')
+  const [currentStep, setCurrentStep] = useState("pending");
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -615,44 +617,77 @@ export default function Tab() {
 
             <ScrollView className="flex-1">
               {selectedProduct ? (
-                <View className="p-4 space-y-4">
-                  <View className="flex-row items-center space-x-4">
+                <View className="space-y-4">
+                  <View className="bg-white p-2 h-full">
                     <Image
-                      source={{
-                        uri:
-                          selectedProduct.products?.image_url ||
-                          "https://placeholder.com/150",
-                      }}
-                      className="w-20 h-20 rounded-lg"
+                      source={{ uri: selectedProduct.products.image_url }}
+                      className="w-full h-48 rounded-lg mb-4"
                     />
-                    <View>
-                      <H4 className="text-white">
-                        {selectedProduct.products?.name}
-                      </H4>
-                      <P className="text-zinc-500">
-                        Order #{selectedProduct.order_id}
-                      </P>
+                    <DetailItem
+                      label="Name"
+                      value={selectedProduct.products.name}
+                    />
+                    <DetailItem
+                      label="Category"
+                      value={selectedProduct.products.category}
+                    />
+                    <DetailItem
+                      label="Description"
+                      value={selectedProduct.products.description}
+                    />
+                    <View className="flex-row w-full">
+                      <View className="w-1/2">
+                        <DetailItem
+                          label="Price"
+                          value={`${formatPrice(
+                            selectedProduct.products.price
+                          )}`}
+                        />
+                      </View>
+                      <DetailItem
+                        label="Quantity Bought"
+                        value={
+                          selectedProduct.quantity &&
+                          selectedProduct.quantity.toString()
+                        }
+                      />
+                    </View>
+
+                    <H5 className="text-sm text-center text-gray-600">
+                      {"Rate your product experience"}
+                    </H5>
+                    {renderStars()}
+
+                    <View className="flex-row">
+                      <View className="mt-[8px]">
+                        <MessageCircleDashed size={18} color={"#111"} />
+                      </View>
+                      <Textarea
+                        placeholder="Please tell us more"
+                        value={comment}
+                        onChangeText={setComment}
+                        className="bg-transparent border-0 text-sm py-0 text-black"
+                      />
+                    </View>
+                    <View className="flex-row gap-4 w-full justify-between">
+                      <Button
+                        className="rounded-full border-2 border-gray-500 bg-transparent"
+                        size={"lg"}
+                        variant="default"
+                        onPress={() => setSelectedProduct(null)} 
+                      >
+                        <H5 className=" text-black text-2xl">&larr; </H5>
+                      </Button>
+                      <Button
+                        onPress={() => handleSubmitReview(selectedProduct)}
+                        className="rounded-full flex-1 bg-green-700"
+                        size={"lg"}
+                        variant="default"
+                      >
+                        <H5 className="">{"Continue"}</H5>
+                      </Button>
                     </View>
                   </View>
-
-                  {renderStars()}
-
-                  <Input
-                    placeholder="Write your review here..."
-                    value={comment}
-                    onChangeText={setComment}
-                    multiline
-                    numberOfLines={4}
-                    className="bg-zinc-950 text-white h-32 p-2"
-                  />
-
-                  <Button
-                    variant="outline"
-                    onPress={() => handleSubmitReview(selectedProduct)}
-                    className="mt-4"
-                  >
-                    <P className="uppercase text-white">Submit Review</P>
-                  </Button>
                 </View>
               ) : (
                 <View className="p-4 space-y-4">
