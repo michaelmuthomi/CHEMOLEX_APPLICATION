@@ -379,82 +379,72 @@ export default function Tab() {
 
             <ScrollView className="flex-1">
               {selectedOrder ? (
-                <View className="p-4 space-y-4">
-                  <View className="flex-row justify-between items-center">
+                <View className="space-y-4">
+                  <ScrollView className="bg-white p-2 h-full">
                     <View>
-                      <H4 className="text-white">
-                        Order #{selectedOrder.order_id}
-                      </H4>
-                      <P className="text-zinc-500">
-                        {formatDate(selectedOrder.order_date)}
-                      </P>
-                    </View>
-                    <View>
-                      <P
-                        className={`uppercase ${getStatusColor(
-                          selectedOrder.status
-                        )}`}
-                      >
-                        {selectedOrder.status}
-                      </P>
-                    </View>
-                  </View>
-
-                  {selectedOrder.trackingNumber && (
-                    <View className="bg-zinc-950 p-4 rounded-xl">
-                      <P className="text-zinc-500">Tracking Number</P>
-                      <P className="text-white">
-                        {selectedOrder.trackingNumber}
-                      </P>
-                    </View>
-                  )}
-
-                  <View className="space-y-4">
-                    {selectedOrder.items &&
-                      selectedOrder.items.map((item) => (
-                        <View
-                          key={item.product_id}
-                          className="flex-row bg-zinc-950 p-4 rounded-xl"
-                        >
-                          <Image
-                            source={{ uri: item.products.image_url }}
-                            className="w-20 h-20 rounded-lg"
+                      <Image
+                        source={{ uri: selectedOrder.products.image_url }}
+                        className="w-full h-48 rounded-lg mb-4"
+                      />
+                      <DetailItem
+                        label="Name"
+                        value={selectedOrder.products.name}
+                      />
+                      <DetailItem
+                        label="Category"
+                        value={selectedOrder.products.category}
+                      />
+                      <DetailItem
+                        label="Description"
+                        value={selectedOrder.products.description}
+                      />
+                      <View className="flex-row w-full">
+                        <View className="w-1/2">
+                          <DetailItem
+                            label="Price"
+                            value={`${formatPrice(
+                              selectedOrder.products.price
+                            )}`}
                           />
-                          <View className="flex-1 ml-4">
-                            <H4 className="text-white">
-                              {item.products.name}
-                            </H4>
-                            <P className="text-zinc-500">
-                              Quantity: {item.quantity}
-                            </P>
-                            <P className="text-white">
-                              ${item.unit_price.toFixed(2)}
-                            </P>
-                          </View>
                         </View>
-                      ))}
-                  </View>
-
-                  <View className="bg-zinc-950 p-4 rounded-xl">
-                    <View className="flex-row justify-between">
-                      <P className="text-zinc-500">Total</P>
-                      <P className="text-white">
-                        ${selectedOrder.total_price.toFixed(2)}
-                      </P>
+                        <DetailItem
+                          label="Quantity Bought"
+                          value={
+                            selectedOrder.quantity &&
+                            selectedOrder.quantity.toString()
+                          }
+                        />
+                      </View>
+                      <View className="flex-row w-full items-center mt-6">
+                        <H5 className="text-sm text-gray-600 w-1/2">
+                          {"Total Price"}
+                        </H5>
+                        <H5 className="text-base text-gray-900 text-right flex-1">
+                          {formatPrice(selectedOrder.total_price)}
+                        </H5>
+                      </View>
                     </View>
-                  </View>
+                    {selectedOrder.trackingNumber && (
+                      <View className="bg-zinc-950 p-4 rounded-xl">
+                        <P className="text-zinc-500">Tracking Number</P>
+                        <P className="text-black">
+                          {selectedOrder.trackingNumber}
+                        </P>
+                      </View>
+                    )}
 
-                  {selectedOrder.status === "delivered" && (
-                    <Button
-                      variant="outline"
-                      className="mt-4"
-                      onPress={() =>
-                        handleInitiateReturn(selectedOrder.order_id)
-                      }
-                    >
-                      <P className="uppercase">Initiate Return</P>
-                    </Button>
-                  )}
+                    {selectedOrder.status === "delivered" && (
+                      <Button
+                        variant="outline"
+                        className="mt-4"
+                        onPress={() =>
+                          handleInitiateReturn(selectedOrder.order_id)
+                        }
+                      >
+                        <P className="uppercase text-black">Initiate Return</P>
+                      </Button>
+                    )}
+                  </ScrollView>
                 </View>
               ) : (
                 <View className="p-4 space-y-4">
@@ -495,10 +485,7 @@ export default function Tab() {
                               value={formatPrice(order.unit_price)}
                             />
                           </View>
-                          <DetailItem
-                            label="Quantity"
-                            value={order.quantity}
-                          />
+                          <DetailItem label="Quantity" value={order.quantity} />
                         </View>
                         <View className="flex-row gap-4 w-full justify-between">
                           <Button
