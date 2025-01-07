@@ -380,9 +380,11 @@ export default function Tab() {
                 <View className="p-4 space-y-4">
                   <View className="flex-row justify-between items-center">
                     <View>
-                      <H4 className="text-white">Order #{selectedOrder.id}</H4>
+                      <H4 className="text-white">
+                        Order #{selectedOrder.order_id}
+                      </H4>
                       <P className="text-zinc-500">
-                        {formatDate(selectedOrder.date)}
+                        {formatDate(selectedOrder.order_date)}
                       </P>
                     </View>
                     <View>
@@ -406,31 +408,34 @@ export default function Tab() {
                   )}
 
                   <View className="space-y-4">
-                    {selectedOrder.items.map((item) => (
-                      <View
-                        key={item.id}
-                        className="flex-row bg-zinc-950 p-4 rounded-xl"
-                      >
-                        <Image
-                          source={{ uri: item.image }}
-                          className="w-20 h-20 rounded-lg"
-                        />
-                        <View className="flex-1 ml-4">
-                          <H4 className="text-white">{item.name}</H4>
-                          <P className="text-zinc-500">
-                            Quantity: {item.quantity}
-                          </P>
-                          <P className="text-white">${item.price.toFixed(2)}</P>
+                    {selectedOrder.items &&
+                      selectedOrder.items.map((item) => (
+                        <View
+                          key={item.product_id}
+                          className="flex-row bg-zinc-950 p-4 rounded-xl"
+                        >
+                          <Image
+                            source={{ uri: item.products.image_url }}
+                            className="w-20 h-20 rounded-lg"
+                          />
+                          <View className="flex-1 ml-4">
+                            <H4 className="text-white">{item.products.name}</H4>
+                            <P className="text-zinc-500">
+                              Quantity: {item.quantity}
+                            </P>
+                            <P className="text-white">
+                              ${item.unit_price.toFixed(2)}
+                            </P>
+                          </View>
                         </View>
-                      </View>
-                    ))}
+                      ))}
                   </View>
 
                   <View className="bg-zinc-950 p-4 rounded-xl">
                     <View className="flex-row justify-between">
                       <P className="text-zinc-500">Total</P>
                       <P className="text-white">
-                        ${selectedOrder.total.toFixed(2)}
+                        ${selectedOrder.total_price.toFixed(2)}
                       </P>
                     </View>
                   </View>
@@ -439,7 +444,9 @@ export default function Tab() {
                     <Button
                       variant="outline"
                       className="mt-4"
-                      onPress={() => handleInitiateReturn(selectedOrder.id)}
+                      onPress={() =>
+                        handleInitiateReturn(selectedOrder.order_id)
+                      }
                     >
                       <P className="uppercase">Initiate Return</P>
                     </Button>
@@ -459,7 +466,7 @@ export default function Tab() {
                             Order #{order.order_id}
                           </H4>
                           <P className="text-zinc-500">
-                            {formatDate(order.created_at)}
+                            {formatDate(order.order_date)}
                           </P>
                         </View>
                         <View>
@@ -476,13 +483,13 @@ export default function Tab() {
                         <Image
                           source={{
                             uri:
-                              order.products?.image_url ||
+                              order.products.image_url ||
                               "https://placeholder.com/150",
                           }}
                           className="w-16 h-16 rounded-lg mr-4"
                         />
                         <View>
-                          <P className="text-white">{order.products?.name}</P>
+                          <P className="text-white">{order.products.name}</P>
                           <P className="text-zinc-500">
                             Quantity: {order.quantity}
                           </P>
@@ -633,7 +640,10 @@ export default function Tab() {
           {personalInformationModalTrigger.map((item) => (
             <ManageDetails
               sheetTrigger={
-                <TouchableOpacity key={item.id} className="bg-zinc-950 rounded-2xl gap-2">
+                <TouchableOpacity
+                  key={item.id}
+                  className="bg-zinc-950 rounded-2xl gap-2"
+                >
                   <View className="flex items-start">
                     <TouchableOpacity
                       className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
@@ -655,33 +665,40 @@ export default function Tab() {
             />
           ))}
           {ordersModalTrigger.map((item) => (
-            <ManageOrders
-              sheetTrigger={
-                <TouchableOpacity key={item.id} className="bg-zinc-950 rounded-2xl gap-2">
-                  <View className="flex items-start">
-                    <TouchableOpacity
-                      className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
-                    >
-                      <item.icon size={20} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
-                  <View className="flex-row items-center">
-                    <View className="flex-1">
-                      <H4 className="text-white">{item.title}</H4>
-                      <P className="text-sm text-zinc-500 w-3/4">
-                        {item.description}
-                      </P>
-                    </View>
-                    <ArrowRight size={20} color="#aaa" />
-                  </View>
+            // <ManageOrders
+            //   sheetTrigger={
+            //   }
+            // />
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => setActiveModal("orders")}
+              className="bg-zinc-950 rounded-2xl gap-2"
+            >
+              <View className="flex items-start">
+                <TouchableOpacity
+                  className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
+                >
+                  <item.icon size={20} color="#fff" />
                 </TouchableOpacity>
-              }
-            />
+              </View>
+              <View className="flex-row items-center">
+                <View className="flex-1">
+                  <H4 className="text-white">{item.title}</H4>
+                  <P className="text-sm text-zinc-500 w-3/4">
+                    {item.description}
+                  </P>
+                </View>
+                <ArrowRight size={20} color="#aaa" />
+              </View>
+            </TouchableOpacity>
           ))}
           {reviewModalTrigger.map((item) => (
             <ManageReviews
               sheetTrigger={
-                <TouchableOpacity key={item.id} className="bg-zinc-950 rounded-2xl gap-2">
+                <TouchableOpacity
+                  key={item.id}
+                  className="bg-zinc-950 rounded-2xl gap-2"
+                >
                   <View className="flex items-start">
                     <TouchableOpacity
                       className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
