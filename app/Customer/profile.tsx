@@ -168,6 +168,7 @@ export default function Tab() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [currentStep, setCurrentStep] = useState('verification')
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -415,6 +416,73 @@ export default function Tab() {
                           }
                         />
                       </View>
+                      <View className="gap-2 w-full">
+                        <H5 className="text-sm text-gray-600">
+                          {"Delivery Status"}
+                        </H5>
+                        <View className="flex-row items-center justify-around">
+                          <View className="flex-row items-center gap-2">
+                            <View
+                              className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                currentStep === "verification"
+                                  ? "bg-green-500"
+                                  : "!bg-[#2c2c2c]"
+                              }`}
+                            >
+                              <P> 1 </P>
+                            </View>
+                            <H4
+                              className={`text-lg capitalize ${
+                                currentStep === "verification"
+                                  ? "text-gray-900"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              verification
+                            </H4>
+                          </View>
+                          <View className="flex-row items-center gap-2">
+                            <View
+                              className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                currentStep === "dispatched"
+                                  ? "bg-green-500"
+                                  : "!bg-[#6b7280]"
+                              }`}
+                            >
+                              <P> 2 </P>
+                            </View>
+                            <H4
+                              className={`text-lg capitalize ${
+                                currentStep === "dispatched"
+                                  ? "text-gray-900"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              In Transit
+                            </H4>
+                          </View>
+                          <View className="flex-row items-center gap-2">
+                            <View
+                              className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                currentStep === "delivered"
+                                  ? "bg-green-500"
+                                  : "!bg-[#6b7280]"
+                              }`}
+                            >
+                              <P> 3 </P>
+                            </View>
+                            <H4
+                              className={`text-lg capitalize ${
+                                currentStep === "delivered"
+                                  ? "text-gray-900"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              Delivered
+                            </H4>
+                          </View>
+                        </View>
+                      </View>
                       <View className="flex-row w-full items-center mt-6">
                         <H5 className="text-sm text-gray-600 w-1/2">
                           {"Total Price"}
@@ -494,7 +562,10 @@ export default function Tab() {
                             variant="default"
                           >
                             <H5 className="text-gray-700 capitalize">
-                              Payment: {order.payment_status}
+                              Payment:{" "}
+                              <H5 className="text-gray-900">
+                                {order.payment_status}
+                              </H5>
                             </H5>
                           </Button>
                           <Button
