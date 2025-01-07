@@ -48,8 +48,7 @@ const FinancialStatusPage: React.FC = () => {
   const [technicianId, setTechnicianId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("all-orders");
   const [financeRecords, setFinanceRecords] = useState([]);
-  
-  const stats = [
+  const [stats, setStats] = useState([
     {
       iconBgColor: "bg-purple-600",
       Icon: <CreditCard color="white" size={19} />,
@@ -62,7 +61,7 @@ const FinancialStatusPage: React.FC = () => {
       iconBgColor: "bg-green-600",
       Icon: <ArrowUp color="white" size={19} />,
       Title: "Revenue",
-      Description: "$1,234,567",
+      Description: "Ksh 0",
     },
     {
       iconBgColor: "bg-red-600",
@@ -76,7 +75,7 @@ const FinancialStatusPage: React.FC = () => {
       Title: "Profit",
       Description: "$358,024",
     },
-  ];
+  ]);
 
   useEffect(() => {
     fetchAllOrders();
@@ -98,6 +97,51 @@ const FinancialStatusPage: React.FC = () => {
     async function fetchFinanceRecords() {
       const response = await fetchAllFinancialRecords();
       setFinanceRecords(response);
+
+      // Calculate total amount, revenue from incoming payments, and expenses
+      const totalAmount = response.reduce(
+        (total, record) => total + record.amount,
+        0
+      );
+      const revenue = response.reduce((total, record) => {
+        return record.payment_type === "incoming"
+          ? total + record.amount
+          : total;
+      }, 0);
+
+      // Calculate expenses
+      const expenses = response.reduce((total, record) => {
+        return record.payment_type === "outgoing"
+          ? total + record.amount
+          : total;
+      }, 0);
+
+      // Calculate profit
+      const profit = revenue - expenses;
+
+      // Calculate revenue and expenses percentage
+      const revenuePercentage =
+        totalAmount > 0 ? (revenue / totalAmount) * 100 : 0;
+      const expensesPercentage =
+        totalAmount > 0 ? (expenses / totalAmount) * 100 : 0;
+
+      // Update the revenue and profit in stats
+      console.log("Calc revenue percentage:", revenuePercentage);
+      console.log("Calc profit:", profit);
+      setStats((prevStats) => {
+        const updatedStats = [...prevStats];
+        updatedStats[1].Description = `${revenuePercentage.toFixed(2)}%`; // Update revenue description to show percentage
+        updatedStats[2].Description = `${expensesPercentage.toFixed(
+          1
+        )}% per year`; // Update expenses description to show percentage
+        updatedStats[3].Description = `KSh ${formatBalance(profit)}`; // Update profit description
+
+        // Update account balance in stats
+        const latestBalance = response[response.length - 1]?.balance || 0; // Get the latest balance
+        updatedStats[0].Description = `KSh ${formatBalance(latestBalance)}`; // Update account balance description
+
+        return updatedStats;
+      });
     }
     fetchFinanceRecords();
     async function fetchUserDetails() {
@@ -111,7 +155,6 @@ const FinancialStatusPage: React.FC = () => {
         console.error("User  details could not be fetched");
         return;
       }
-
 
       console.log("Username", response.full_name);
       const userId = response.user_id;
