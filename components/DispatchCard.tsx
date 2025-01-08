@@ -6,7 +6,7 @@ import { formatDate } from '~/lib/format-date';
 import { formatTime } from '~/lib/format-time';
 import { Button } from './ui/button';
 import { DispatchDetails } from './sheets/dispatchDetails';
-import { updateDispatchStatus } from '~/lib/supabase';
+import { supabase, updateDispatchStatus } from '~/lib/supabase';
 import displayNotification from '~/lib/Notification';
 
 type DispatchCardProps = {
@@ -19,16 +19,39 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
     try {
       const { data, error } = await supabase
         .from("dispatches")
-        .update({ status: 'complete' })
+        .update({ status: "complete" })
         .eq("order_id", dispatch.order_id)
         .single();
       if (error) {
-        displayNotification("Error marking as complete:", 'danger');
+        displayNotification(
+          `Error marking as complete: ${error.message}`,
+          "danger"
+        );
       } else {
-        displayNotification("Dispatch marked as complete", 'success');
+        displayNotification("Dispatch marked as complete", "success");
       }
     } catch (err) {
-      displayNotification(err, 'danger');
+      displayNotification(`Error: ${err.message}`, "danger");
+    }
+  };
+
+  const handleDriverStatusDecline = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("dispatches")
+        .update({ driver_status: "declined" })
+        .eq("order_id", dispatch.order_id)
+        .single();
+      if (error) {
+        displayNotification(
+          `Error declining the dispatch: ${error.message}`,
+          "danger"
+        );
+      } else {
+        displayNotification("Dispatch marked as declined", "success");
+      }
+    } catch (err) {
+      displayNotification(`Error: ${err.message}`, "danger");
     }
   };
 
@@ -81,28 +104,21 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
       </View>
 
       <View className="flex-row gap-4 w-full justify-between">
-        <DispatchDetails
-          sheetTrigger={
-            <Button
-              disabled={dispatch.driver_status === "accepted"}
-              className={`rounded-full border-black bg-transparent ${
-                dispatch.driver_status === "accepted"
-                  ? "border-0 p-0"
-                  : "border-2"
-              } `}
-              size={"lg"}
-              variant="default"
-            >
-              <H5 className=" text-black">
-                {dispatch.driver_status === "accepted"
-                  ? formatDate(dispatch.updated_at)
-                  : "Decline"}
-              </H5>
-            </Button>
-          }
-          action="decline"
-          dispatch={dispatch}
-        />
+        <Button
+          disabled={dispatch.driver_status === "accepted"}
+          className={`rounded-full border-black bg-transparent ${
+            dispatch.driver_status === "accepted" ? "border-0 p-0" : "border-2"
+          } `}
+          size={"lg"}
+          variant="default"
+          onPress={() => handleDriverStatusDecline()}
+        >
+          <H5 className=" text-black">
+            {dispatch.driver_status === "accepted"
+              ? formatDate(dispatch.updated_at)
+              : "Decline"}
+          </H5>
+        </Button>
         {dispatch.driver_status === "accepted" ? (
           <Button
             className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-900"
@@ -110,7 +126,9 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
             variant="default"
             onPress={markAsComplete}
           >
-            <H5 className=" text-white disabled:text-black">{"Mark as Complete"}</H5>
+            <H5 className=" text-white disabled:text-black">
+              {"Mark as Complete"}
+            </H5>
           </Button>
         ) : (
           <DispatchDetails
