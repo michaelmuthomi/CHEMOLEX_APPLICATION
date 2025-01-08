@@ -6,6 +6,8 @@ import { formatDate } from '~/lib/format-date';
 import { formatTime } from '~/lib/format-time';
 import { Button } from './ui/button';
 import { DispatchDetails } from './sheets/dispatchDetails';
+import { updateDispatchStatus } from '~/lib/supabase';
+import displayNotification from '~/lib/Notification';
 
 type DispatchCardProps = {
   dispatch: any;
@@ -13,6 +15,23 @@ type DispatchCardProps = {
 };
 
 export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDetails }) => {
+  const markAsComplete = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("dispatches")
+        .update({ status: 'complete' })
+        .eq("order_id", dispatch.order_id)
+        .single();
+      if (error) {
+        displayNotification("Error marking as complete:", 'danger');
+      } else {
+        displayNotification("Dispatch marked as complete", 'success');
+      }
+    } catch (err) {
+      displayNotification(err, 'danger');
+    }
+  };
+
   return (
     <View className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="flex-row justify-between w-full relative overflow-clip">
@@ -24,21 +43,25 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
         <View className="flex items-start absolute right-[-14px] top-[-14px]">
           <TouchableOpacity
             className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
-              dispatch.status === "pending" ? "bg-orange-300" : "bg-green-300"
+              dispatch.driver_status === "pending"
+                ? "bg-orange-300"
+                : "bg-green-300"
             }`}
           >
             <ListTodo
-              color={`${dispatch.status === "pending" ? "#9a3412" : "#166534"}`}
+              color={`${
+                dispatch.driver_status === "pending" ? "#9a3412" : "#166534"
+              }`}
               size={19}
             />
             <H5
               className={`${
-                dispatch.status === "pending"
+                dispatch.driver_status === "pending"
                   ? "text-orange-900"
                   : "text-green-900"
               } ml-2 text-base capitalize`}
             >
-              {dispatch.status}
+              {dispatch.driver_status}
             </H5>
           </TouchableOpacity>
         </View>
@@ -61,31 +84,50 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
         <DispatchDetails
           sheetTrigger={
             <Button
-              disabled={dispatch.status === "delivered" ? true : false}
-              className="rounded-full border-2 border-black bg-transparent disabled:opacity-20"
+              disabled={dispatch.driver_status === "accepted"}
+              className={`rounded-full border-black bg-transparent ${
+                dispatch.driver_status === "accepted"
+                  ? "border-0 p-0"
+                  : "border-2"
+              } `}
               size={"lg"}
               variant="default"
             >
-              <H5 className=" text-black">{"Decline"}</H5>
+              <H5 className=" text-black">
+                {dispatch.driver_status === "accepted"
+                  ? formatDate(dispatch.updated_at)
+                  : "Decline"}
+              </H5>
             </Button>
           }
           action="decline"
           dispatch={dispatch}
         />
-        <DispatchDetails
-          sheetTrigger={
-            <Button
-              disabled={dispatch.status === "delivered" ? true : false}
-              className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-900"
-              size={"lg"}
-              variant="default"
-            >
-              <H5 className=" text-white disabled:text-black">{"Accept"}</H5>
-            </Button>
-          }
-          action="accept"
-          dispatch={dispatch}
-        />
+        {dispatch.driver_status === "accepted" ? (
+          <Button
+            className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-900"
+            size={"lg"}
+            variant="default"
+            onPress={markAsComplete}
+          >
+            <H5 className=" text-white disabled:text-black">{"Mark as Complete"}</H5>
+          </Button>
+        ) : (
+          <DispatchDetails
+            sheetTrigger={
+              <Button
+                disabled={dispatch.driver_status === "accepted"}
+                className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-900"
+                size={"lg"}
+                variant="default"
+              >
+                <H5 className=" text-white disabled:text-black">{"Accept"}</H5>
+              </Button>
+            }
+            action="accept"
+            dispatch={dispatch}
+          />
+        )}
       </View>
     </View>
   );
