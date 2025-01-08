@@ -48,22 +48,22 @@ export const RepairCard = ({
             className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
               repair.status === "pending"
                 ? "bg-orange-300"
-                : repair.technician_status === "accepted" ||
-                  repair.technician_status === "accepted" ||
-                  repair.status === "assigned"
-                ? "bg-purple-300"
+                : repair.technician_status === "pending"
+                ? "bg-orange-300"
+                : repair.completion_status === "incomplete"
+                ? "bg-orange-300"
                 : "bg-green-300"
             }`}
           >
             <CheckCircle2
               color={
                 repair.status === "pending"
-                  ? "#9a3412"
-                  : repair.technician_status === "accepted" ||
-                    repair.technician_status === "accepted" ||
-                    repair.status === "assigned"
-                  ? "#581c87"
-                  : "#166534"
+                  ? "#7c2d12"
+                  : repair.technician_status === "pending"
+                  ? "#7c2d12"
+                  : repair.completion_status === "incomplete"
+                  ? "#7c2d12"
+                  : "#14532d"
               }
               size={14}
             />
@@ -71,16 +71,20 @@ export const RepairCard = ({
               className={`${
                 repair.status === "pending"
                   ? "text-orange-900"
-                  : repair.technician_status === "accepted" ||
-                    repair.technician_status === "accepted" ||
-                    repair.status === "assigned"
-                  ? "text-purple-900"
+                  : repair.technician_status === "pending"
+                  ? "text-orange-900"
+                  : repair.completion_status === "incomplete"
+                  ? "text-orange-900"
                   : "text-green-900"
               } ml-2 text-base capitalize`}
             >
-              {repair?.technician_status !== "pending"
-                ? repair?.technician_status
-                : repair.status}
+              {repair.status === "pending"
+                ? repair.status
+                : repair.technician_status === "pending"
+                ? repair.technician_status
+                : repair.completion_status === "incomplete"
+                ? repair.completion_status
+                : "complete"}
             </H5>
           </View>
         </View>
@@ -113,11 +117,16 @@ export const RepairCard = ({
           {repair.technician_status === "accepted" ? (
             <Button
               onPress={() => markAsComplete(repair.id)}
-              className="rounded-full flex-1 bg-green-800"
+              className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-600"
               size={"lg"}
               variant="default"
+              disabled={repair.completion_status === "complete"}
             >
-              <H5 className=" text-white">{"Mark As Complete"}</H5>
+              <H5 className=" text-white">
+                {repair.completion_status === "complete"
+                  ? "Completed"
+                  : "Mark As Complete"}
+              </H5>
             </Button>
           ) : (
             <RepairDetailsModal
