@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchSuppliers, insertNewProductToDB } from "~/lib/supabase";
+import { fetchSuppliers, insertNewProductToDB, updateDispatchStatus } from "~/lib/supabase";
 import { Value } from "@rn-primitives/select";
 import { formatDate } from "~/lib/format-date";
 import { formatTime } from "~/lib/format-time";
@@ -78,6 +78,18 @@ export function DispatchDetails({
     left: 12,
     right: 12,
   };
+
+  async function handleAcceptAssignment() {
+    setLoading(true); // Set loading state
+    const response = await updateDispatchStatus(dispatch.order_id, "accepted"); // Update dispatch status
+    setLoading(false); // Reset loading state
+
+    if (response.error) {
+      displayNotification(response.error, 'danger');
+    } else {
+      displayNotification("Assignment accepted successfully!", 'success');
+    }
+  }
 
   return (
     <>
@@ -176,25 +188,20 @@ export function DispatchDetails({
                     action="decline"
                     dispatch={dispatch}
                   />
-                  <DispatchDetails
-                    sheetTrigger={
-                      <Button
-                        disabled={
-                          dispatch.status === "delivered" ? true : false
-                        }
-                        className="rounded-full flex-1 bg-green-800 disabled:bg-green-400"
-                        size={"lg"}
-                        variant="default"
-                      >
-                        <H5 className=" text-white">{"Accept"}</H5>
-                      </Button>
+                  <Button
+                    disabled={
+                      dispatch.status === "delivered" ? true : false
                     }
-                    action="accept"
-                    dispatch={dispatch}
-                  />
+                    onPress={handleAcceptAssignment}
+                    className="rounded-full flex-1 bg-green-800 disabled:bg-green-400"
+                    size={"lg"}
+                    variant="default"
+                  >
+                    <H5 className=" text-white">{"Accept"}</H5>
+                  </Button>
                 </View>
 
-                {dispatch.status !== "delivered" && (
+                {/* {dispatch.status !== "delivered" && (
                   <TouchableOpacity
                     className="bg-green-500 py-3 px-4 rounded-lg mt-4"
                     onPress={() =>
@@ -217,7 +224,7 @@ export function DispatchDetails({
                       Start Delivery
                     </H5>
                   </TouchableOpacity>
-                )}
+                )} */}
               </View>
             </View>
           </View>

@@ -663,3 +663,14 @@ export async function fetchDispatches() {
     return data;
   }
 }
+
+// Function to update dispatch status
+export async function updateDispatchStatus(orderId: number, driver_status: string) {
+  const { data, error } = await supabase
+    .from("dispatches")
+    .update({ driver_status })
+    .eq("order_id", orderId)
+    .single();
+
+  return { data, error }; // Return data and error for handling
+}
