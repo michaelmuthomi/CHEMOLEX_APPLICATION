@@ -68,19 +68,23 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
             className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
               dispatch.driver_status === "pending"
                 ? "bg-orange-300"
+                : dispatch.driver_status === "declined"
+                ? "bg-red-300"
                 : "bg-green-300"
             }`}
           >
             <ListTodo
               color={`${
-                dispatch.driver_status === "pending" ? "#9a3412" : "#166534"
+                dispatch.driver_status === "pending" ? "#9a3412" : dispatch.driver_status === "declined" ? "#fca5a5" :"#166534"
               }`}
               size={19}
             />
             <H5
               className={`${
                 dispatch.driver_status === "pending"
-                  ? "text-orange-900"
+                ? "text-orange-900"
+                : dispatch.driver_status === "declined"
+                ? "text-red-300"
                   : "text-green-900"
               } ml-2 text-base capitalize`}
             >

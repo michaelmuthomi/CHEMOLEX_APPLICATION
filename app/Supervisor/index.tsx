@@ -235,15 +235,13 @@ const SupervisorPage: React.FC = () => {
         </View>
 
         <View className="flex-1 p-4">
-          {sortedRepairs
-            .filter((repair) => repair.status === "pending")
-            .map((repair) => (
-              <RepairItem
-                key={repair.id}
-                repair={repair}
-                onViewDetails={handleViewDetails}
-              />
-            ))}
+          {sortedRepairs.map((repair) => (
+            <RepairItem
+              key={repair.id}
+              repair={repair}
+              onViewDetails={handleViewDetails}
+            />
+          ))}
         </View>
       </ScrollView>
 
