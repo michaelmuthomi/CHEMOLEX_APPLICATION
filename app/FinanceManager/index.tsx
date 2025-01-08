@@ -287,49 +287,47 @@ const FinancialStatusPage: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             className="flex-row gap-2"
           >
-            {["all-orders", "pending", "approved"].map(
-              (sort) => (
-                <TouchableOpacity
-                  key={sort}
-                  className={`px-3 pb-2 border-b-2 flex-row items-center ${
-                    sortBy === sort ? "border-white" : "border-zinc-900"
+            {["all-orders", "pending", "approved"].map((sort) => (
+              <TouchableOpacity
+                key={sort}
+                className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                  sortBy === sort ? "border-white" : "border-zinc-900"
+                }`}
+                onPress={() => setSortBy(sort)}
+              >
+                {sort === "all-orders" ? (
+                  <GalleryVerticalEnd
+                    size={16}
+                    color={sortBy === sort ? "#fff" : "#3f3f46"}
+                  />
+                ) : sort === "pending" ? (
+                  <ListTodo
+                    size={16}
+                    color={sortBy === sort ? "#fff" : "#3f3f46"}
+                  />
+                ) : (
+                  <ListChecks
+                    size={16}
+                    color={sortBy === sort ? "#fff" : "#3f3f46"}
+                  />
+                )}
+                <H4
+                  className={`capitalize text-lg px-2 ${
+                    sortBy === sort ? "text-white" : "text-zinc-700"
                   }`}
-                  onPress={() => setSortBy(sort)}
                 >
-                  {sort === "all-orders" ? (
-                    <GalleryVerticalEnd
-                      size={16}
-                      color={sortBy === sort ? "#fff" : "#3f3f46"}
-                    />
-                  ) : sort === "pending" ? (
-                    <ListTodo
-                      size={16}
-                      color={sortBy === sort ? "#fff" : "#3f3f46"}
-                    />
-                  ) : (
-                    <ListChecks
-                      size={16}
-                      color={sortBy === sort ? "#fff" : "#3f3f46"}
-                    />
-                  )}
-                  <H4
-                    className={`capitalize text-lg px-2 ${
-                      sortBy === sort ? "text-white" : "text-zinc-700"
-                    }`}
-                  >
-                    {sort.replace("-", " ")}
-                  </H4>
-                </TouchableOpacity>
-              )
-            )}
+                  {sort.replace("-", " ")}
+                </H4>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
         </View>
 
         <View className="p-4">
-          {sortedOrders.map((order) => (
+          {sortedOrders.map((selectedOrder, index) => (
             <OrderCard
-              key={order.id}
-              order={order}
+              key={index}
+              order={selectedOrder}
               onViewDetails={handleViewDetails}
             />
           ))}

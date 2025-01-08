@@ -16,8 +16,17 @@ export const OrderCard = ({
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+
+  const handleViewDetails = () => {
+    setSelectedOrderId(order.id);
+    setModalVisible(true);
+  };
+
   return (
-    <TouchableOpacity className="bg-white rounded-lg shadow-sm p-4 mb-4">
+    <TouchableOpacity
+      className="bg-white rounded-lg shadow-sm p-4 mb-4"
+      onPress={handleViewDetails}
+    >
       <View className="w-full relative overflow-clip">
         <View className="flex items-start absolute right-[-14px] top-[-14px]">
           <View
@@ -63,7 +72,6 @@ export const OrderCard = ({
           <OrderDetailsModal
             sheetTrigger={
               <Button
-                // onPress={() => onAssign(order.id)}
                 className="rounded-full flex-1 bg-green-800"
                 size={"lg"}
                 variant="default"
@@ -74,7 +82,6 @@ export const OrderCard = ({
             product={order.products}
             order={order}
             visible={modalVisible && selectedOrderId === order.id}
-            onAssign={() => console.log("Approve")}
           />
         </View>
       </View>

@@ -51,42 +51,67 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({
 type ProductDetailsModalProps = {
   visible: boolean;
   product: any;
-  onUpdateStock: (productId: number, newStock: number) => void;
 };
 
 export function OrderDetailsModal({
   sheetTrigger,
   visible,
   product,
-  onUpdateStock,
+  order,
 }: {
   sheetTrigger: React.ReactNode;
   visible: boolean;
   product: any;
-  onUpdateStock: (productId: number, newStock: number) => void;
+  order: any;
 }) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(product);
+  const [orderID, setOrderID] = useState(order.order_id)
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     if (visible) {
       bottomSheetModalRef.current?.present();
       setProductData(product);
+      setOrderID(order.order_id)
     } else {
       bottomSheetModalRef.current?.dismiss();
     }
   }, [visible, product]);
 
+  console.log('Order: ', order)
+
   const [newStock, setNewStock] = useState("");
 
-  const handleUpdateStockPress = () => {
+  const handleOrderApproval = async () => {
     setUpdating(true);
-    const newStockNumber = parseInt(newStock);
-    if (!isNaN(newStockNumber)) {
-      onUpdateStock(product.product_id, newStockNumber);
-      setNewStock("");
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ finance_approval: "approved" })
+      .eq("order_id", order.order_id);
+
+    if (error) {
+      displayNotification(error.message, 'danger');
+    } else {
+      displayNotification("Order approved successfully!", "success");
+      bottomSheetModalRef.current?.dismiss();
+    }
+    setUpdating(false);
+  };
+
+  const handleOrderDecline = async (orderId: any) => {
+    setUpdating(true);
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ finance_approval: "declined" })
+      .eq("order_id", orderId);
+
+    if (error) {
+      displayNotification(error.message, "danger");
+    } else {
+      displayNotification("Order declined successfully!", "success");
+      bottomSheetModalRef.current?.dismiss();
     }
     setUpdating(false);
   };
@@ -142,25 +167,25 @@ export function OrderDetailsModal({
                   <View className="border-t-[1px] border-zinc-900 py-4">
                     <View className="flex-row items-center rounded-md w-full gap-2">
                       <Button
-                        onPress={handleUpdateStockPress}
+                        onPress={() => handleOrderDecline(order.order_id)}
                         className="rounded-full w-auto border-2 border-slate-500 bg-transparent"
                         size={"lg"}
                         variant="default"
                         disabled={updating}
                       >
                         <H4 className="text-lg text-slate-400">
-                          {updating ? "Declining" : "Decline"}
+                          {updating ? "Updating" : "Decline"}
                         </H4>
                       </Button>
                       <Button
-                        onPress={handleUpdateStockPress}
+                        onPress={() => handleOrderApproval()}
                         className="rounded-full flex-1 bg-green-700"
                         size={"lg"}
                         variant="default"
                         disabled={updating}
                       >
                         <H4 className="text-lg">
-                          {updating ? "Approving" : "Approve"}
+                          {updating ? "Updating" : "Approve"}
                         </H4>
                       </Button>
                     </View>

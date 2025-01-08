@@ -15,8 +15,6 @@ export const RepairItem: React.FC<RepairItemProps> = ({
   repair,
   onViewDetails,
 }) => {
-  if (!repair.technician_id) return null;
-
   return (
     <View className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="w-full relative overflow-clip">
