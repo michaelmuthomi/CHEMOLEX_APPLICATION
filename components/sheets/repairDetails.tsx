@@ -92,10 +92,38 @@ export function RepairDetailsModal({
     bottomSheetModalRef.current?.present();
   }, []);
 
-    const handleAssign = () => {
-    // Perform on assign action here
-    onAssign();
-    bottomSheetModalRef.current?.dismiss();
+  const handleAssign = (action: any) => {
+    if (action === "accept") {
+      // Update technician_status to 'accepted' using repair id
+      supabase
+        .from("repairs")
+        .update({ technician_status: "accepted" })
+        .eq("id", repair.id)
+        .then((response) => {
+          if (response.error) {
+            displayNotification("Error updating status", "danger");
+            bottomSheetModalRef.current?.dismiss();
+          } else {
+            displayNotification("Status updated to accepted", "success");
+            bottomSheetModalRef.current?.dismiss();
+          }
+        });
+    } else if (action === "decline") {
+      // Update technician_status to 'declined' using repair id
+      supabase
+        .from("repairs")
+        .update({ technician_status: "declined" })
+        .eq("id", repair.id)
+        .then((response) => {
+          if (response.error) {
+            displayNotification("Error updating status", "danger");
+            bottomSheetModalRef.current?.dismiss();
+          } else {
+            displayNotification("Status updated to declined", "success");
+            bottomSheetModalRef.current?.dismiss();
+          }
+        });
+    }
   };
 
   return (
@@ -136,14 +164,12 @@ export function RepairDetailsModal({
                   />
                   <DetailItem
                     label="Repair Location"
-                    value={`${
-                      repair.users.address || 'N/A'
-                    }`}
+                    value={`${repair.users.address || "N/A"}`}
                   />
 
                   <View className="flex-row items-center gap-2 w-full pt-4">
                     <Button
-                      // disabled={dispatch.status === "delivered" ? true : false}
+                      onPress={() => handleAssign("decline")}
                       className="rounded-full w-auto border-2 border-gray-300 bg-transparent disabled:bg-green-400"
                       size={"lg"}
                       variant="default"
@@ -151,7 +177,7 @@ export function RepairDetailsModal({
                       <H5 className=" border-zinc-400">{"Decline"}</H5>
                     </Button>
                     <Button
-                      // disabled={dispatch.status === "delivered" ? true : false}
+                      onPress={() => handleAssign("accept")}
                       className="rounded-full flex-1 bg-green-800 disabled:bg-green-400"
                       size={"lg"}
                       variant="default"
