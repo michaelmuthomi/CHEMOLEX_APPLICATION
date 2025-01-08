@@ -94,8 +94,19 @@ export function OrderDetailsModal({
     if (error) {
       displayNotification(error.message, 'danger');
     } else {
-      displayNotification("Order approved successfully!", "success");
-      bottomSheetModalRef.current?.dismiss();
+      const { error: dispatchError } = await supabase
+        .from("dispatches")
+        .insert([{ order_id: order.order_id, user_id: order.user_id }]);
+
+      if (dispatchError) {
+        displayNotification(dispatchError.message, "danger");
+      } else {
+        displayNotification(
+          "Order approved and dispatched successfully!",
+          "success"
+        );
+        bottomSheetModalRef.current?.dismiss();
+      }
     }
     setUpdating(false);
   };
