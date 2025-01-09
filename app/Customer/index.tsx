@@ -339,9 +339,9 @@ function CustomerHome() {
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
-          {services.map((service) => (
+          {services.map((service, index) => (
             <TouchableOpacity
-              key={service.id}
+              key={index}
               className="gap-4 w-[250px] px-2 pb-4"
               onPress={() => setSelectedServiceId(service.id)}
             >
