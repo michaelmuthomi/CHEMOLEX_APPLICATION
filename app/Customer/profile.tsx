@@ -77,8 +77,8 @@ const personalInformationModalTrigger = [
 const ordersModalTrigger = [
   {
     id: "orders",
-    title: "Track Orders",
-    description: "Track orders and manage returns",
+    title: "Manage Orders",
+    description: "View and manage your orders",
     icon: ShoppingBag,
     screen: "orders",
     iconBgColor: "bg-orange-600",
@@ -369,7 +369,7 @@ export default function Tab() {
         <View className="flex-1 mt-20 bg-zinc-900 rounded-t-3xl">
           <SafeAreaView className="flex-1">
             <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
-              <H3 className="text-white">Orders & Returns</H3>
+              <H3 className="text-white">Manage Orders</H3>
               <TouchableOpacity
                 onPress={() => {
                   setActiveModal(null);
@@ -674,7 +674,7 @@ export default function Tab() {
                         className="rounded-full border-2 border-gray-500 bg-transparent"
                         size={"lg"}
                         variant="default"
-                        onPress={() => setSelectedProduct(null)} 
+                        onPress={() => setSelectedProduct(null)}
                       >
                         <H5 className=" text-black text-2xl">&larr; </H5>
                       </Button>
@@ -725,20 +725,33 @@ export default function Tab() {
                             />
                           </View>
                           <View className="flex-row w-full gap-2 mt-6">
-                            <View className="w-1/2">
-                              <DetailItem
-                                label="Delivered On"
-                                value={formatDate(order.updated_at)}
-                              />
-                            </View>
-                            <Button
-                              onPress={() => setSelectedProduct(order)}
-                              className="rounded-full flex-1 bg-green-700"
-                              size={"lg"}
-                              variant="default"
-                            >
-                              <H5 className="text-white">{"Review"}</H5>
-                            </Button>
+                              {order.status === "delivered" ? (
+                              <View className="w-1/2">
+                                  <DetailItem
+                                    label="Delivered On"
+                                    value={formatDate(order.updated_at)}
+                                  />
+                              </View>
+                              ) : (
+                                <View className="mb-4 w-full gap-2">
+                                  <H5 className="text-sm text-gray-600">
+                                    In Transit
+                                  </H5>
+                                  <H5 className="text-base text-gray-900 capitalize p-2 px-4 bg-green-300 text-green-900">
+                                    Delivery Status: {order.status}
+                                  </H5>
+                                </View>
+                              )}
+                            {order.status === "delivered" ? (
+                              <Button
+                                onPress={() => setSelectedProduct(order)}
+                                className="rounded-full flex-1 bg-green-700"
+                                size={"lg"}
+                                variant="default"
+                              >
+                                <H5 className="text-white">{"Review"}</H5>
+                              </Button>
+                            ): ''}
                           </View>
                         </View>
                         <ChevronRight size={20} color="#fff" />
