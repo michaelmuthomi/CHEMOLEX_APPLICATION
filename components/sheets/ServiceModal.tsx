@@ -99,15 +99,34 @@ export function ServiceModal({
       >
         <BottomSheetView className="p-6 gap-6">
           <View>
-            <H3 className="text-xl">{serviceDetails.name}</H3>
-            <P className="text-sm">{serviceDetails.description}</P>
-            <P className="text-base">Price: {serviceDetails.price}</P>
-            <Button onPress={handleBookService} className="mt-4">
-              <P className="text-white">Book Now</P>
-            </Button>
-            <TouchableOpacity className="mt-4">
-              <P className="text-blue-500">Close</P>
-            </TouchableOpacity>
+            <H3 className="text-2xl">{serviceDetails?.name}</H3>
+            <P className="text-base text-gray-400">
+              {serviceDetails?.description}
+            </P>
+            <View className="mt-6 w-full">
+              <H5 className="text-sm text-white mb-2">{"Service type"}</H5>
+              <H3 className="text-base w-auto p-2 px-4 bg-green-300 text-green-900 leading-0 capitalize">
+                {serviceDetails?.service_type}
+              </H3>
+            </View>
+            <View className="flex-row gap-6 w-full justify-between mt-20">
+              <Button
+                className="rounded-full p-0 bg-transparent"
+                size={"lg"}
+                variant="default"
+                disabled
+              >
+                <H5 className=" text-white">Ksh {serviceDetails?.price}</H5>
+              </Button>
+              <Button
+                onPress={handleBookService}
+                className="rounded-full flex-1"
+                size={"lg"}
+                variant="default"
+              >
+                <H5 className="text-black">{"Book Now"}</H5>
+              </Button>
+            </View>
           </View>
         </BottomSheetView>
       </BottomSheetModal>
