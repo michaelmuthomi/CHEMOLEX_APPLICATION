@@ -726,16 +726,21 @@ export async function fetchUserRequestedServices(user_id: number) {
     return `Error: ${repairsError.message || JSON.stringify(repairsError)}`;
   }
 
-  // Fetch product details for each repair
-  const servicesWithProductDetails = await Promise.all(
+  // Fetch service details for each repair using service_id
+  const servicesWithDetails = await Promise.all(
     repairs.map(async (repair) => {
-      const productDetails = await fetchProductDetails(repair.product_id);
+      const serviceDetails = await supabase
+        .from("services") // Fetching from the services table
+        .select("*")
+        .eq("service_id", repair.service_id) // Use service_id from the repair
+        .single();
+
       return {
         ...repair,
-        productDetails, // Add product details to the repair object
+        serviceDetails: serviceDetails.data, // Add service details to the repair object
       };
     })
   );
 
-  return servicesWithProductDetails; // Return the repairs with product details
+  return servicesWithDetails; // Return the repairs with service details
 }

@@ -811,7 +811,7 @@ export default function Tab() {
         <View className="flex-1 mt-20 bg-zinc-900 rounded-t-3xl">
           <SafeAreaView className="flex-1">
             <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
-              <H3 className="text-white">Manage Services</H3>
+              <H3 className="text-white">Requested Services</H3>
               <TouchableOpacity onPress={() => setActiveModal(null)}>
                 <X size={24} color="#fff" />
               </TouchableOpacity>
@@ -820,32 +820,38 @@ export default function Tab() {
             <ScrollView className="flex-1 p-4 bg-white">
               {services.map((service) => (
                 <View key={service.id} className="mb-4">
-                  <DetailItem
-                    label="Service ID"
-                    value={service.id.toString()}
-                  />
-                  <DetailItem
-                    label="Completion Status"
-                    value={service.completion_status}
-                  />
-                  <DetailItem
-                    label="Created At"
-                    value={new Date(service.created_at).toLocaleString()}
-                  />
-                  {service.productDetails && (
+                  {service.serviceDetails && (
                     <>
                       <DetailItem
-                        label="Product Name"
-                        value={service.productDetails.name}
+                        label="Service Name"
+                        value={service.serviceDetails.name}
                       />
                       <DetailItem
-                        label="Product Description"
-                        value={service.productDetails.description}
+                        label="Service Description"
+                        value={service.serviceDetails.description}
                       />
-                      <DetailItem
-                        label="Product Price"
-                        value={`$${service.productDetails.price}`}
-                      />
+                      <View className="flex-row w-full">
+                        <View className="w-1/2">
+                          <View className="mb-4 gap-2">
+                            <H5 className="text-sm text-gray-600">
+                              {"Completion Status"}
+                            </H5>
+                            <H5
+                              className={`text-sm text-center capitalize p-2 px-4 w-3/4 rounded-full ${
+                                service.completion_status === "incomplete"
+                                  ? "bg-orange-300 text-orange-900"
+                                  : "bg-green-300 text-green-900"
+                              }`}
+                            >
+                              {service.completion_status}
+                            </H5>
+                          </View>
+                        </View>
+                        <DetailItem
+                          label="Service Price"
+                          value={`${formatPrice(service.serviceDetails.price)}`}
+                        />
+                      </View>
                     </>
                   )}
                 </View>
