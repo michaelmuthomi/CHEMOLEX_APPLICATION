@@ -14,7 +14,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useCart } from "~/lib/cart-context";
 import { ArrowLeft, BackpackIcon } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
-import { H2, H4 } from "~/components/ui/typography";
+import { H2, H4, P } from "~/components/ui/typography";
 import { useRouter, useNavigation } from "expo-router";
 
 export default function CustomerTabs() {
@@ -108,24 +108,21 @@ export default function CustomerTabs() {
             name="product"
             options={{
               href: null,
-              headerShown: true,
+              headerShown: false,
               tabBarStyle: { display: "none" },
+              headerStyle: {backgroundColor: 'transparent'},
+              headerTitle: '',
               headerLeft: () => (
                 <TouchableOpacity
-                  className="px-4"
+                  className="px-4 flex-row items-center gap-2"
                   onPress={() => router.back()}
                 >
                   <ArrowLeft size={19} color="white" />
+                  {/* <P className="text-xl text-center border-b-0 leading-0">
+                    Product Details
+                  </P> */}
                 </TouchableOpacity>
               ),
-              headerTitle: () => (
-                <View className="flex items-center justify-center">
-                  <H4 className="text-xl text-center border-b-0 leading-0">
-                    Product Details
-                  </H4>
-                </View>
-              ),
-              headerTitleAlign: "center",
             }}
           />
           <Tabs.Screen
