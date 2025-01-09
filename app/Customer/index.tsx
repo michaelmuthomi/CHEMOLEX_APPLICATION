@@ -22,6 +22,7 @@ import {
   CloudSnow,
   Wind,
   Fan,
+  Bolt,
 } from "lucide-react-native";
 import { H1, H2, H3, H4, H5, H6, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
@@ -68,13 +69,14 @@ const stats = [
   },
 ];
 
+const PRODUCTS_PER_PAGE = 6; // Define the number of products per page
+
 function CustomerHome() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
     null
   );
   const [isModalVisible, setModalVisible] = useState(false);
-
 
   const [products, setProducts] = useState<
     Array<{
@@ -93,6 +95,7 @@ function CustomerHome() {
     { id: "1", name: "Service A", description: "Description for Service A" },
     { id: "2", name: "Service B", description: "Description for Service B" },
   ]);
+  const [currentPage, setCurrentPage] = useState(1); // Keep state for current page
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -124,6 +127,25 @@ function CustomerHome() {
     loadProducts();
     loadServices();
   }, []);
+
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  ); // Slice products for pagination
+
+  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE); // Calculate total pages
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const renderFeaturedCategories = () => (
     <View className="bg-white p-4 gap-6">
@@ -199,9 +221,14 @@ function CustomerHome() {
     </View>
   );
   const renderAllProducts = () => {
+    const paginatedProducts = products.slice(
+      (currentPage - 1) * PRODUCTS_PER_PAGE,
+      currentPage * PRODUCTS_PER_PAGE
+    ); // Slice products for pagination
+
     return (
-      <View className="mt-14 bg-white">
-        <View className="flex-row items-center justify-between px-2 py-6">
+      <View className="mt-14 ">
+        <View className="flex-row items-center justify-between px-2 py-6 bg-white">
           <H3 className="flex-1 text-xl text-black">Recommendations</H3>
           <TouchableOpacity
             className="flex-row items-center"
@@ -211,8 +238,8 @@ function CustomerHome() {
             <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
           </TouchableOpacity>
         </View>
-        <View className="space-x-2">
-          {products.slice(0, 6).map((product) => (
+        <View className="space-x-2 bg-white">
+          {paginatedProducts.map((product) => (
             <TouchableOpacity
               key={product.product_id}
               className="bg-white shadow-sm mb-4 py-10 px-2 flex-row relative border-b-2 border-zinc-500"
@@ -225,7 +252,7 @@ function CustomerHome() {
               <View className="w-full relative overflow-clip">
                 <View className="flex items-start absolute right-[-14px] top-[-14px]">
                   <TouchableOpacity
-                    className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
+                    className={`p-2 px-4 mr-4 rounded-full flex-row items-center w-auto ${
                       product.stock_quantity <= 10
                         ? "bg-orange-300"
                         : "bg-green-300"
@@ -257,14 +284,6 @@ function CustomerHome() {
                 >
                   {product.description}
                 </H4>
-                <View className="flex-row items-center justify-between w-full">
-                  <H4 className="text-blue-600 w-1/2 text-base">
-                    {product.stock_quantity <= 10
-                      ? "ReStock Now"
-                      : "Manage Stock"}
-                  </H4>
-                  <H4 className="text-blue-600 text-right text-lg">&rarr;</H4>
-                </View>
                 <View
                   className={`rounded-md overflow-0 mt-6 pt-6 pl-6 h-48 ${
                     product.stock_quantity <= 10
@@ -281,40 +300,63 @@ function CustomerHome() {
             </TouchableOpacity>
           ))}
         </View>
-        <TouchableOpacity
-          className="flex-row items-center p-4 mt-6 bg-white"
-          onPress={() => navigation.navigate("search")}
-        >
-          <H3 className="text-sm text-[#555]">View More Products</H3>
-          <Ionicons
-            name="arrow-forward-sharp"
-            size={15}
-            color="#555"
-            className="ml-auto"
-          />
-        </TouchableOpacity>
+        <View className="flex-row items-center justify-between my-4">
+          <Button
+            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+            onPress={handlePreviousPage}
+            disabled={currentPage === 1}
+          >
+            <P className="text-white">&larr; Previous</P>
+          </Button>
+
+          <P className="text-white mx-4">
+            Page {currentPage} of {totalPages}
+          </P>
+
+          <Button
+            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+            onPress={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            <P className="text-white">Next &rarr;</P>
+          </Button>
+        </View>
       </View>
     );
   };
 
   const renderServiceBooking = () => (
-    <View className="mt-10 px-2 gap-4 p-4 rounded-md shadow">
-      <H3 className="text-xl">Book a Service</H3>
+    <View className="mt-10 px-2 gap-4 bg-zinc-950">
+      <View className="flex-row items-center justify-between px-2 py-6">
+        <H3 className="flex-1 text-xl">Book a Service</H3>
+        <TouchableOpacity
+          className="flex-row items-center"
+          onPress={() => navigation.navigate("search")}
+        >
+          <H3 className="text-sm text-[#555]">See All</H3>
+          <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
+        </TouchableOpacity>
+      </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
           {services.map((service) => (
-            <ServiceModal
-              sheetTrigger={
+            <TouchableOpacity
+              key={service.id}
+              className="gap-4 w-[250px] px-2 pb-4"
+              onPress={() => setSelectedServiceId(service.id)}
+            >
+              <View className="flex items-start">
                 <TouchableOpacity
-                  key={service.service_id}
-                  className="h-40 rounded-md shadow p-2 w-[200px]"
+                  className={`p-2 rounded-full w-auto bg-zinc-800`}
                 >
-                  <H4 className="text-lg">{service.name}</H4>
-                  <P className="text-sm">{service.description}</P>
+                  <Bolt size={18} color={"#fff"} />
                 </TouchableOpacity>
-              }
-              serviceId={service.service_id}
-            />
+              </View>
+              <View>
+                <H4 className="text-white">{service.name}</H4>
+                <P className="text-zinc-400">{service.description}</P>
+              </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
