@@ -29,7 +29,13 @@ import { H2, H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useEmail } from "~/app/EmailContext";
-import { checkUser, fetchCustomerOrders, submitFeedback } from "~/lib/supabase";
+import {
+  checkUser,
+  fetchCustomerOrders,
+  submitFeedback,
+  fetchUserRequestedRepairs,
+  fetchUserRequestedServices,
+} from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import displayNotification from "~/lib/Notification";
 import { useNavigation } from "expo-router";
@@ -37,6 +43,7 @@ import { ManageDetails } from "~/components/sheets/manage/details";
 import { ManageOrders } from "~/components/sheets/manage/orders";
 import { ManageReviews } from "~/components/sheets/manage/review";
 import { Textarea } from "~/components/ui/textarea";
+import { Services } from "~/components/sheets/manage/services";
 
 interface customer {
   full_name: string;
@@ -93,6 +100,17 @@ const reviewModalTrigger = [
     icon: DollarSign,
     screen: "review",
     iconBgColor: "bg-purple-600",
+  },
+];
+
+const servicesModalTrigger = [
+  {
+    id: "services",
+    title: "Service Requests",
+    description: "View and manage the services you requested",
+    icon: Home,
+    screen: "services",
+    iconBgColor: "bg-green-600",
   },
 ];
 
@@ -171,6 +189,7 @@ export default function Tab() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [currentStep, setCurrentStep] = useState("pending");
+  const [services, setServices] = useState([]);
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -196,6 +215,18 @@ export default function Tab() {
     }
     fetchOrders();
   }, [customer]);
+
+  useEffect(() => {
+    async function fetchUserServices() {
+      if (customer.user_id) {
+        const response: any = await fetchUserRequestedServices(
+          customer.user_id
+        );
+        setServices(response);
+      }
+    }
+    fetchUserServices();
+  }, [customer.user_id]);
 
   const handleSavecustomer = () => {
     // TODO: Implement API call to save user info
@@ -725,23 +756,23 @@ export default function Tab() {
                             />
                           </View>
                           <View className="flex-row w-full gap-2 mt-6">
-                              {order.status === "delivered" ? (
+                            {order.status === "delivered" ? (
                               <View className="w-1/2">
-                                  <DetailItem
-                                    label="Delivered On"
-                                    value={formatDate(order.updated_at)}
-                                  />
+                                <DetailItem
+                                  label="Delivered On"
+                                  value={formatDate(order.updated_at)}
+                                />
                               </View>
-                              ) : (
-                                <View className="mb-4 w-full gap-2">
-                                  <H5 className="text-sm text-gray-600">
-                                    In Transit
-                                  </H5>
-                                  <H5 className="text-base text-gray-900 capitalize p-2 px-4 bg-green-300 text-green-900">
-                                    Delivery Status: {order.status}
-                                  </H5>
-                                </View>
-                              )}
+                            ) : (
+                              <View className="mb-4 w-full gap-2">
+                                <H5 className="text-sm text-gray-600">
+                                  In Transit
+                                </H5>
+                                <H5 className="text-base text-gray-900 capitalize p-2 px-4 bg-green-300 text-green-900">
+                                  Delivery Status: {order.status}
+                                </H5>
+                              </View>
+                            )}
                             {order.status === "delivered" ? (
                               <Button
                                 onPress={() => setSelectedProduct(order)}
@@ -751,7 +782,9 @@ export default function Tab() {
                               >
                                 <H5 className="text-white">{"Review"}</H5>
                               </Button>
-                            ): ''}
+                            ) : (
+                              ""
+                            )}
                           </View>
                         </View>
                         <ChevronRight size={20} color="#fff" />
@@ -760,6 +793,63 @@ export default function Tab() {
                   ))}
                 </View>
               )}
+            </ScrollView>
+          </SafeAreaView>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const renderServicesModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={activeModal === "services"}
+      onRequestClose={() => setActiveModal(null)}
+    >
+      <View className="flex-1 bg-black/50">
+        <View className="flex-1 mt-20 bg-zinc-900 rounded-t-3xl">
+          <SafeAreaView className="flex-1">
+            <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
+              <H3 className="text-white">Manage Services</H3>
+              <TouchableOpacity onPress={() => setActiveModal(null)}>
+                <X size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView className="flex-1 p-4 bg-white">
+              {services.map((service) => (
+                <View key={service.id} className="mb-4">
+                  <DetailItem
+                    label="Service ID"
+                    value={service.id.toString()}
+                  />
+                  <DetailItem
+                    label="Completion Status"
+                    value={service.completion_status}
+                  />
+                  <DetailItem
+                    label="Created At"
+                    value={new Date(service.created_at).toLocaleString()}
+                  />
+                  {service.productDetails && (
+                    <>
+                      <DetailItem
+                        label="Product Name"
+                        value={service.productDetails.name}
+                      />
+                      <DetailItem
+                        label="Product Description"
+                        value={service.productDetails.description}
+                      />
+                      <DetailItem
+                        label="Product Price"
+                        value={`$${service.productDetails.price}`}
+                      />
+                    </>
+                  )}
+                </View>
+              ))}
             </ScrollView>
           </SafeAreaView>
         </View>
@@ -867,6 +957,30 @@ export default function Tab() {
               </View>
             </TouchableOpacity>
           ))}
+          {servicesModalTrigger.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => setActiveModal("services")}
+              className="bg-zinc-950 rounded-2xl gap-2"
+            >
+              <View className="flex items-start">
+                <TouchableOpacity
+                  className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
+                >
+                  <item.icon size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+              <View className="flex-row items-center">
+                <View className="flex-1">
+                  <H4 className="text-white">{item.title}</H4>
+                  <P className="text-sm text-zinc-500 w-3/4">
+                    {item.description}
+                  </P>
+                </View>
+                <ArrowRight size={20} color="#aaa" />
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
 
         {/* Logout Button */}
@@ -883,6 +997,7 @@ export default function Tab() {
       {rendercustomerModal()}
       {renderOrdersModal()}
       {renderReviewsModal()}
+      {renderServicesModal()}
     </SafeAreaView>
   );
 }

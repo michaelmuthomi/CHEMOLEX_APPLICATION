@@ -687,12 +687,11 @@ export const fetchServicesFromDB = async () => {
   return data;
 };
 
-export const fetchServiceDetails = async (serviceId: string) => {
+export const fetchUserRequestedRepairs = async (user_id: string) => {
   const { data, error } = await supabase
-    .from("services") // Replace 'services' with your actual table name
+    .from("repairs")
     .select("*")
-    .eq("service_id", serviceId)
-    .single(); // Fetch a single record
+    .eq("customer_id", user_id);
 
   if (error) {
     throw new Error(error.message);
@@ -700,3 +699,43 @@ export const fetchServiceDetails = async (serviceId: string) => {
 
   return data;
 };
+
+// Fetch product details by product_id
+export async function fetchProductDetails(product_id: number) {
+  const { data, error } = await supabase
+    .from("products") // Replace 'products' with your actual table name
+    .select("*")
+    .eq("product_id", product_id) // Assuming 'product_id' is the primary key in the products table
+    .single(); // Fetch a single product
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return data; // Return the fetched product details
+  }
+}
+
+// Fetch services requested by a specific user and their product details
+export async function fetchUserRequestedServices(user_id: number) {
+  const { data: repairs, error: repairsError } = await supabase
+    .from("repairs")
+    .select("*")
+    .eq("customer_id", user_id);
+
+  if (repairsError) {
+    return `Error: ${repairsError.message || JSON.stringify(repairsError)}`;
+  }
+
+  // Fetch product details for each repair
+  const servicesWithProductDetails = await Promise.all(
+    repairs.map(async (repair) => {
+      const productDetails = await fetchProductDetails(repair.product_id);
+      return {
+        ...repair,
+        productDetails, // Add product details to the repair object
+      };
+    })
+  );
+
+  return servicesWithProductDetails; // Return the repairs with product details
+}
