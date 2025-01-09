@@ -939,10 +939,10 @@ export default function Tab() {
               </View>
             </TouchableOpacity>
           ))}
-          {reviewModalTrigger.map((item) => (
+          {servicesModalTrigger.map((item) => (
             <TouchableOpacity
               key={item.id}
-              onPress={() => setActiveModal("review")}
+              onPress={() => setActiveModal("services")}
               className="bg-zinc-950 rounded-2xl gap-2"
             >
               <View className="flex items-start">
@@ -963,10 +963,10 @@ export default function Tab() {
               </View>
             </TouchableOpacity>
           ))}
-          {servicesModalTrigger.map((item) => (
+          {reviewModalTrigger.map((item) => (
             <TouchableOpacity
               key={item.id}
-              onPress={() => setActiveModal("services")}
+              onPress={() => setActiveModal("review")}
               className="bg-zinc-950 rounded-2xl gap-2"
             >
               <View className="flex items-start">
