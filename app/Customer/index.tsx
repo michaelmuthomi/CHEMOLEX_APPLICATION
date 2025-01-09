@@ -96,6 +96,7 @@ function CustomerHome() {
     { id: "2", name: "Service B", description: "Description for Service B" },
   ]);
   const [currentPage, setCurrentPage] = useState(1); // Keep state for current page
+  const [bookedServices, setBookedServices] = useState<Array<{ repair_id: string; customer_id: string }>>([]); // State to hold booked services
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -112,7 +113,12 @@ function CustomerHome() {
     const loadServices = async () => {
       try {
         const serviceData = await fetchServicesFromDB();
-        setServices(serviceData);
+        const filteredServices = serviceData.filter(service => 
+          !bookedServices.some(booked => 
+            booked.repair_id === service.id && booked.customer_id === emailContext?.email // Check against customer_id and repair_id
+          )
+        ); // Filter out booked services
+        setServices(filteredServices);
       } catch (error) {
         console.error("Error loading services:", error);
       }
@@ -121,6 +127,7 @@ function CustomerHome() {
     async function fetchUserDetails() {
       const response = await checkUser(emailContext?.email);
       setCustomerDetails(response);
+      setBookedServices(response.booked_services || []); // Assuming booked_services is part of the user details
     }
 
     fetchUserDetails();
@@ -329,13 +336,6 @@ function CustomerHome() {
     <View className="mt-10 px-2 gap-4 bg-zinc-950">
       <View className="flex-row items-center justify-between px-2 py-6">
         <H3 className="flex-1 text-xl">Book a Service</H3>
-        <TouchableOpacity
-          className="flex-row items-center"
-          onPress={() => navigation.navigate("search")}
-        >
-          <H3 className="text-sm text-[#555]">See All</H3>
-          <Ionicons name="arrow-forward-sharp" size={15} color="#555" />
-        </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
