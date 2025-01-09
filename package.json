@@ -31,24 +31,24 @@
     "@supabase/supabase-js": "^2.46.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "expo": "^52.0.7",
+    "expo": "~52.0.24",
     "expo-linear-gradient": "~14.0.1",
     "expo-linking": "~7.0.2",
-    "expo-navigation-bar": "~4.0.3",
+    "expo-navigation-bar": "~4.0.6",
     "expo-router": "~4.0.5",
-    "expo-splash-screen": "~0.29.10",
+    "expo-splash-screen": "~0.29.19",
     "expo-status-bar": "~2.0.0",
-    "expo-system-ui": "~4.0.3",
+    "expo-system-ui": "~4.0.6",
     "lucide-react-native": "^0.378.0",
     "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-native": "0.76.3",
+    "react-native": "0.76.5",
     "react-native-chart-kit": "^6.12.0",
     "react-native-element-dropdown": "^2.12.2",
     "react-native-flash-message": "^0.4.2",
     "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "~4.1.0",
+    "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
@@ -61,6 +61,18 @@
     "@babel/core": "^7.26.0",
     "@types/react": "~18.3.12",
     "typescript": "^5.3.3"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "lucide-react-native",
+          "react-native-chart-kit",
+          "react-native-element-dropdown"
+        ],
+        "listUnknownPackages": false
+      }
+    }
   },
   "private": true
 }
