@@ -75,9 +75,12 @@ export default function CustomerTabs() {
                 />
               ),
               tabBarStyle: { display: "none" },
-              headerShown: true,
+              headerShown: false,
               tabBarBadge: cartQuantity || undefined,
-              tabBarBadgeStyle: { backgroundColor: "#6366f1" },
+              tabBarBadgeStyle: {
+                backgroundColor: "#6366f1",
+                fontFamily: "Inter_500Medium",
+              },
               headerLeft: () => (
                 <TouchableOpacity
                   className="px-4"
@@ -110,8 +113,8 @@ export default function CustomerTabs() {
               href: null,
               headerShown: false,
               tabBarStyle: { display: "none" },
-              headerStyle: {backgroundColor: 'transparent'},
-              headerTitle: '',
+              headerStyle: { backgroundColor: "transparent" },
+              headerTitle: "",
               headerLeft: () => (
                 <TouchableOpacity
                   className="px-4 flex-row items-center gap-2"

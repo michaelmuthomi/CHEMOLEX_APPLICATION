@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import { Minus, Plus, MoreHorizontal, Trash } from "lucide-react-native";
+import { Minus, Plus, MoreHorizontal, Trash, ArrowLeft } from "lucide-react-native";
 import { useCart } from "~/lib/cart-context";
 import { formatPrice } from "~/lib/format-price";
 import { H1, H3, H4, H5, H6, P } from "~/components/ui/typography";
@@ -20,11 +20,16 @@ export default function Tab() {
     
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView className="pt-4 p-4">
+      <Button
+        onPress={() => navigation.goBack()}
+        className="w-1/3 mt-14 mb-4 mx-4 bg-zinc-900 rounded-full z-10 flex-row gap-2"
+      >
+        <ArrowLeft size={20} color={"#fff"} />
+        <P className="text-white">Back</P>
+      </Button>
+      <ScrollView className="p-4 ">
         {items.map((item) => (
-          <View
-            className="bg-white mb-4 py-4 px-4 flex-row relative rounded-lg"
-          >
+          <View className="bg-white mb-4 py-4 px-4 flex-row relative rounded-lg">
             <View className="w-full relative overflow-clip">
               <View className={`rounded-md h-48`}>
                 <Image
