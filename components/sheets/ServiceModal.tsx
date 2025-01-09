@@ -28,9 +28,17 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchServiceDetails, fetchSuppliers, insertNewProductToDB, supabase } from "~/lib/supabase";
+import {
+  checkUser,
+  fetchProductsFromDB,
+  fetchServiceDetails,
+  fetchSuppliers,
+  insertNewProductToDB,
+  supabase,
+} from "~/lib/supabase";
 import { Value } from "@rn-primitives/select";
 import { formatPrice } from "~/lib/format-price";
+import { useEmail } from "~/app/EmailContext";
 
 interface Supplier {
   user_id: Number;
@@ -59,19 +67,21 @@ export function ServiceModal({
   sheetTrigger: React.ReactNode;
   serviceId: any;
 }) {
-
-  console.log('Service ID: ', serviceId )
+  const emailContext = useEmail();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [serviceDetails, setServiceDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const [products, setProducts] = useState([]);
+  const [customerId, setCustomerId] = useState();
 
   useEffect(() => {
     const loadServiceDetails = async () => {
       setLoading(true);
       try {
         const details = await fetchServiceDetails(Number(serviceId));
-        console.log('Service details: ', details)
+        console.log("Service details: ", details);
         setServiceDetails(details);
       } catch (error) {
         console.error("Error fetching service details:", error);
@@ -79,12 +89,54 @@ export function ServiceModal({
         setLoading(false);
       }
     };
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProductsFromDB();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error loading products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    const updateCustomerId = async () => {
+      const response = await checkUser(emailContext?.email);
+      setCustomerId(response.user_id);
+    };
 
-      loadServiceDetails();
+    updateCustomerId();
+
+    loadServiceDetails();
+    loadProducts();
   }, [serviceId]);
 
-  async function handleBookService() {
-    
+  async function handleBookService(
+    serviceId: any,
+    selectedProduct: any,
+    customer_id: any
+  ) {
+    console.log("serviceId:", serviceId);
+    try {
+      const { data, error } = await supabase.from("repairs").insert([
+        {
+          service_id: serviceId,
+          product_id: selectedProduct.value,
+          customer_id: customer_id,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (error) {
+        throw error;
+      }
+
+      // Optionally, you can handle success notification or state update here
+      displayNotification("Service booked successfully!", "success");
+      bottomSheetModalRef.current?.dismiss();
+    } catch (error) {
+      console.error("Error booking service:", error);
+      displayNotification("Failed to book service. Please try again.", "error");
+    }
   }
 
   return (
@@ -103,28 +155,55 @@ export function ServiceModal({
             <P className="text-base text-gray-400">
               {serviceDetails?.description}
             </P>
-            <View className="mt-6 w-full">
-              <H5 className="text-sm text-white mb-2">{"Service type"}</H5>
-              <H3 className="text-base w-auto p-2 px-4 bg-green-300 text-green-900 leading-0 capitalize">
-                {serviceDetails?.service_type}
-              </H3>
+            <View className="flex-row w-full gap-4 mt-6">
+              <View className="w-1/2">
+                <H5 className="text-sm text-white mb-2">{"Service type"}</H5>
+                <H3 className="text-base text-center rounded-full w-2/3 p-2 px-4 bg-green-300 text-green-900 leading-0 capitalize">
+                  {serviceDetails?.service_type}
+                </H3>
+              </View>
+              <DetailItem
+                label="Price"
+                value={formatPrice(serviceDetails?.price)}
+              />
             </View>
-            <View className="flex-row gap-6 w-full justify-between mt-20">
+            <View className="flex-row items-center gap-4 w-full mt-8">
+              <Select
+                value={selectedProduct}
+                onValueChange={setSelectedProduct}
+                className="flex-1"
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder="Select a product"
+                    className="text-white"
+                    style={{ fontFamily: "Inter_500Medium" }}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectLabel>Select your product</SelectLabel>
+                  {products.map((product) => (
+                    <SelectItem
+                      key={product.product_id}
+                      label={`${product.name}`}
+                      value={product.product_id}
+                    />
+                  ))}
+                </SelectContent>
+              </Select>
               <Button
-                className="rounded-full p-0 bg-transparent"
+                onPress={() =>
+                  handleBookService(
+                    serviceDetails?.service_id,
+                    selectedProduct,
+                    customerId
+                  )
+                }
+                className="rounded-full w-auto bg-white disabled:bg-green-400"
                 size={"lg"}
                 variant="default"
-                disabled
               >
-                <H5 className=" text-white">Ksh {serviceDetails?.price}</H5>
-              </Button>
-              <Button
-                onPress={handleBookService}
-                className="rounded-full flex-1"
-                size={"lg"}
-                variant="default"
-              >
-                <H5 className="text-black">{"Book Now"}</H5>
+                <H5 className=" text-black">{"Book Now"}</H5>
               </Button>
             </View>
           </View>
