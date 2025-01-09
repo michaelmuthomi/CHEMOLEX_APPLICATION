@@ -26,15 +26,20 @@ import {
 import { H1, H2, H3, H4, H5, H6, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useEffect, useState } from "react";
-import { checkUser, fetchProductsFromDB } from "~/lib/supabase";
+import {
+  checkUser,
+  fetchProductsFromDB,
+  fetchServicesFromDB,
+} from "~/lib/supabase";
 import { formatPrice } from "~/lib/format-price";
 import { Ionicons } from "@expo/vector-icons";
 import { useEmail } from "~/app/EmailContext";
 import { Link, useNavigation } from "expo-router";
 import StatsCard from "~/components/StatsCard";
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp } from "@react-navigation/native";
 import { formatBalance } from "~/lib/formatBalance";
 import { LinearGradient } from "expo-linear-gradient";
+import {ServiceModal} from "~/components/sheets/ServiceModal"; // Import the ServiceModal
 
 const { width } = Dimensions.get("window");
 
@@ -65,16 +70,29 @@ const stats = [
 
 function CustomerHome() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
+    null
+  );
+  const [isModalVisible, setModalVisible] = useState(false);
 
-  const [products, setProducts] = useState<Array<{
-    product_id: string;
-    name: string;
-    price: number;
-    image_url: string;
-  }>>([]);
+
+  const [products, setProducts] = useState<
+    Array<{
+      product_id: string;
+      name: string;
+      price: number;
+      image_url: string;
+    }>
+  >([]);
   const [loading, setLoading] = useState(true);
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
+  const [services, setServices] = useState<
+    Array<{ id: string; name: string; description: string }>
+  >([
+    { id: "1", name: "Service A", description: "Description for Service A" },
+    { id: "2", name: "Service B", description: "Description for Service B" },
+  ]);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -87,12 +105,24 @@ function CustomerHome() {
         setLoading(false);
       }
     };
+
+    const loadServices = async () => {
+      try {
+        const serviceData = await fetchServicesFromDB();
+        setServices(serviceData);
+      } catch (error) {
+        console.error("Error loading services:", error);
+      }
+    };
+
     async function fetchUserDetails() {
       const response = await checkUser(emailContext?.email);
       setCustomerDetails(response);
     }
+
     fetchUserDetails();
     loadProducts();
+    loadServices();
   }, []);
 
   const renderFeaturedCategories = () => (
@@ -267,6 +297,30 @@ function CustomerHome() {
     );
   };
 
+  const renderServiceBooking = () => (
+    <View className="mt-10 px-2 gap-4 p-4 rounded-md shadow">
+      <H3 className="text-xl">Book a Service</H3>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View className="flex-row gap-4">
+          {services.map((service) => (
+            <ServiceModal
+              sheetTrigger={
+                <TouchableOpacity
+                  key={service.service_id}
+                  className="h-40 rounded-md shadow p-2 w-[200px]"
+                >
+                  <H4 className="text-lg">{service.name}</H4>
+                  <P className="text-sm">{service.description}</P>
+                </TouchableOpacity>
+              }
+              serviceId={service.service_id}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView className="flex-1">
@@ -288,6 +342,7 @@ function CustomerHome() {
           {/* {renderPromotions()} */}
           {renderProducts()}
           {renderAllProducts()}
+          {renderServiceBooking()}
           <View className="h-20" />
         </View>
       </ScrollView>

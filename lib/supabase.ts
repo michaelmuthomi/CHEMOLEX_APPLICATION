@@ -674,3 +674,29 @@ export async function updateDispatchStatus(orderId: number, driver_status: strin
 
   return { data, error }; // Return data and error for handling
 }
+
+export const fetchServicesFromDB = async () => {
+  const { data, error } = await supabase
+    .from("services") // Replace 'services' with your actual table name
+    .select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const fetchServiceDetails = async (serviceId: string) => {
+  const { data, error } = await supabase
+    .from("services") // Replace 'services' with your actual table name
+    .select("*")
+    .eq("service_id", serviceId)
+    .single(); // Fetch a single record
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
