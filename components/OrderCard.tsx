@@ -31,21 +31,23 @@ export const OrderCard = ({
         <View className="flex items-start absolute right-[-14px] top-[-14px]">
           <View
             className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
-              order.status === "pending" ? "bg-orange-300" : "bg-green-300"
+              order.finance_approval === "pending"
+                ? "bg-orange-300"
+                : "bg-green-300"
             }`}
           >
             <Clock
-              color={order.status === "pending" ? "#9a3412" : "#166534"}
+              color={order.finance_approval === "pending" ? "#9a3412" : "#166534"}
               size={14}
             />
             <H5
               className={`${
-                order.status === "pending"
+                order.finance_approval === "pending"
                   ? "text-orange-900"
                   : "text-green-900"
               } ml-2 text-base capitalize`}
             >
-              {order.status}
+              {order.finance_approval}
             </H5>
           </View>
         </View>

@@ -232,9 +232,9 @@ const FinancialStatusPage: React.FC = () => {
   const getSortedOrders = () => {
     switch (sortBy) {
       case "pending":
-        return orders.filter((order) => order.status === "pending");
+        return orders.filter((order) => order.finance_approval === "pending");
       case "approved":
-        return orders.filter((order) => order.status === "approved");
+        return orders.filter((order) => order.finance_approval === "approved");
       default:
         return orders;
     }
