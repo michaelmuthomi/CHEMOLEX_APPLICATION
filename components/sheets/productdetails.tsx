@@ -10,7 +10,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import displayNotification from "~/lib/Notification";
-import { Box, Coins, Group, ImageIcon, ShieldCloseIcon, SquareStack } from "lucide-react-native";
+import { ArrowLeft, ArrowRight, Box, Coins, Group, ImageIcon, ShieldCloseIcon, SquareStack } from "lucide-react-native";
 import {
   Select,
   SelectContent,
@@ -84,7 +84,7 @@ export function ProductDetailsModal({
     [onClose]
   );
 
-  const [newStock, setNewStock] = useState("");
+  const [newStock, setNewStock] = useState("0");
 
   const handleUpdateStockPress = () => {
     setUpdating(true)
@@ -136,27 +136,30 @@ export function ProductDetailsModal({
                     label="Price"
                     value={`${formatPrice(productData.price.toFixed(2))}`}
                   />
-                  <View className="flex-row w-full">
-                    <View className="w-1/2">
+                  <View className="flex-row items-center justify-between w-full">
+                    <View className="w-1/3">
                       <DetailItem
                         label="Current Stock"
-                        value={
+                        value={`${
                           productData.stock_quantity &&
                           productData.stock_quantity.toString()
-                        }
+                        } Products`}
                       />
                     </View>
-                    <DetailItem
-                      label="Reorder Level"
-                      value={
-                        productData.reorder_level &&
-                        productData.reorder_level.toString()
-                      }
-                    />
+                    <View>
+                        <ArrowRight size={18} color={"#4b5563"} />
+                        <P className="text-sm text-gray-500">TO</P>
+                    </View>
+                    <View className="w-auto">
+                      <DetailItem
+                        label="Updated Stock Value"
+                        value={`${newStock} Products`}
+                      />
+                    </View>
                   </View>
 
                   <View className="border-t-[1px] border-zinc-900">
-                    <H4 className="text-lg mt-4 mb-2">Update Stock</H4>
+                    <H4 className="text-base mt-4 mb-2 text-gray-500">Update Stock</H4>
                     <View className="flex-row items-center rounded-md w-full gap-2">
                       <SquareStack size={16} color={"#aaaaaa"} />
                       <Input
@@ -169,11 +172,11 @@ export function ProductDetailsModal({
                         onPress={handleUpdateStockPress}
                         className="rounded-full w-auto"
                         size={"lg"}
-                          variant="default"
-                          disabled={updating}
+                        variant="default"
+                        disabled={updating}
                       >
                         <H4 className="text-lg text-black">
-                          {updating ? "Updating" : 'Update'}
+                          {updating ? "Updating" : "Update Stock ->"}
                         </H4>
                       </Button>
                     </View>
