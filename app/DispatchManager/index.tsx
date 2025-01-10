@@ -180,18 +180,17 @@ export default function Tab({ navigation }: { navigation: any }) {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="flex-row gap-2"
           >
-            <View className="flex-row justify-between items-center">
+            <View className="flex-row justify-between items-center gap-2">
               {[
                 "all-orders",
                 "dispatched",
                 "pending",
                 "assigned",
                 "delivered",
-              ].map((sort) => (
+              ].map((sort, index) => (
                 <TouchableOpacity
-                  key={sort}
+                  key={index}
                   className={`px-3 pb-2 border-b-2 flex-row items-center ${
                     sortBy === sort ? "border-white" : "border-zinc-900"
                   }`}

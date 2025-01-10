@@ -216,8 +216,9 @@ const TechnicianPage: React.FC = () => {
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
-            {stats.map((stat) => (
+            {stats.map((stat, index) => (
               <StatsCard
+                key={index}
                 iconBgColor={stat.iconBgColor}
                 Icon={stat.Icon}
                 Title={stat.Title}
@@ -272,9 +273,9 @@ const TechnicianPage: React.FC = () => {
         </View>
 
         <View className="p-4">
-          {sortedRepairs.map((repair) => (
+          {sortedRepairs.map((repair, index) => (
             <RepairCard
-              key={repair.id}
+              key={index}
               repair={repair}
               onViewDetails={handleViewDetails}
             />
