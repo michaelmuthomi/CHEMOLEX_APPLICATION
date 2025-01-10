@@ -75,16 +75,20 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
           >
             <ListTodo
               color={`${
-                dispatch.driver_status === "pending" ? "#9a3412" : dispatch.driver_status === "declined" ? "#fca5a5" :"#166534"
+                dispatch.driver_status === "pending"
+                  ? "#9a3412"
+                  : dispatch.driver_status === "declined"
+                  ? "#7f1d1d"
+                  : "#166534"
               }`}
               size={19}
             />
             <H5
               className={`${
                 dispatch.driver_status === "pending"
-                ? "text-orange-900"
-                : dispatch.driver_status === "declined"
-                ? "text-red-300"
+                  ? "text-orange-900"
+                  : dispatch.driver_status === "declined"
+                  ? "text-red-900"
                   : "text-green-900"
               } ml-2 text-base capitalize`}
             >
@@ -109,9 +113,16 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
 
       <View className="flex-row gap-4 w-full justify-between">
         <Button
-          disabled={dispatch.driver_status === "accepted"}
+          disabled={
+            dispatch.driver_status === "accepted" ||
+            dispatch.driver_status === "declined"
+          }
           className={`rounded-full border-black bg-transparent ${
-            dispatch.driver_status === "accepted" ? "border-0 p-0" : "border-2"
+            dispatch.driver_status === "accepted"
+              ? "border-0 p-0"
+              : dispatch.driver_status === "declined"
+              ? "border-0 p-0 px-2"
+              : "border-2"
           } `}
           size={"lg"}
           variant="default"
@@ -120,6 +131,8 @@ export const DispatchCard: React.FC<DispatchCardProps> = ({ dispatch, onViewDeta
           <H5 className=" text-black">
             {dispatch.driver_status === "accepted"
               ? formatDate(dispatch.updated_at)
+              : dispatch.driver_status === "declined"
+              ? "Declined"
               : "Decline"}
           </H5>
         </Button>
