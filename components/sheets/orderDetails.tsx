@@ -101,11 +101,40 @@ export function OrderDetailsModal({
       if (dispatchError) {
         displayNotification(dispatchError.message, "danger");
       } else {
-        displayNotification(
-          "Order approved and dispatched successfully!",
-          "success"
-        );
-        bottomSheetModalRef.current?.dismiss();
+        const totalAmount = productData.price;
+        const { data: balanceData, error: balanceError } = await supabase
+          .from("financial_records")
+          .select("balance")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (balanceError) {
+          displayNotification(balanceError.message, "danger");
+        } else {
+          const newBalance = (balanceData.balance || 0) + totalAmount;
+          const { error: insertError } = await supabase
+            .from("financial_records")
+            .insert([
+              {
+                order_id: order.order_id,
+                payment_type: "incoming",
+                amount: totalAmount,
+                balance: newBalance,
+              },
+            ]);
+
+          if (insertError) {
+            displayNotification(insertError.message, "danger");
+            console.log("INsert finance record balance: ", insertError.message);
+          } else {
+            displayNotification(
+              "Order approved and dispatched successfully!",
+              "success"
+            );
+            bottomSheetModalRef.current?.dismiss();
+          }
+        }
       }
     }
     setUpdating(false);
