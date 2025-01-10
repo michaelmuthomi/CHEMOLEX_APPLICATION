@@ -270,8 +270,9 @@ const FinancialStatusPage: React.FC = () => {
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
-            {stats.map((stat) => (
+            {stats.map((stat, index) => (
               <StatsCard
+                key={index}
                 iconBgColor={stat.iconBgColor}
                 Icon={stat.Icon}
                 Title={stat.Title}
@@ -287,9 +288,9 @@ const FinancialStatusPage: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             className="flex-row gap-2"
           >
-            {["all-orders", "pending", "approved"].map((sort) => (
+            {["all-orders", "pending", "approved"].map((sort, index) => (
               <TouchableOpacity
-                key={sort}
+                key={index}
                 className={`px-3 pb-2 border-b-2 flex-row items-center ${
                   sortBy === sort ? "border-white" : "border-zinc-900"
                 }`}
