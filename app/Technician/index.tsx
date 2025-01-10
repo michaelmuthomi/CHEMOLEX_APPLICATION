@@ -235,9 +235,9 @@ const TechnicianPage: React.FC = () => {
             className="flex-row gap-2"
           >
             {["all-repairs", "assigned", "pending", "complete", "redo"].map(
-              (sort) => (
+              (sort, index) => (
                 <TouchableOpacity
-                  key={sort}
+                  key={index}
                   className={`px-3 pb-2 border-b-2 flex-row items-center ${
                     sortBy === sort ? "border-white" : "border-zinc-900"
                   }`}
