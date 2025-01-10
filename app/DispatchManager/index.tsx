@@ -177,12 +177,12 @@ export default function Tab({ navigation }: { navigation: any }) {
         </View>
 
         <View className="py-6 px-4">
-          <View className="flex-row justify-between items-center">
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="flex-row gap-2"
-            >
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="flex-row gap-2"
+          >
+            <View className="flex-row justify-between items-center">
               {[
                 "all-orders",
                 "dispatched",
@@ -222,8 +222,8 @@ export default function Tab({ navigation }: { navigation: any }) {
                   </H4>
                 </TouchableOpacity>
               ))}
-            </ScrollView>
-          </View>
+            </View>
+          </ScrollView>
         </View>
 
         <View className="flex-1 p-4">
@@ -319,12 +319,14 @@ export default function Tab({ navigation }: { navigation: any }) {
                             <Button
                               className="rounded-full flex-1 bg-green-800 disabled:bg-zinc-800"
                               size={"lg"}
-                                variant="default"
-                                disabled={item.status === "assigned"}
+                              variant="default"
+                              disabled={item.status === "assigned"}
                             >
-                                <H5 className=" text-white">{
-                                  item.status === "assigned"
-                            ? "Assigned" : 'Assign'}</H5>
+                              <H5 className=" text-white">
+                                {item.status === "assigned"
+                                  ? "Assigned"
+                                  : "Assign"}
+                              </H5>
                             </Button>
                           }
                           product={item.order.product}
