@@ -13,28 +13,28 @@ type OrderItemProps = {
 
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
   const [loading, setLoading] = useState(false);
-  console.log(order)
+  console.log("order data //", order)
   return (
     <View className="bg-white rounded-lg shadow-sm p-4 mb-4">
       <View className="w-full relative overflow-clip">
         <View className="flex items-start absolute right-[-14px] top-[-14px]">
           <View
             className={`p-2 px-4 rounded-bl-lg rounded-tr-lg flex-row items-center w-auto ${
-              order.status === "pending" ? "bg-orange-300" : "bg-green-300"
+              order.technician_id === null ? "bg-orange-300" : "bg-green-300"
             }`}
           >
             <Clock
-              color={order.status === "pending" ? "#9a3412" : "#166534"}
+              color={order.technician_id === null ? "#9a3412" : "#166534"}
               size={14}
             />
             <H5
               className={`${
-                order.status === "pending"
-                  ? "text-orange-900"
+                order.technician_id === null
+                  ? "text-orange-900" 
                   : "text-green-900"
               } ml-2 text-base capitalize`}
             >
-              {order.status}
+              {order.technician_id === null ? order.technician_status : order.status}
             </H5>
           </View>
         </View>
@@ -46,7 +46,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
           </H4>
         </View>
 
-        {order.status === "pending" ? (
+        {order.technician_id === null ? (
           <View className="flex-row w-full gap-6 justify-between">
             <Button
               className="rounded-full border-black bg-transparent px-0"
