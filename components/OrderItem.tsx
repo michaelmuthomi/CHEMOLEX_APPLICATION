@@ -76,7 +76,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onAssign }) => {
             disabled
           >
             <H5 className="text-black">
-              Assigned to: {order.technicians.full_name}
+              Assigned to: {order.technicians?.full_name || ''}
             </H5>
           </Button>
         )}

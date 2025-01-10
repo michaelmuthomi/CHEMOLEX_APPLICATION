@@ -217,7 +217,7 @@ const ServiceManagerPage: React.FC = () => {
               {(["All", "pending", "assigned"] as const).map(
                 (status, index) => (
                   <TouchableOpacity
-                    key={index}
+                    key={status}
                     className={`px-3 pb-2 border-b-2 flex-row items-center ${
                       filterStatus === status
                         ? "border-white"

@@ -888,11 +888,11 @@ export default function Tab() {
 
         {/* Menu Items */}
         <View className="p-4 gap-10 my-6">
-          {personalInformationModalTrigger.map((item) => (
+          {personalInformationModalTrigger.map((item, index) => (
             <ManageDetails
               sheetTrigger={
                 <TouchableOpacity
-                  key={item.id}
+                  key={index}
                   className="bg-zinc-950 rounded-2xl gap-2"
                 >
                   <View className="flex items-start">
@@ -915,9 +915,9 @@ export default function Tab() {
               }
             />
           ))}
-          {ordersModalTrigger.map((item) => (
+          {ordersModalTrigger.map((item, index) => (
             <TouchableOpacity
-              key={item.id}
+              key={index}
               onPress={() => setActiveModal("orders")}
               className="bg-zinc-950 rounded-2xl gap-2"
             >
@@ -939,9 +939,9 @@ export default function Tab() {
               </View>
             </TouchableOpacity>
           ))}
-          {servicesModalTrigger.map((item) => (
+          {servicesModalTrigger.map((item, index) => (
             <TouchableOpacity
-              key={item.id}
+              key={index}
               onPress={() => setActiveModal("services")}
               className="bg-zinc-950 rounded-2xl gap-2"
             >
@@ -963,9 +963,9 @@ export default function Tab() {
               </View>
             </TouchableOpacity>
           ))}
-          {reviewModalTrigger.map((item) => (
+          {reviewModalTrigger.map((item, index) => (
             <TouchableOpacity
-              key={item.id}
+              key={index}
               onPress={() => setActiveModal("review")}
               className="bg-zinc-950 rounded-2xl gap-2"
             >
