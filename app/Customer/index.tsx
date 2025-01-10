@@ -119,6 +119,7 @@ function CustomerHome() {
           )
         ); // Filter out booked services
         setServices(filteredServices);
+        console.log("Fetched Services:>>>>>>> ", filteredServices)
       } catch (error) {
         console.error("Error loading services:", error);
       }
@@ -340,10 +341,11 @@ function CustomerHome() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
           {services.map((service, index) => (
-            <TouchableOpacity
+            <ServiceModal sheetTrigger={
+              <TouchableOpacity
               key={index}
               className="gap-4 w-[250px] px-2 pb-4"
-              onPress={() => setSelectedServiceId(service.id)}
+              // onPress={() => setSelectedServiceId(service.id)}
             >
               <View className="flex items-start">
                 <TouchableOpacity
@@ -357,6 +359,7 @@ function CustomerHome() {
                 <P className="text-zinc-400">{service.description}</P>
               </View>
             </TouchableOpacity>
+            } serviceId={service.service_id} />
           ))}
         </View>
       </ScrollView>

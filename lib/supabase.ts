@@ -744,3 +744,18 @@ export async function fetchUserRequestedServices(user_id: number) {
 
   return servicesWithDetails; // Return the repairs with service details
 }
+
+// Fetch service details by service_id
+export async function fetchServiceDetails(service_id: number) {
+  const { data, error } = await supabase
+    .from("services") // Replace 'services' with your actual table name
+    .select("*")
+    .eq("service_id", service_id) // Assuming 'service_id' is the primary key in the services table
+    .single(); // Fetch a single service
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return data; // Return the fetched service details
+  }
+}
