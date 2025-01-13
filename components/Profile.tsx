@@ -21,6 +21,7 @@ export default function ProfileScreen() {
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
   const [isEditing, setIsEditing] = useState(false);
+  const { setEmail } = emailContext!;
 
   useEffect(() => {
     async function fetchUserDetails() {
@@ -282,7 +283,10 @@ export default function ProfileScreen() {
       </View>
       <TouchableOpacity
         className="flex-row items-center p-4 mt-6 bg-red-200"
-        onPress={() => navigation.navigate("LoginScreen")}
+        onPress={() => {
+          setEmail("");
+          navigation.navigate("LoginScreen");
+        }}
       >
         <H3 className="text-sm text-[#555]">Log out</H3>
         <Ionicons

@@ -190,6 +190,7 @@ export default function Page() {
   const [comment, setComment] = useState("");
   const [currentStep, setCurrentStep] = useState("pending");
   const [services, setServices] = useState([]);
+  const { setEmail } = emailContext!;
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -992,7 +993,10 @@ export default function Page() {
         {/* Logout Button */}
         <TouchableOpacity
           className="flex-row items-center p-4 mt-auto bg-red-200"
-          onPress={() => navigation.navigate("LoginScreen")}
+          onPress={() => {
+            setEmail('')
+            navigation.navigate("LoginScreen");
+          }}
         >
           <H3 className="text-sm text-[#555]">Log out</H3>
           <ArrowRight size={15} color="#555" className="ml-auto" />
