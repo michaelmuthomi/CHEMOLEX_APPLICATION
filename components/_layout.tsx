@@ -46,7 +46,7 @@ export default function TabsLayout() {
           }}
         >
           <Tabs.Screen
-            name="home"
+            name="index"
             options={{
               headerTitle: () => (
                 <View>
@@ -78,16 +78,6 @@ export default function TabsLayout() {
               headerShown: true,
             }}
           />
-          {/* <Tabs.Screen
-            name="insight"
-            options={{
-              headerTitle: () => <H3>Insights</H3>,
-              tabBarIcon: ({ color }) => (
-                <MaterialIcons name="insights" size={28} color={color} />
-              ),
-              headerShown: true,
-            }}
-          /> */}
           <Tabs.Screen
             name="settings"
             options={{
