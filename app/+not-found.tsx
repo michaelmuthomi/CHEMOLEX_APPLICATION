@@ -1,18 +1,34 @@
-import { Link, Stack } from 'expo-router';
-import { View } from 'react-native';
+import { Link, router, Stack } from 'expo-router';
+import { View, Image } from 'react-native';
+import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
+import { H1, P } from '~/components/ui/typography';
 
 export default function NotFoundScreen() {
   return (
-    <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View>
-        <Text>This screen doesn't exist.</Text>
-
-        <Link href='/'>
-          <Text>Go to home screen!</Text>
+    <View className="flex-1 justify-center">
+      <Stack.Screen options={{ title: "Oops!" }} />
+      <View className="p-4 mt-10 gap-6">
+        <Image
+          source={require("../assets/images/404.png")}
+          className="w-full h-1/2 rounded-lg"
+          resizeMode="cover"
+        />
+        <View>
+          <H1 className="!text-6xl">Oops!</H1>
+          <H1 className="text-zinc-500">
+            We couldn't find the page you were looking for
+          </H1>
+        </View>
+        <Link href="/">
+          <Button
+            onPress={() => router.back()}
+            className="flex-row items-center gap-2 rounded-full bg-white"
+          >
+            <P className="text-black">&larr; Go Back</P>
+          </Button>
         </Link>
       </View>
-    </>
+    </View>
   );
 }

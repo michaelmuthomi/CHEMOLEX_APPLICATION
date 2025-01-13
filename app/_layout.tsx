@@ -109,7 +109,7 @@ export default function RootLayout({navigation}: any) {
             />
 
             <Stack.Screen
-              name="(StaffLoginScreen)"
+              name="StaffLoginScreen"
               // options={{ headerShown: true, headerTitle: "" }}
             />
 
