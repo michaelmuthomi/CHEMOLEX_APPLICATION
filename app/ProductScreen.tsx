@@ -34,7 +34,9 @@ export default function ProductScreen({ navigation, route }) {
       <ScrollView style={styles.content}>
         <View className="w-full bg-[#121212]">
           <Image
-            source={{ uri: product.image_url }}
+            source={{
+              uri: product.image_url.replace(/^http:\/\//i, "https://"),
+            }}
             className="w-full h-80 mix-blend-multiply bg-white"
             resizeMode="contain"
           />

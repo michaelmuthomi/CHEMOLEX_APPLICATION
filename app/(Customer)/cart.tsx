@@ -33,7 +33,9 @@ export default function Page() {
             <View className="w-full relative overflow-clip">
               <View className={`rounded-md h-48`}>
                 <Image
-                  source={{ uri: item.image_url }}
+                  source={{
+                    uri: item.image_url.replace(/^http:\/\//i, "https://"),
+                  }}
                   className="w-full h-full object-cover bg-neutral-400 rounded-md"
                   style={{ objectFit: "cover" }}
                 />

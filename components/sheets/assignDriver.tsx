@@ -146,7 +146,9 @@ export function AssignDriverModal({
               ) : (
                 <>
                   <Image
-                    source={{ uri: productData.image_url }}
+                    source={{
+                      uri: productData.image_url.replace(/^http:\/\//i, "https://"),
+                    }}
                     className="w-full h-48 rounded-lg mb-4"
                   />
                   <DetailItem label="Name" value={productData.name} />

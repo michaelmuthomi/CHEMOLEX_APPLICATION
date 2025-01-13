@@ -123,7 +123,12 @@ export function ProductDetailsModal({
               ) : (
                 <>
                   <Image
-                    source={{ uri: productData.image_url }}
+                    source={{
+                      uri: productData.image_url.replace(
+                        /^http:\/\//i,
+                        "https://"
+                      ),
+                    }}
                     className="w-full h-48 rounded-lg mb-4"
                   />
                   <DetailItem label="Name" value={productData.name} />
@@ -147,8 +152,8 @@ export function ProductDetailsModal({
                       />
                     </View>
                     <View>
-                        <ArrowRight size={18} color={"#4b5563"} />
-                        <P className="text-sm text-gray-500">TO</P>
+                      <ArrowRight size={18} color={"#4b5563"} />
+                      <P className="text-sm text-gray-500">TO</P>
                     </View>
                     <View className="w-auto">
                       <DetailItem
@@ -159,7 +164,9 @@ export function ProductDetailsModal({
                   </View>
 
                   <View className="border-t-[1px] border-zinc-900">
-                    <H4 className="text-base mt-4 mb-2 text-gray-500">Update Stock</H4>
+                    <H4 className="text-base mt-4 mb-2 text-gray-500">
+                      Update Stock
+                    </H4>
                     <View className="flex-row items-center rounded-md w-full gap-2">
                       <SquareStack size={16} color={"#aaaaaa"} />
                       <Input

@@ -52,7 +52,9 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </View>
           <ScrollView>
             <Image
-              source={{ uri: product.image_url }}
+              source={{
+                uri: product.image_url.replace(/^http:\/\//i, "https://"),
+              }}
               className="w-full h-48 rounded-lg mb-4"
             />
             <DetailItem label="Name" value={product.name} />

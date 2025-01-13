@@ -175,7 +175,9 @@ export function ManageOrders({
                       className="flex-row bg-zinc-950 p-4 rounded-xl"
                     >
                       <Image
-                        source={{ uri: item.image }}
+                        source={{
+                          uri: item.image.replace(/^http:\/\//i, "https://"),
+                        }}
                         className="w-20 h-20 rounded-lg"
                       />
                       <View className="flex-1 ml-4">
@@ -236,8 +238,10 @@ export function ManageOrders({
                     <View className="mt-4 flex-row items-center">
                       <Image
                         source={{
-                          uri:
-                            order.products?.image_url ||
+                          uri: order.products?.image_url.replace(
+                            /^http:\/\//i,
+                            "https://"
+                          ) ||
                             "https://placeholder.com/150",
                         }}
                         className="w-16 h-16 rounded-lg mr-4"

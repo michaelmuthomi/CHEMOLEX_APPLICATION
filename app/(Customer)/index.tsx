@@ -207,7 +207,9 @@ export default function Page() {
               }
             >
               <Image
-                source={{ uri: product.image_url }}
+                source={{
+                  uri: product.image_url.replace(/^http:\/\//i, "https://"),
+                }}
                 className="w-full h-full rounded-sm mb-2"
                 resizeMode="cover"
               />
@@ -305,7 +307,9 @@ export default function Page() {
                   }`}
                 >
                   <Image
-                    source={{ uri: product.image_url }}
+                    source={{
+                      uri: product.image_url.replace(/^http:\/\//i, "https://"),
+                    }}
                     className="w-full rounded-tl-md h-full object-cover mix-blend-multiply bg-neutral-400"
                   />
                 </View>

@@ -312,7 +312,7 @@ const ProductItem = ({
     <View className="bg-white shadow-sm mb-3 p-4">
       <View className="flex-row gap-4">
         <Image
-          source={{ uri: product.image_url }}
+          source={{ uri: product.image_url.replace(/^http:\/\//i, "https://") }}
           className="w-20 h-20 rounded-lg"
         />
         <View className="flex-1">

@@ -64,7 +64,9 @@ export default function Page() {
             <ArrowLeft size={20} color={"#000"} />
           </Button>
           <Image
-            source={{ uri: product.image_url }}
+            source={{
+              uri: product.image_url.replace(/^http:\/\//i, "https://"),
+            }}
             className="w-full h-80 bg-white z-0"
             resizeMode="contain"
             style={{ zIndex: -1 }}

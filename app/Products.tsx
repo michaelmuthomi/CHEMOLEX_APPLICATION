@@ -33,12 +33,11 @@ export default function HomeScreen({ route }) {
 
         <View style={styles.productsGrid}>
           {products.map((product) => (
-            <View
-              key={product.product_id}
-              style={styles.productCard}
-            >
+            <View key={product.product_id} style={styles.productCard}>
               <Image
-                source={{ uri: product.image_url }}
+                source={{
+                  uri: product.image_url.replace(/^http:\/\//i, "https://"),
+                }}
                 style={styles.productImage}
               />
               <View style={styles.productInfo}>

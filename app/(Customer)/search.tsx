@@ -145,7 +145,12 @@ export default function Page() {
           >
             <H4 className="text-xl mt-4 text-white">{category.title}</H4>
             <Image
-              source={{ uri: category.image }}
+              source={{
+                uri: category.image.replace(
+                  /^http:\/\//i,
+                  "https://"
+                ),
+              }}
               style={styles.categoryImage}
             />
           </TouchableOpacity>
@@ -219,7 +224,12 @@ export default function Page() {
                 <P className="mt-1 text-sm">{formatPrice(product.price)}</P>
               </View>
               <Image
-                source={{ uri: product.image_url }}
+                source={{
+                  uri: product.image_url.replace(
+                    /^http:\/\//i,
+                    "https://"
+                  ),
+                }}
                 className="w-3/4 h-20 ml-auto rounded-tl-md"
                 resizeMode="cover"
               />

@@ -272,13 +272,16 @@ export function AddProduct({
                 <View className="flex-row items-center rounded-md">
                   {imageUrl ? (
                     <Image
-                    source={{
-                      uri: imageUrl
-                    }}
-                    className="w-10 h-10 bg-white rounded-full"
-                    resizeMode="cover"
-                  />
-                  ) : (                      
+                      source={{
+                        uri: imageUrl.replace(
+                          /^http:\/\//i,
+                          "https://"
+                        ),
+                      }}
+                      className="w-10 h-10 bg-white rounded-full"
+                      resizeMode="cover"
+                    />
+                  ) : (
                     <ImageIcon size={14} color={"white"} />
                   )}
                   <Input

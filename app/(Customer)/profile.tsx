@@ -418,7 +418,12 @@ export default function Page() {
                   <ScrollView className="bg-white p-2 h-full">
                     <View>
                       <Image
-                        source={{ uri: selectedOrder.products.image_url }}
+                        source={{
+                          uri: selectedOrder.products.image_url.replace(
+                            /^http:\/\//i,
+                            "https://"
+                          ),
+                        }}
                         className="w-full h-48 rounded-lg mb-4"
                       />
                       <DetailItem
@@ -652,7 +657,12 @@ export default function Page() {
                 <View className="space-y-4">
                   <View className="bg-white p-2 h-full">
                     <Image
-                      source={{ uri: selectedProduct.products.image_url }}
+                      source={{
+                        uri: selectedProduct.products.image_url.replace(
+                          /^http:\/\//i,
+                          "https://"
+                        ),
+                      }}
                       className="w-full h-48 rounded-lg mb-4"
                     />
                     <DetailItem
