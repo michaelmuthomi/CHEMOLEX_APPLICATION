@@ -59,7 +59,7 @@ type Dispatch = {
 
 const DISPATCHES_PER_PAGE = 6;
 
-const DriversPage: React.FC = () => {
+export default function Page () {
   const [dispatches, setDispatches] = useState<Dispatch[]>([]);
   const [filteredDispatches, setFilteredDispatches] = useState<Dispatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -288,5 +288,3 @@ const DriversPage: React.FC = () => {
     </ScrollView>
   );
 };
-
-export default DriversPage;

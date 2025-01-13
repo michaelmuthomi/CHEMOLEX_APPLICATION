@@ -40,7 +40,7 @@ type Product = {
 
 const PRODUCTS_PER_PAGE = 6;
 
-const SupplierPage: React.FC = () => {
+export default function Page () {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -272,5 +272,3 @@ const SupplierPage: React.FC = () => {
     </View>
   );
 };
-
-export default SupplierPage;

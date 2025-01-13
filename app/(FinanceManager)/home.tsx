@@ -25,18 +25,18 @@ import StatsCard from "~/components/StatsCard";
 import { formatBalance } from "~/lib/formatBalance";
 import { OrderCard } from "~/components/OrderCard";
 
-export default function Tab() {
-    type OrderStatus = "pending" | "approved";
-    type Order = {
-      id: number;
-      deviceName: string;
-      deviceType: string;
-      issueDescription: string;
-      status: string;
-      dueDate: string;
-      requiredProducts: { name: string; quantity: number }[];
-      orderNotes: string;
-    };
+export default function Page() {
+  type OrderStatus = "pending" | "approved";
+  type Order = {
+    id: number;
+    deviceName: string;
+    deviceType: string;
+    issueDescription: string;
+    status: string;
+    dueDate: string;
+    requiredProducts: { name: string; quantity: number }[];
+    orderNotes: string;
+  };
   const emailContext = useEmail();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);

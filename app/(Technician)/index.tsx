@@ -28,7 +28,7 @@ type Repair = {
   repairNotes: string;
 };
 
-const TechnicianPage: React.FC = () => {
+export default function Page () {
   const emailContext = useEmail();
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -292,5 +292,3 @@ const TechnicianPage: React.FC = () => {
     </View>
   );
 };
-
-export default TechnicianPage;

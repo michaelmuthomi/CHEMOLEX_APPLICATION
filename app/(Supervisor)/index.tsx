@@ -33,7 +33,7 @@ type Repair = {
   partsUsed: string[];
 };
 
-const SupervisorPage: React.FC = () => {
+export default function Page () {
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -254,5 +254,3 @@ const SupervisorPage: React.FC = () => {
     </View>
   );
 };
-
-export default SupervisorPage;

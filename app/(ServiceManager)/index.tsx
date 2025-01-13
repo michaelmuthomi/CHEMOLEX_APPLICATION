@@ -37,7 +37,7 @@ type Technician = {
   speciality: string;
 };
 
-const ServiceManagerPage: React.FC = () => {
+export default function Page () {
   const [orders, setOrders] = useState<Order[]>([]);
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -291,5 +291,3 @@ const ServiceManagerPage: React.FC = () => {
     </View>
   );
 };
-
-export default ServiceManagerPage;

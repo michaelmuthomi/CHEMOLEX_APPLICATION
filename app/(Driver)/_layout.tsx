@@ -1,5 +1,5 @@
 import TabsLayout from "~/components/_layout";
 
-export default function Layout() {
+export default function Page() {
   return <TabsLayout />;
 }

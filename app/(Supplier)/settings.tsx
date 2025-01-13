@@ -1,5 +1,5 @@
 import SettingsScreen from "~/components/Settings";
 
-export default function Tab() {
+export default function Page() {
   return <SettingsScreen />;
 }

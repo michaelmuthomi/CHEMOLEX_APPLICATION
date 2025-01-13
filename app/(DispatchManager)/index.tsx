@@ -49,7 +49,7 @@ type Order = {
   // ... other fields
 };
 
-export default function Tab({ navigation }: { navigation: any }) {
+export default function Page({ navigation }: { navigation: any }) {
   const emailContext = useEmail();
   const [orders, setOrders] = useState<Order[]>([]);
   const [sortBy, setSortBy] = useState("all-orders");
@@ -63,7 +63,7 @@ export default function Tab({ navigation }: { navigation: any }) {
   useEffect(() => {
     async function fetchCustomerOrders() {
       const response = await fetchDispatches();
-      console.log('Dispatches product data :)', response.order)
+      console.log("Dispatches product data :)", response.order);
       setOrders(response);
     }
     async function fetchAvailableDrivers() {
@@ -177,10 +177,7 @@ export default function Tab({ navigation }: { navigation: any }) {
         </View>
 
         <View className="py-6 px-4">
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row justify-between items-center gap-2">
               {[
                 "all-orders",

@@ -38,7 +38,7 @@ const LOW_STOCK_THRESHOLD = 10;
 const OPTIMAL_STOCK_THRESHOLD = 50;
 const PRODUCTS_PER_PAGE = 6;
 
-const InventoryManagerPage = () => {
+export default function Page() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -378,5 +378,3 @@ const ProductItem = ({
     </View>
   );
 };
-
-export default InventoryManagerPage;

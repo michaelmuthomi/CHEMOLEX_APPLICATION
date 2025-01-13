@@ -1,7 +1,5 @@
 import ProfileScreen from "~/components/Profile";
 
-export default function Tab() {
-  return (
-    <ProfileScreen />
-  )
+export default function Page() {
+  return <ProfileScreen />;
 }
