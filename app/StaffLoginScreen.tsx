@@ -60,49 +60,49 @@ export default function Screen() {
             break;
           case "stock_manager":
             router.push({
-              pathname: "StockManager",
+              pathname: "/(StockManager)",
               params: { email: email },
             });
             break;
           case "finance_controller":
             router.push({
-              pathname: "FinanceManager",
+              pathname: "/(FinanceManager)",
               params: { email: email },
             });
             break;
           case "dispatch_manager":
             router.push({
-              pathname: "DispatchManager",
+              pathname: "/(DispatchManager)",
               params: { email: email },
             });
             break;
           case "service_manager":
             router.push({
-              pathname: "ServiceManager",
+              pathname: "/(ServiceManager)",
               params: { email: email },
             });
             break;
           case "supervisor":
             router.push({
-              pathname: "Supervisor",
+              pathname: "/(Supervisor)",
               params: { email: email },
             });
             break;
           case "technician":
             router.push({
-              pathname: "Technician",
+              pathname: "/(Technician)",
               params: { email: email },
             });
             break;
           case "supplier":
             router.push({
-              pathname: "Supplier",
+              pathname: "/(Supplier)",
               params: { email: email },
             });
             break;
           case "driver":
             router.push({
-              pathname: "Driver",
+              pathname: "/(Driver)",
               params: { email: email },
             });
             break;
