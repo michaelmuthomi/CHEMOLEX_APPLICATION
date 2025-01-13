@@ -24,7 +24,7 @@
         "backgroundColor": "#000000"
       },
       "package": "com.michaelmuthomi.refnet",
-      "permissions": []
+      "permissions": ["INTERNET"]
     },
     "web": {
       "bundler": "webpack",
