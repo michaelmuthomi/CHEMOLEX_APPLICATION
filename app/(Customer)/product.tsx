@@ -23,7 +23,7 @@ import { Button } from "~/components/ui/button";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function Tab() {
+export default function Page() {
   const navigation = useNavigation();
   const params = useLocalSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -90,11 +90,17 @@ export default function Tab() {
             <View className="mb-4">
               <H5 className="text-sm text-gray-600">{"Quantity"}</H5>
               <View className="flex-row w-auto items-center gap-4 mt-2">
-                <TouchableOpacity className="bg-zinc-900 p-2 rounded-full" onPress={() => handleQuantityChange(-1)}>
+                <TouchableOpacity
+                  className="bg-zinc-900 p-2 rounded-full"
+                  onPress={() => handleQuantityChange(-1)}
+                >
                   <Minus size={18} color="#fff" />
                 </TouchableOpacity>
                 <P className="color-white text-2xl">{quantity}</P>
-                <TouchableOpacity className="bg-zinc-900 p-2 rounded-full" onPress={() => handleQuantityChange(1)}>
+                <TouchableOpacity
+                  className="bg-zinc-900 p-2 rounded-full"
+                  onPress={() => handleQuantityChange(1)}
+                >
                   <Plus size={18} color="#fff" />
                 </TouchableOpacity>
               </View>

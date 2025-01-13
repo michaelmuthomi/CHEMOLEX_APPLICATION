@@ -71,7 +71,7 @@ const stats = [
 
 const PRODUCTS_PER_PAGE = 6; // Define the number of products per page
 
-function CustomerHome() {
+export default function Page() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
     null
@@ -96,7 +96,9 @@ function CustomerHome() {
     { id: "2", name: "Service B", description: "Description for Service B" },
   ]);
   const [currentPage, setCurrentPage] = useState(1); // Keep state for current page
-  const [bookedServices, setBookedServices] = useState<Array<{ repair_id: string; customer_id: string }>>([]); // State to hold booked services
+  const [bookedServices, setBookedServices] = useState<
+    Array<{ repair_id: string; customer_id: string }>
+  >([]); // State to hold booked services
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -113,13 +115,16 @@ function CustomerHome() {
     const loadServices = async () => {
       try {
         const serviceData = await fetchServicesFromDB();
-        const filteredServices = serviceData.filter(service => 
-          !bookedServices.some(booked => 
-            booked.repair_id === service.id && booked.customer_id === emailContext?.email // Check against customer_id and repair_id
-          )
+        const filteredServices = serviceData.filter(
+          (service) =>
+            !bookedServices.some(
+              (booked) =>
+                booked.repair_id === service.id &&
+                booked.customer_id === emailContext?.email // Check against customer_id and repair_id
+            )
         ); // Filter out booked services
         setServices(filteredServices);
-        console.log("Fetched Services:>>>>>>> ", filteredServices)
+        console.log("Fetched Services:>>>>>>> ", filteredServices);
       } catch (error) {
         console.error("Error loading services:", error);
       }
@@ -341,25 +346,28 @@ function CustomerHome() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
           {services.map((service, index) => (
-            <ServiceModal sheetTrigger={
-              <TouchableOpacity
-              key={index}
-              className="gap-4 w-[250px] px-2 pb-4"
-              // onPress={() => setSelectedServiceId(service.id)}
-            >
-              <View className="flex items-start">
+            <ServiceModal
+              sheetTrigger={
                 <TouchableOpacity
-                  className={`p-2 rounded-full w-auto bg-zinc-800`}
+                  key={index}
+                  className="gap-4 w-[250px] px-2 pb-4"
+                  // onPress={() => setSelectedServiceId(service.id)}
                 >
-                  <Bolt size={18} color={"#fff"} />
+                  <View className="flex items-start">
+                    <TouchableOpacity
+                      className={`p-2 rounded-full w-auto bg-zinc-800`}
+                    >
+                      <Bolt size={18} color={"#fff"} />
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <H4 className="text-white">{service.name}</H4>
+                    <P className="text-zinc-400">{service.description}</P>
+                  </View>
                 </TouchableOpacity>
-              </View>
-              <View>
-                <H4 className="text-white">{service.name}</H4>
-                <P className="text-zinc-400">{service.description}</P>
-              </View>
-            </TouchableOpacity>
-            } serviceId={service.service_id} />
+              }
+              serviceId={service.service_id}
+            />
           ))}
         </View>
       </ScrollView>
@@ -394,5 +402,3 @@ function CustomerHome() {
     </SafeAreaView>
   );
 }
-
-export default CustomerHome;

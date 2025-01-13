@@ -70,9 +70,9 @@ const categories = [
   },
 ];
 
-export default function Tab() {
+export default function Page() {
   const navigation = useNavigation();
-  const route = useRoute(); 
+  const route = useRoute();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
     route.params?.category || null
@@ -154,7 +154,7 @@ export default function Tab() {
     );
   }
 
-  const placeholder:any = [];
+  const placeholder: any = [];
 
   // Using a for loop to push 4 placeholder into the array
   for (let i = 0; i < 4; i++) {
@@ -188,13 +188,11 @@ export default function Tab() {
             key={sort}
             size={"sm"}
             onPress={() => setSortBy(sort)}
-            className={
-              sortBy === sort
-                ? "bg-zinc-700"
-                : "bg-zinc-900"
-            }
+            className={sortBy === sort ? "bg-zinc-700" : "bg-zinc-900"}
           >
-            <H5 className="capitalize leading-none">{sort.replace("-", " ")}</H5>
+            <H5 className="capitalize leading-none">
+              {sort.replace("-", " ")}
+            </H5>
           </Button>
         ))}
       </View>

@@ -68,7 +68,7 @@ export default function Screen() {
       if (user_role === "customer") {
         console.log("User is a Customer");
         setEmailContext(email);
-        navigation.navigate("Customer");
+        router.replace("/Customer");
       } else {
         displayNotification("Invalid Credentials", "danger");
       }
@@ -136,9 +136,9 @@ export default function Screen() {
           variant="default"
           disabled={loading}
         >
-          <H5 className=" text-black">
+          <H4 className="text-lg text-black">
             {loading ? "Logging In" : "Login and continue"}
-          </H5>
+          </H4>
         </Button>
       </View>
       <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center overflow-auto">

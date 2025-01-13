@@ -14,7 +14,7 @@ import { H1, H3, H4, H5, H6, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useNavigation } from "expo-router";
 
-export default function Tab() {
+export default function Page() {
   const navigation = useNavigation();
   const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
     

@@ -16,8 +16,9 @@ import { ArrowLeft, BackpackIcon } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
 import { H2, H4, P } from "~/components/ui/typography";
 import { useRouter, useNavigation } from "expo-router";
+import CustomerHome from "./index";
 
-export default function CustomerTabs() {
+export default function Layout() {
   const { getCartQuantity } = useCart();
   const cartQuantity = getCartQuantity();
   const router = useRouter();

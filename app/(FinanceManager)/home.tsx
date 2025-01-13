@@ -25,20 +25,18 @@ import StatsCard from "~/components/StatsCard";
 import { formatBalance } from "~/lib/formatBalance";
 import { OrderCard } from "~/components/OrderCard";
 
-type OrderStatus = "pending" | "approved";
-
-type Order = {
-  id: number;
-  deviceName: string;
-  deviceType: string;
-  issueDescription: string;
-  status: string;
-  dueDate: string;
-  requiredProducts: { name: string; quantity: number }[];
-  orderNotes: string;
-};
-
-const FinancialStatusPage: React.FC = () => {
+export default function Tab() {
+    type OrderStatus = "pending" | "approved";
+    type Order = {
+      id: number;
+      deviceName: string;
+      deviceType: string;
+      issueDescription: string;
+      status: string;
+      dueDate: string;
+      requiredProducts: { name: string; quantity: number }[];
+      orderNotes: string;
+    };
   const emailContext = useEmail();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -170,9 +168,7 @@ const FinancialStatusPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from("orders")
-        .select(
-          "*, products:product_id(*), users:user_id(*)"
-        )
+        .select("*, products:product_id(*), users:user_id(*)");
 
       if (error) throw error;
       setOrders(data || []);
@@ -336,6 +332,4 @@ const FinancialStatusPage: React.FC = () => {
       </ScrollView>
     </View>
   );
-};
-
-export default FinancialStatusPage;
+}

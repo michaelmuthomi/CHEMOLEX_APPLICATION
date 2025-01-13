@@ -15,7 +15,7 @@ import { useEmail } from "~/app/EmailContext";
 import { useNavigation } from "@react-navigation/native";
 import displayNotification from "~/lib/Notification";
 
-export default function Screen() {
+export default function LoginScreen() {
   const navigation = useNavigation(); // Use hook to access navigation
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -68,7 +68,7 @@ export default function Screen() {
       if (user_role === "customer") {
         console.log("User is a Customer");
         setEmailContext(email);
-        router.replace("/Customer");
+        router.replace("/(Customer)");
       } else {
         displayNotification("Invalid Credentials", "danger");
       }

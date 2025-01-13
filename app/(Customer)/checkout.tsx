@@ -91,7 +91,7 @@ const validatePaymentInfo = (info: PaymentInfo): ValidationError[] => {
   return errors;
 };
 
-export default function CheckoutScreen() {
+export default function Page() {
   const navigation = useNavigation()
   const emailContext = useEmail();
   const [customer, setCustomerDetails] = useState([]);

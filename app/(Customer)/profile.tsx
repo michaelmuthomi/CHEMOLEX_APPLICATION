@@ -171,7 +171,7 @@ const mockOrders: Order[] = [
   },
 ];
 
-export default function Tab() {
+export default function Page() {
   const navigation = useNavigation();
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);

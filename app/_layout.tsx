@@ -109,31 +109,34 @@ export default function RootLayout({navigation}: any) {
             />
 
             <Stack.Screen
-              name="StaffLoginScreen"
+              name="(StaffLoginScreen)"
               // options={{ headerShown: true, headerTitle: "" }}
             />
 
-            <Stack.Screen name="Customer" options={{ headerShown: false }} />
             <Stack.Screen
-              name="DispatchManager"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="Technician" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="FinanceManager"
+              name="(Customer)"
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="ServiceManager"
+              name="(DispatchManager)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="(Technician)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(FinanceManager)"
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="StockManager"
+              name="(ServiceManager)"
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="Supervisor" options={{ headerShown: false }} />
-            <Stack.Screen name="Driver" options={{ headerShown: false }} />
-            <Stack.Screen name="Supplier" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(StockManager)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="(Supervisor)" options={{ headerShown: false }} />
+            <Stack.Screen name="(Driver)" options={{ headerShown: false }} />
+            <Stack.Screen name="(Supplier)" options={{ headerShown: false }} />
             <Stack.Screen
               name="ForgotPassword"
               options={{ headerShown: true, headerTitle: "" }}
