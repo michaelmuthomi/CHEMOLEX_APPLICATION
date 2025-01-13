@@ -68,7 +68,7 @@ export default function LoginScreen() {
       if (user_role === "customer") {
         console.log("User is a Customer");
         setEmailContext(email);
-        router.replace("/(Customer)");
+        router.push("/(Customer)");
       } else {
         displayNotification("Invalid Credentials", "danger");
       }
