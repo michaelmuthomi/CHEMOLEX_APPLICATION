@@ -76,7 +76,7 @@ export default function ProfileScreen() {
       <View className="py-2">
         <ScrollView className="gap-6 px-6 py-4 bg-[#090909]">
           <View className="gap-4">
-            <View className="flex-row">
+            <View className="flex-row items-center">
               <View className="gap-2 w-1/2 pr-2">
                 <H5>First Name</H5>
                 <View

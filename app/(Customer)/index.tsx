@@ -170,9 +170,9 @@ export default function Page() {
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
-          {stats.map((stat, index) => (
+          {stats.map((stat) => (
             <StatsCard
-              key={index}
+              key={stat.Title}
               iconBgColor={stat.iconBgColor}
               Icon={stat.Icon}
               Title={stat.Title}
@@ -190,7 +190,7 @@ export default function Page() {
     <View className="mt-10 px-2 gap-4">
       <View className="flex-row items-center justify-between">
         <H3 className="flex-1 text-xl">Featured Products</H3>
-        <Link href="/Customer/search" className="">
+        <Link href="/(Customer)/search" className="">
           <H4 className="text-white text-sm">View More &rarr;</H4>
         </Link>
       </View>
@@ -349,11 +349,11 @@ export default function Page() {
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <ServiceModal
               sheetTrigger={
                 <TouchableOpacity
-                  key={index}
+                  key={service.service_id}
                   className="gap-4 w-[250px] px-2 pb-4"
                   // onPress={() => setSelectedServiceId(service.id)}
                 >

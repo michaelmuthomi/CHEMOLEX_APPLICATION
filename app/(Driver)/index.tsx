@@ -59,7 +59,7 @@ type Dispatch = {
 
 const DISPATCHES_PER_PAGE = 6;
 
-export default function Page () {
+export default function Page() {
   const [dispatches, setDispatches] = useState<Dispatch[]>([]);
   const [filteredDispatches, setFilteredDispatches] = useState<Dispatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,19 +92,26 @@ export default function Page () {
   useEffect(() => {
     async function fetchUserDetails() {
       const response = await checkUser(emailContext?.email);
-      setCustomerDetails(response);
+      if (response) {
+        setCustomerDetails(response);
+      }
     }
     fetchUserDetails();
     const filtered = dispatches.filter((dispatch) => {
       return true;
     });
     setFilteredDispatches(filtered);
-  }, [searchQuery, dispatches]);
+  }, [searchQuery, dispatches, emailContext?.email]);
 
   const fetchDispatches = async () => {
     setIsLoading(true);
     setError(null);
     const user = await checkUser(emailContext?.email);
+    if (!user) {
+      setError("User not found");
+      setIsLoading(false);
+      return;
+    }
     const { data, error } = await supabase
       .from("dispatches")
       .select(
@@ -118,16 +125,15 @@ export default function Page () {
       )
       .eq("driver_id", user.user_id);
 
-    if (error) throw error;
-    setDispatches(data || []);
-    console.log("Dispatch Data: ", JSON.stringify(data, null, 2)); // Use JSON.stringify to see the full structure
-    setFilteredDispatches(data || []);
-    try {
-    } catch (err) {
-      
-    } finally {
+    if (error) {
+      setError(error.message);
       setIsLoading(false);
+      return;
     }
+    setDispatches(data || []);
+    console.log("Dispatch Data: ", JSON.stringify(data, null, 2));
+    setFilteredDispatches(data || []);
+    setIsLoading(false);
   };
 
   const handleDispatchChange = (payload: any) => {
@@ -164,13 +170,13 @@ export default function Page () {
   const calculateStats = () => {
     const totalAssignments = filteredDispatches.length;
     const pending = filteredDispatches.filter(
-      (d) => d.status === "pending"
+      (d) => d.status === "Pending"
     ).length;
     const delivered = filteredDispatches.filter(
-      (d) => d.status === "delivered"
+      (d) => d.status === "Delivered"
     ).length;
     const inTransit = filteredDispatches.filter(
-      (d) => d.status === "intransit"
+      (d) => d.status === "In Transit"
     ).length;
 
     return [
