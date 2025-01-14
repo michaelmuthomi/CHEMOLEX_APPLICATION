@@ -198,36 +198,36 @@ export default function Page() {
     setActiveModal(screen);
   };
 
-  useEffect(() => {
-    async function fetchUserDetails() {
-      if (emailContext?.email) {
-        const response = await checkUser(emailContext?.email);
-        setCustomerDetails(response);
-      }
+  async function fetchUserDetails() {
+    if (emailContext?.email) {
+      const response = await checkUser(emailContext?.email);
+      setCustomerDetails(response);
     }
+  }
+  useEffect(() => {
     fetchUserDetails();
   }, [emailContext]);
 
-  useEffect(() => {
-    async function fetchOrders() {
-      if (customer.user_id) {
-        const response: any = await fetchCustomerOrders(customer.user_id);
-        console.log("Orders Fetched", response);
-        setOrders(response);
-      }
+  async function fetchOrders() {
+    if (customer.user_id) {
+      const response: any = await fetchCustomerOrders(customer.user_id);
+      console.log("Orders Fetched", response);
+      setOrders(response);
     }
+  }
+  useEffect(() => {
     fetchOrders();
   }, [customer]);
 
-  useEffect(() => {
-    async function fetchUserServices() {
-      if (customer.user_id) {
-        const response: any = await fetchUserRequestedServices(
-          customer.user_id
-        );
-        setServices(response);
-      }
+  async function fetchUserServices() {
+    if (customer.user_id) {
+      const response: any = await fetchUserRequestedServices(
+        customer.user_id
+      );
+      setServices(response);
     }
+  }
+  useEffect(() => {
     fetchUserServices();
   }, [customer.user_id]);
 
@@ -878,10 +878,15 @@ export default function Page() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchUserDetails();
-    await fetchOrders();
-    await fetchUserServices();
-    setRefreshing(false);
+    try {
+      await fetchUserDetails();
+      await fetchOrders();
+      await fetchUserServices();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   return (
