@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  RefreshControl,
 } from "react-native";
 import {
   ArrowLeft,
@@ -59,6 +60,7 @@ export default function Page({ navigation }: { navigation: any }) {
   const [sortedOrders, setSortedOrders] = useState<Order[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     async function fetchCustomerOrders() {
@@ -164,9 +166,21 @@ export default function Page({ navigation }: { navigation: any }) {
     setOrders(response);
   };
 
+  // Function to handle refresh
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchCustomerOrders(); // Refetch orders
+    setRefreshing(false);
+  };
+
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
