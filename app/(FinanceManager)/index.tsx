@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { checkUser, fetchAllFinancialRecords, supabase } from "~/lib/supabase";
 import { RepairCard } from "~/components/RepairCard";
@@ -74,6 +75,7 @@ export default function Page() {
       Description: "$358,024",
     },
   ]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchAllOrders();
@@ -238,6 +240,12 @@ export default function Page() {
 
   const sortedOrders = getSortedOrders();
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchAllOrders();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -262,7 +270,12 @@ export default function Page() {
 
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
