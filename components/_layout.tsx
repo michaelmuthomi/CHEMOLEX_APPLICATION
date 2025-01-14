@@ -18,16 +18,20 @@ import { useEffect, useState } from "react";
 import { useEmail } from "~/app/EmailContext";
 
 export default function TabsLayout() {
-  const [customer, setCustomerDetails] = useState([]);
+  const [customer, setCustomerDetails] = useState({});
   const emailContext = useEmail();
 
   useEffect(() => {
     async function fetchUserDetails() {
-      const response = await checkUser(emailContext?.email);
-      setCustomerDetails(response);
+      try {
+        const response = await checkUser(emailContext?.email);
+        setCustomerDetails(response);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
     }
     fetchUserDetails();
-  }, []);
+  }, [emailContext?.email]);
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
