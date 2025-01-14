@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Modal,
   TouchableWithoutFeedback,
+  RefreshControl,
 } from "react-native";
 import {
   User,
@@ -191,6 +192,7 @@ export default function Page() {
   const [currentStep, setCurrentStep] = useState("pending");
   const [services, setServices] = useState([]);
   const { setEmail } = emailContext!;
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -874,9 +876,22 @@ export default function Page() {
     </Modal>
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchUserDetails();
+    await fetchOrders();
+    await fetchUserServices();
+    setRefreshing(false);
+  };
+
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {/* Profile Header */}
         <View className="items-center justify-center py-8 bg-zinc-900 pt-16">
           <View className="relative">
@@ -1004,7 +1019,7 @@ export default function Page() {
         <TouchableOpacity
           className="flex-row items-center p-4 mt-auto bg-red-200"
           onPress={() => {
-            setEmail('')
+            setEmail("");
             navigation.navigate("LoginScreen");
           }}
         >
