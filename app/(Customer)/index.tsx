@@ -164,7 +164,7 @@ export default function Page() {
     <View className="bg-white p-4 gap-6">
       <View className="flex-row justify-between items-center w-full">
         <H3 className="text-black flex-1">Categories</H3>
-        <Link href="/Customer/search" className="">
+        <Link href="/(Customer)/search" className="">
           <H4 className="text-blue-600 text-sm">View More &rarr;</H4>
         </Link>
       </View>

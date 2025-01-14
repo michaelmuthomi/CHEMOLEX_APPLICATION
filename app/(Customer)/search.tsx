@@ -217,7 +217,11 @@ export default function Page() {
             <TouchableOpacity
               key={product.product_id}
               className="w-full bg-[#111] rounded-lg shadow p-2"
-              onPress={() => navigation.navigate("product", { product })}
+              onPress={() =>
+                navigation.navigate("product", {
+                  product: JSON.stringify(product),
+                })
+              }
             >
               <View className="mt-2">
                 <H4 numberOfLines={2}>{product.name}</H4>
@@ -225,10 +229,7 @@ export default function Page() {
               </View>
               <Image
                 source={{
-                  uri: product.image_url.replace(
-                    /^http:\/\//i,
-                    "https://"
-                  ),
+                  uri: product.image_url.replace(/^http:\/\//i, "https://"),
                 }}
                 className="w-3/4 h-20 ml-auto rounded-tl-md"
                 resizeMode="cover"
