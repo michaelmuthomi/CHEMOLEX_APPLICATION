@@ -22,6 +22,7 @@ export default function LoginScreen() {
   const emailContext = useEmail();
   const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
   const [loading, setLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const onEmailInput = (text: string) => {
     setEmail(text);
@@ -33,6 +34,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     setLoading(true);
+    setErrorMessage("");
 
     // Check if both email and password are provided
     if (!email || !password) {
@@ -52,7 +54,7 @@ export default function LoginScreen() {
     // Check if user exists
     const UserAvailable = await checkUser(email);
     if (!UserAvailable) {
-      displayNotification("User does not exist", "danger");
+      displayNotification("Email not registered", "danger");
       setLoading(false);
       return;
     }
@@ -70,7 +72,7 @@ export default function LoginScreen() {
         setEmailContext(email);
         router.push("/(Customer)");
       } else {
-        displayNotification("Invalid Credentials", "danger");
+        displayNotification("Invalid Credentials for this role", "danger");
       }
     } else {
       displayNotification("Invalid Credentials", "danger");

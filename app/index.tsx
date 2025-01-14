@@ -15,13 +15,14 @@ import { useEmail } from "~/app/EmailContext";
 import { useNavigation } from "@react-navigation/native";
 import displayNotification from "~/lib/Notification";
 
-export default function Screen() {
+export default function LoginScreen() {
   const navigation = useNavigation(); // Use hook to access navigation
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const emailContext = useEmail();
   const { setEmail: setEmailContext } = emailContext || { setEmail: () => {} };
   const [loading, setLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const onEmailInput = (text: string) => {
     setEmail(text);
@@ -33,6 +34,7 @@ export default function Screen() {
 
   const handleLogin = async () => {
     setLoading(true);
+    setErrorMessage("");
 
     // Check if both email and password are provided
     if (!email || !password) {
@@ -52,7 +54,7 @@ export default function Screen() {
     // Check if user exists
     const UserAvailable = await checkUser(email);
     if (!UserAvailable) {
-      displayNotification("User does not exist", "danger");
+      displayNotification("Email not registered", "danger");
       setLoading(false);
       return;
     }
@@ -68,9 +70,9 @@ export default function Screen() {
       if (user_role === "customer") {
         console.log("User is a Customer");
         setEmailContext(email);
-        router.replace("/Customer");
+        router.push("/(Customer)");
       } else {
-        displayNotification("Invalid Credentials", "danger");
+        displayNotification("Invalid Credentials for this role", "danger");
       }
     } else {
       displayNotification("Invalid Credentials", "danger");
