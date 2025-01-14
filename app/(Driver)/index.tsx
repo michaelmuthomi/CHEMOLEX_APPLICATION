@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   TextInput,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { checkUser, supabase } from "~/lib/supabase";
 import { DispatchCard } from "~/components/DispatchCard";
@@ -72,6 +73,7 @@ export default function Page() {
   const [customer, setCustomerDetails] = useState([]);
   const emailContext = useEmail();
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchDispatches();
@@ -209,6 +211,12 @@ export default function Page() {
 
   const stats = calculateStats();
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchDispatches();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -232,7 +240,12 @@ export default function Page() {
   }
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView
+      className="flex-1"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View className="bg-white p-4 gap-6">
         <H3 className="text-black">Statistics</H3>
         <View className="flex-row flex-wrap gap-y-6 justify-between">

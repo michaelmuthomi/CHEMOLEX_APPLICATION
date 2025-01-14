@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { WorkflowStatistics } from "~/components/WorkflowStatistics";
@@ -33,13 +34,14 @@ type Repair = {
   partsUsed: string[];
 };
 
-export default function Page () {
+export default function Page() {
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRepair, setSelectedRepair] = useState<Repair | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortBy, setSortBy] = useState("all-repairs");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchRepairs();
@@ -59,6 +61,7 @@ export default function Page () {
 
   const fetchRepairs = async () => {
     setIsLoading(true);
+    setRefreshing(false);
     setError(null);
     try {
       const { data, error } = await supabase
@@ -135,6 +138,12 @@ export default function Page () {
         new Date().toDateString()
   ).length;
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchRepairs();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -159,7 +168,12 @@ export default function Page () {
 
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">

@@ -7,13 +7,21 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { StatisticsCard } from "~/components/StatisticsCard";
 import { Input } from "~/components/ui/input";
 import { H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
-import { AlertTriangle, GalleryVerticalEnd, Layers2, Package2, Search, Truck } from "lucide-react-native";
+import {
+  AlertTriangle,
+  GalleryVerticalEnd,
+  Layers2,
+  Package2,
+  Search,
+  Truck,
+} from "lucide-react-native";
 import displayNotification from "~/lib/Notification";
 import { AddProduct } from "~/components/sheets/addproduct";
 import StatsCard from "~/components/StatsCard";
@@ -50,6 +58,7 @@ export default function Page() {
     inventoryHealth: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
 
   const statistics = [
     {
@@ -189,6 +198,12 @@ export default function Page() {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -212,7 +227,12 @@ export default function Page() {
   }
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView
+      className="flex-1"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View className="bg-white p-4 gap-6">
         <H3 className="text-black">Statistics</H3>
         <View className="flex-row flex-wrap gap-y-6 justify-between">

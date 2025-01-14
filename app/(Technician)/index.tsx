@@ -6,13 +6,20 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from "react-native";
-import { checkUser , supabase } from "~/lib/supabase";
+import { checkUser, supabase } from "~/lib/supabase";
 import { RepairCard } from "~/components/RepairCard";
 import { RepairDetailsModal } from "~/components/RepairManagerModal";
 import { useEmail } from "../EmailContext";
 import { H2, H3, H4, H5, P } from "~/components/ui/typography";
-import { GalleryVertical, GalleryVerticalEnd, ListChecks, ListTodo, MessageCircle } from "lucide-react-native";
+import {
+  GalleryVertical,
+  GalleryVerticalEnd,
+  ListChecks,
+  ListTodo,
+  MessageCircle,
+} from "lucide-react-native";
 import StatsCard from "~/components/StatsCard";
 
 type RepairStatus = "assigned" | "pending" | "complete";
@@ -28,7 +35,7 @@ type Repair = {
   repairNotes: string;
 };
 
-export default function Page () {
+export default function Page() {
   const emailContext = useEmail();
   const [repairs, setRepairs] = useState<Repair[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +45,7 @@ export default function Page () {
   const [technicianId, setTechnicianId] = useState<string | null>(null);
   const [stats, setStats] = useState<any[]>([]);
   const [sortBy, setSortBy] = useState("all-repairs");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchRepairs();
@@ -188,6 +196,12 @@ export default function Page () {
 
   const sortedRepairs = getSortedRepairs();
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchRepairs();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -212,7 +226,12 @@ export default function Page () {
 
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">

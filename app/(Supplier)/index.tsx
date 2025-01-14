@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   TextInput,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { ProductCard } from "~/components/ProductCard";
@@ -40,7 +41,7 @@ type Product = {
 
 const PRODUCTS_PER_PAGE = 6;
 
-export default function Page () {
+export default function Page() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +49,7 @@ export default function Page () {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -181,6 +183,12 @@ export default function Page () {
 
   const stats = calculateStats(products);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -205,7 +213,12 @@ export default function Page () {
 
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">

@@ -6,10 +6,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { OrderItem } from "~/components/OrderItem";
-import { ArrowDownNarrowWide, Filter, GalleryVerticalEnd } from "lucide-react-native";
+import {
+  ArrowDownNarrowWide,
+  Filter,
+  GalleryVerticalEnd,
+} from "lucide-react-native";
 import { H1, H3, H4, P } from "~/components/ui/typography";
 import {
   GalleryVertical,
@@ -37,7 +42,7 @@ type Technician = {
   speciality: string;
 };
 
-export default function Page () {
+export default function Page() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +53,7 @@ export default function Page () {
     "All" | "pending" | "assigned"
   >("All");
   const skeletons = [0, 1, 2, 3, 4, 5, 6];
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -90,7 +96,9 @@ export default function Page () {
 
   const fetchTechnicians = async () => {
     try {
-      const { data, error } = await supabase.from("technicians").select("*, users:user_id(username)");
+      const { data, error } = await supabase
+        .from("technicians")
+        .select("*, users:user_id(username)");
 
       if (error) throw error;
       setTechnicians(data || []);
@@ -175,6 +183,12 @@ export default function Page () {
 
   const stats = calculateStats(orders);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchOrders();
+    setRefreshing(false);
+  };
+
   if (error) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -191,7 +205,12 @@ export default function Page () {
 
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
