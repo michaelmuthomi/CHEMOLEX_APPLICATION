@@ -331,15 +331,16 @@ const ProductItem = ({
   return (
     <View className="bg-white shadow-sm mb-3 p-4">
       <View className="flex-row gap-4">
-        <Image
-          source={{ uri: product.image_url.replace(/^http:\/\//i, "https://") }}
-          className="w-20 h-20 rounded-lg"
-        />
         <View className="flex-1">
           <H3 className="text-lg text-gray-800">{product.name}</H3>
           <P className="text-sm text-gray-600 line-clamp-3">
             {product.description}
           </P>
+        <Image
+          source={{ uri: product.image_url.replace(/^http:\/\//i, "https://") }}
+            className="w-full h-32 rounded-lg"
+            style={{objectFit: 'contain'}}
+        />
           <View className="flex-row items-center mt-8">
             {isEditing ? (
               <View className="flex-row gap-2 items-center justify-between w-full">
@@ -377,18 +378,18 @@ const ProductItem = ({
                 >
                   <View className="flex-row items-center gap-2">
                     {isLowStock && <AlertTriangle size={14} color="#ef4444" />}
-                    <P className={isLowStock ? "text-red-500" : "text-black"}>
+                    <H4 className={`text-base ${isLowStock ? "text-red-500" : "text-black"}`}>
                       {isLowStock
                         ? `Limited Stock: ${product.stock_quantity}`
                         : `In Stock: ${product.stock_quantity}`}
-                    </P>
+                    </H4>
                   </View>
                 </H4>
                 <TouchableOpacity
                   className="bg-black rounded-full px-3 py-1"
                   onPress={() => setIsEditing(true)}
                 >
-                  <Text className="text-white text-base">+</Text>
+                  <H4 className="text-white text-base">+</H4>
                 </TouchableOpacity>
               </View>
             )}
