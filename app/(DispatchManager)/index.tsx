@@ -158,6 +158,12 @@ export default function Page({ navigation }: { navigation: any }) {
     fetchSortedOrders();
   }, [orders, sortBy]); // Dependencies to re-fetch when orders or sortBy changes
 
+  const fetchCustomerOrders = async () => {
+    const response = await fetchDispatches();
+    console.log("Dispatches product data :)", response.order);
+    setOrders(response);
+  };
+
   return (
     <View className="flex-1">
       <ScrollView className="flex-1">
@@ -329,7 +335,10 @@ export default function Page({ navigation }: { navigation: any }) {
                           dispatchId={item.dispatch_id}
                           visible={modalVisible && selectedOrderId === item.id}
                           drivers={availableDrivers}
-                          onAssign={() => console.log("Assigned")}
+                          onAssign={async () => {
+                            console.log("Assigned");
+                            await fetchCustomerOrders(); // Refetch orders after assignment
+                          }}
                         />
                       </View>
                     )}

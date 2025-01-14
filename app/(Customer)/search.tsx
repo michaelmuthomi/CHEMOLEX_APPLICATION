@@ -35,21 +35,21 @@ const categories = [
   },
   {
     id: 3,
-    title: "Fan coil units",
+    title: "Fan Coil units",
     image:
       "http://5.imimg.com/data5/SELLER/Default/2023/1/CY/AP/RC/43000247/fan-coil-unit-500x500.png",
     backgroundColor: "#8B8B00",
   },
   {
     id: 4,
-    title: "Vrf Multi",
+    title: "VRF Multi",
     image:
       "http://5.imimg.com/data5/SELLER/Default/2024/4/414735525/QN/IM/OK/202996372/misubishi-air-conditioner-500x500.jpg",
     backgroundColor: "#8B4513",
   },
   {
     id: 5,
-    title: "Ducted Split system",
+    title: "Ducted Split systems",
     image:
       "http://5.imimg.com/data5/SELLER/Default/2023/9/347250443/OM/QN/BY/9267344/ductable-split-units-1000x1000.jpeg",
     backgroundColor: "#8B4513",
