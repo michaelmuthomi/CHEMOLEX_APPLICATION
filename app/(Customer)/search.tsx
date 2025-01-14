@@ -35,7 +35,7 @@ const categories = [
   },
   {
     id: 3,
-    title: "Fan Coil units",
+    title: "Fan Coil Units",
     image:
       "http://5.imimg.com/data5/SELLER/Default/2023/1/CY/AP/RC/43000247/fan-coil-unit-500x500.png",
     backgroundColor: "#8B8B00",
@@ -49,7 +49,7 @@ const categories = [
   },
   {
     id: 5,
-    title: "Ducted Split systems",
+    title: "Ducted Split Systems",
     image:
       "http://5.imimg.com/data5/SELLER/Default/2023/9/347250443/OM/QN/BY/9267344/ductable-split-units-1000x1000.jpeg",
     backgroundColor: "#8B4513",
@@ -229,7 +229,7 @@ export default function Page() {
               </View>
               <Image
                 source={{
-                  uri: product.image_url.replace(/^http:\/\//i, "https://"),
+                  uri: product.image_url?.replace(/^http:\/\//i, "https://"),
                 }}
                 className="w-3/4 h-20 ml-auto rounded-tl-md"
                 resizeMode="cover"
