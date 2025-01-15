@@ -52,7 +52,7 @@ export default function ProfileScreen() {
     <ScrollView className="bg-[#060606] flex-1 gap-10">
       <View className="py-8 px-6 bg-[#090909]">
         <View className="relative">
-          <TouchableOpacity className="p-2 w-12 rounded-full shadow-sm border border-zinc-200 items-center">
+          <TouchableOpacity className="p-2 w-12 rounded-full items-center border border-zinc-100">
             <User size={24} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
         </View>
       </View>
       <View className="py-2">
-        <ScrollView className="gap-6 px-6 py-4 bg-[#090909]">
+        <ScrollView className="gap-6 px-6 py-4">
           <View className="gap-4">
             <View className="flex-row items-center">
               <View className="gap-2 w-1/2 pr-2">

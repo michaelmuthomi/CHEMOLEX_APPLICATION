@@ -80,6 +80,7 @@ export default function TabsLayout() {
                 />
               ),
               headerShown: true,
+              headerStyle: { backgroundColor: "#111" },
             }}
           />
           <Tabs.Screen
@@ -90,6 +91,7 @@ export default function TabsLayout() {
                 <FontAwesome size={28} name="cog" color={color} />
               ),
               headerShown: true,
+              headerStyle: { backgroundColor: "#111" },
             }}
           />
           <Tabs.Screen
@@ -100,6 +102,7 @@ export default function TabsLayout() {
                 <Feather name="user" size={28} color={color} />
               ),
               headerShown: true,
+              headerStyle: { backgroundColor: "#111" },
             }}
           />
         </Tabs>
