@@ -19,6 +19,7 @@ import {
   GalleryVerticalEnd,
   Layers2,
   Package2,
+  PlusIcon,
   Search,
   Truck,
 } from "lucide-react-native";
@@ -336,38 +337,40 @@ const ProductItem = ({
           <P className="text-sm text-gray-600 line-clamp-3">
             {product.description}
           </P>
-        <Image
-          source={{ uri: product.image_url.replace(/^http:\/\//i, "https://") }}
-            className="w-full h-32 rounded-lg"
-            style={{objectFit: 'contain'}}
-        />
+          <Image
+            source={{
+              uri: product.image_url.replace(/^http:\/\//i, "https://"),
+            }}
+            className="w-full h-32 rounded-lg mt-6"
+            style={{ objectFit: "contain" }}
+          />
           <View className="flex-row items-center mt-8">
             {isEditing ? (
               <View className="flex-row gap-2 items-center justify-between w-full">
-                <View className="flex-row gap-2 items-center">
                   <Input
-                    className="rounded bg-transparent border-none border-white outline-none text-black"
+                    className="rounded bg-transparent border-none border outline-none text-black w-full"
                     value={newQuantity}
                     onChangeText={setNewQuantity}
                     keyboardType="numeric"
                     maxLength={4}
                     autoFocus
                   />
+                <View className="flex-row gap-2 items-center flex-1">
                   <Button
-                    className="bg-blue-500"
-                    size={"sm"}
+                    className="bg-blue-500 rounded-full"
+                    size={"default"}
                     onPress={handleUpdate}
                   >
                     <P className="text-white">Save</P>
                   </Button>
-                </View>
                 <Button
-                  className="bg-black rounded px-3 py-1"
-                  size={"sm"}
+                  className="bg-black rounded-full px-3 py-1"
+                  size={"default"}
                   onPress={() => setIsEditing(false)}
                 >
                   <P className="text-white">Cancel</P>
                 </Button>
+                </View>
               </View>
             ) : (
               <View className="flex-row items-center justify-between w-full">
@@ -378,19 +381,23 @@ const ProductItem = ({
                 >
                   <View className="flex-row items-center gap-2">
                     {isLowStock && <AlertTriangle size={14} color="#ef4444" />}
-                    <H4 className={`text-base ${isLowStock ? "text-red-500" : "text-black"}`}>
+                    <H4
+                      className={`text-base ${
+                        isLowStock ? "text-red-500" : "text-black"
+                      }`}
+                    >
                       {isLowStock
                         ? `Limited Stock: ${product.stock_quantity}`
                         : `In Stock: ${product.stock_quantity}`}
                     </H4>
                   </View>
                 </H4>
-                <TouchableOpacity
-                  className="bg-black rounded-full px-3 py-1"
+                <Button
+                  className="bg-black rounded-full px-3 py-1 flex-row items-center gap-2"
                   onPress={() => setIsEditing(true)}
-                >
-                  <H4 className="text-white text-base">+</H4>
-                </TouchableOpacity>
+                  >
+                    <PlusIcon size={18} color={'#fff'} /> <P>Stock</P>
+                </Button>
               </View>
             )}
           </View>
