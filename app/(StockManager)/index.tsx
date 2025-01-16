@@ -347,14 +347,14 @@ const ProductItem = ({
           <View className="flex-row items-center mt-8">
             {isEditing ? (
               <View className="flex-row gap-2 items-center justify-between w-full">
-                  <Input
-                    className="rounded bg-transparent border-none border outline-none text-black w-full"
-                    value={newQuantity}
-                    onChangeText={setNewQuantity}
-                    keyboardType="numeric"
-                    maxLength={4}
-                    autoFocus
-                  />
+                <Input
+                  className="bg-transparent border outline-none text-black w-1/2 rounded-full px-4"
+                  value={newQuantity}
+                  onChangeText={setNewQuantity}
+                  keyboardType="numeric"
+                  maxLength={4}
+                  autoFocus
+                />
                 <View className="flex-row gap-2 items-center flex-1">
                   <Button
                     className="bg-blue-500 rounded-full"
@@ -363,13 +363,13 @@ const ProductItem = ({
                   >
                     <P className="text-white">Save</P>
                   </Button>
-                <Button
-                  className="bg-black rounded-full px-3 py-1"
-                  size={"default"}
-                  onPress={() => setIsEditing(false)}
-                >
-                  <P className="text-white">Cancel</P>
-                </Button>
+                  <Button
+                    className="bg-black rounded-full px-3 py-1"
+                    size={"default"}
+                    onPress={() => setIsEditing(false)}
+                  >
+                    <P className="text-white">Cancel</P>
+                  </Button>
                 </View>
               </View>
             ) : (
@@ -395,8 +395,11 @@ const ProductItem = ({
                 <Button
                   className="bg-black rounded-full px-3 py-1 flex-row items-center gap-2"
                   onPress={() => setIsEditing(true)}
-                  >
-                    <PlusIcon size={18} color={'#fff'} /> <P>Stock</P>
+                >
+                  <PlusIcon size={18} color={"#fff"} />
+                  <Text>
+                    <P>Stock</P>
+                  </Text>
                 </Button>
               </View>
             )}
