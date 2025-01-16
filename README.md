@@ -13,6 +13,7 @@ REFNET is a comprehensive application designed to manage various aspects of a re
 - **Technician and Repair Management**: Assign and manage repair tasks.
 - **Dispatch Management**: Manage dispatches and track delivery status.
 - **Financial Records**: View and manage financial records.
+- **Materials Management**: Select and assign materials for repair tasks.
 
 ## Technologies Used
 
@@ -95,6 +96,11 @@ REFNET is a comprehensive application designed to manage various aspects of a re
 ### Financial Records
 
 - **View Records**: Admins can view and manage financial records.
+
+### Materials Management
+
+- **Select Materials**: Select materials required for repair tasks.
+- **Assign Materials**: Assign selected materials to repair tasks.
 
 ## Contributing
 

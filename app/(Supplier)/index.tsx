@@ -5,60 +5,75 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  TextInput,
   Alert,
   RefreshControl,
 } from "react-native";
 import { supabase } from "~/lib/supabase";
-import { ProductCard } from "~/components/ProductCard";
-import { ProductDetailsModal } from "~/components/sheets/productdetails";
+import { OrderItem } from "~/components/OrderItem";
+import {
+  ArrowDownNarrowWide,
+  Filter,
+  GalleryVerticalEnd,
+} from "lucide-react-native";
+import { H1, H3, H4, P } from "~/components/ui/typography";
 import {
   GalleryVertical,
   ListChecks,
   ListTodo,
   MessageCircle,
-  Search,
 } from "lucide-react-native";
-import { H3 } from "~/components/ui/typography";
 import StatsCard from "~/components/StatsCard";
-import { Input } from "~/components/ui/input";
-import displayNotification from "~/lib/Notification";
-import { P } from "~/components/ui/typography";
-import { Button } from "~/components/ui/button";
+import { AssignMaterialsModal } from "~/components/sheets/assignMaterials";
+// import { Material } from "~/components/Material";
 
-type Product = {
-  product_id: number;
-  name: string;
-  description: string;
-  supplier_id: number;
-  category: string;
-  price: number;
-  stock_quantity: number;
-  reorder_level: number;
-  created_at: string;
-  image_url: string;
+type Order = {
+  id: number;
+  service: string;
+  date: string;
+  time: string;
+  customerName: string;
+  supplier_status: "pending" | "assigned" | "completed";
+  assignedTo?: string;
+  products: any;
 };
 
-const PRODUCTS_PER_PAGE = 6;
+type Technician = {
+  id: number;
+  name: string;
+  speciality: string;
+};
+
+type Material = {
+  id: number;
+  name: string;
+  quantity: number;
+};
 
 export default function Page() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [filterStatus, setFilterStatus] = useState<
+    "All" | "pending" | "assigned"
+  >("All");
+  const skeletons = [0, 1, 2, 3, 4, 5, 6];
   const [refreshing, setRefreshing] = useState(false);
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [selectedMaterials, setSelectedMaterials] = useState<number[]>([]);
 
   useEffect(() => {
-    fetchProducts();
+    fetchOrders();
+    fetchTechnicians();
+    fetchMaterials(); // Fetch materials
     const subscription = supabase
-      .channel("products")
+      .channel("repairs")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "products" },
-        handleProductChange
+        { event: "*", schema: "public", table: "orders" },
+        handleOrderChange
       )
       .subscribe();
 
@@ -67,27 +82,19 @@ export default function Page() {
     };
   }, []);
 
-  useEffect(() => {
-    const filtered = products.filter(
-      (product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-  }, [searchQuery, products]);
-
-  const fetchProducts = async () => {
+  const fetchOrders = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("name", { ascending: true });
+        .from("repairs")
+        .select(
+          "*, services(*), users:customer_id(full_name), products:product_id(*), technicians:technician_id(full_name)"
+        )
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
-      setFilteredProducts(data || []);
+      setOrders(data || []);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -97,105 +104,125 @@ export default function Page() {
     }
   };
 
-  const handleProductChange = (payload: any) => {
-    fetchProducts();
-  };
+  const fetchTechnicians = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("technicians")
+        .select("*, users:user_id(username)");
 
-  const handleViewDetails = (productId: number) => {
-    const product = products.find((p) => p.product_id === productId);
-    if (product) {
-      setSelectedProduct(product);
+      if (error) throw error;
+      setTechnicians(data || []);
+    } catch (err) {
+      console.error("Error fetching technicians:", err);
     }
   };
 
-  const handleUpdateStock = async (productId: number, newStock: number) => {
+  const fetchMaterials = async () => {
     try {
+      const { data, error } = await supabase.from("materials").select("*");
+      if (error) throw error;
+      setMaterials(data || []);
+      console.log('Fetching materials: ', data)
+    } catch (err) {
+      console.error("Error fetching materials:", err);
+    }
+  };
+
+  const handleOrderChange = (payload: any) => {
+    fetchOrders();
+  };
+
+  const handleAssign = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setModalVisible(true);
+  };
+
+  const assignTechnician = async (technicianId: number) => {
+    if (!selectedOrderId) return;
+
+    try {
+      const technician = technicians.find((t) => t.id === technicianId);
+      if (!technician) throw new Error("Technician not found");
+
       const { error } = await supabase
-        .from("products")
-        .update({ stock_quantity: newStock })
-        .eq("product_id", productId);
+        .from("repairs")
+        .update({
+          status: "assigned",
+          assignedTo: technician.name,
+          materials_assigned: selectedMaterials,
+          supplier_status: "supplied",
+        })
+        .eq("id", selectedOrderId);
 
       if (error) throw error;
 
-      setSelectedProduct(null);
-      fetchProducts();
-      displayNotification("Stock updated successfully", "success");
+      setModalVisible(false);
+      setSelectedOrderId(null);
+      setSelectedMaterials([]);
+      Alert.alert("Success", "Technician assigned and materials supplied successfully");
     } catch (err) {
-      console.error("Error updating stock:", err);
-      displayNotification(
-        "Failed to update stock. Please try again.",
-        "danger"
+      Alert.alert(
+        "Error",
+        err instanceof Error ? err.message : "An unknown error occurred"
       );
     }
   };
 
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+  const handleMaterialSelect = (materialId: number) => {
+    setSelectedMaterials((prev) =>
+      prev.includes(materialId)
+        ? prev.filter((id) => id !== materialId)
+        : [...prev, materialId]
+    );
   };
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  const filteredOrders = orders.filter((order) => {
+    if (filterStatus === "All") return true;
+    return order.supplier_status === filterStatus;
+  });
 
-  const calculateStats = (products: Product[]) => {
+  const calculateStats = (orders: Order[]) => {
     return [
       {
         iconBgColor: "bg-blue-600",
         Icon: <GalleryVertical color="white" size={19} />,
-        Title: "Total Products",
-        Description: `${products.length} items`,
+        Title: "Total Orders",
+        Description: `${orders.length} orders`,
       },
       {
         iconBgColor: "bg-orange-600",
         Icon: <ListTodo color="white" size={19} />,
-        Title: "Low Stock",
+        Title: "Pending",
         Description: `${
-          products.filter((p) => p.stock_quantity <= 10).length
-        } items`,
+          orders.filter((o) => o.supplier_status === "pending").length
+        } orders`,
       },
       {
-        iconBgColor: "bg-red-600",
+        iconBgColor: "bg-green-600",
         Icon: <ListChecks color="white" size={19} />,
-        Title: "Out of Stock",
+        Title: "Assigned",
         Description: `${
-          products.filter((p) => p.stock_quantity === 0).length
-        } items`,
+          orders.filter((o) => o.supplier_status === "assigned").length
+        } orders`,
       },
       {
         iconBgColor: "bg-purple-600",
         Icon: <MessageCircle color="white" size={19} />,
-        Title: "Categories",
-        Description: `${new Set(products.map((p) => p.category)).size} total`,
+        Title: "Completed",
+        Description: `${
+          orders.filter((o) => o.supplier_status === "completed").length
+        } orders`,
       },
     ];
   };
 
-  const stats = calculateStats(products);
+  const stats = calculateStats(orders);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchProducts();
+    await fetchOrders();
     setRefreshing(false);
   };
-
-  if (isLoading) {
-    return (
-      <View className="flex-1 justify-center items-center bg-gray-100">
-        <ActivityIndicator size="large" color="#3b82f6" />
-      </View>
-    );
-  }
 
   if (error) {
     return (
@@ -203,7 +230,7 @@ export default function Page() {
         <Text className="text-red-500 text-lg">{error}</Text>
         <TouchableOpacity
           className="mt-4 bg-blue-500 px-4 py-2 rounded-lg"
-          onPress={fetchProducts}
+          onPress={fetchOrders}
         >
           <Text className="text-white font-bold">Retry</Text>
         </TouchableOpacity>
@@ -222,9 +249,9 @@ export default function Page() {
         <View className="bg-white p-4 gap-6">
           <H3 className="text-black">Statistics</H3>
           <View className="flex-row flex-wrap gap-y-6 justify-between">
-            {stats.map((stat) => (
+            {stats.map((stat, index) => (
               <StatsCard
-                key={stat.Title}
+                key={index}
                 iconBgColor={stat.iconBgColor}
                 Icon={stat.Icon}
                 Title={stat.Title}
@@ -233,55 +260,90 @@ export default function Page() {
             ))}
           </View>
         </View>
-        <View className="flex-row items-center rounded-lg p-4">
-          <Search color={"white"} size={14} />
-          <Input
-            className="flex-1 text-base border-0"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
-        <View className="flex-1 py-4">
-          {paginatedProducts.map((product) => (
-            <React.Fragment key={product.product_id}>
-              <ProductDetailsModal
-                sheetTrigger={
-                  <ProductCard
-                    product={product}
-                    onViewDetails={handleViewDetails}
-                  />
-                }
-                visible={selectedProduct?.product_id === product.product_id}
-                product={product}
-                onClose={() => setSelectedProduct(null)}
-                onUpdateStock={handleUpdateStock}
-              />
-            </React.Fragment>
-          ))}
-        </View>
-        <View className="flex-row items-center justify-between my-4 px-2">
-          <Button
-            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
-            onPress={handlePreviousPage}
-            disabled={currentPage === 1}
-          >
-            <P className="text-white">&larr; Previous</P>
-          </Button>
 
-          <P className="text-white mx-4">
-            Page {currentPage} of {totalPages}
-          </P>
+        <View className="py-6 px-4">
+          <View className="flex-row justify-between items-center">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="flex-row gap-2"
+            >
+              {(["All", "pending", "assigned"] as const).map(
+                (status, index) => (
+                  <TouchableOpacity
+                    key={status}
+                    className={`px-3 pb-2 border-b-2 flex-row items-center ${
+                      filterStatus === status
+                        ? "border-white"
+                        : "border-zinc-900"
+                    }`}
+                    onPress={() => setFilterStatus(status)}
+                  >
+                    {status === "All" ? (
+                      <GalleryVerticalEnd
+                        size={16}
+                        color={filterStatus === status ? "#fff" : "#3f3f46"}
+                      />
+                    ) : status === "pending" ? (
+                      <ListTodo
+                        size={16}
+                        color={filterStatus === status ? "#fff" : "#3f3f46"}
+                      />
+                    ) : (
+                      <ListChecks
+                        size={16}
+                        color={filterStatus === status ? "#fff" : "#3f3f46"}
+                      />
+                    )}
+                    <H4
+                      className={`capitalize text-lg px-2 ${
+                        filterStatus === status ? "text-white" : "text-zinc-700"
+                      }`}
+                    >
+                      {status === "All" ? "All Requests" : status}
+                    </H4>
+                  </TouchableOpacity>
+                )
+              )}
+            </ScrollView>
+          </View>
+        </View>
 
-          <Button
-            className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
-            onPress={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            <P className="text-white">Next &rarr;</P>
-          </Button>
+        <View className="flex-1 p-4">
+          <View className="gap-4">
+            {isLoading ? (
+              skeletons.map((skeleton, index) => (
+                <View
+                  className="w-full h-32 bg-zinc-900 animate-pulse rounded-lg"
+                  key={index}
+                />
+              ))
+            ) : filteredOrders.length === 0 ? (
+              <View className="p-4">
+                <H1 className="text-white !text-[40px]">
+                  No results {"\n"}Found
+                </H1>
+              </View>
+            ) : (
+              filteredOrders.map((order, index) => (
+                <AssignMaterialsModal
+                  key={index}
+                  sheetTrigger={
+                    <OrderItem order={order} onAssign={handleAssign} />
+                  }
+                  visible={modalVisible && selectedOrderId === order.id}
+                  product={order.products}
+                  repair={order}
+                  materials={materials} // Pass materials to the modal
+                  selectedMaterials={selectedMaterials}
+                  onMaterialSelect={handleMaterialSelect}
+                  onAssign={(technicianId) => assignTechnician(technicianId)}
+                />
+              ))
+            )}
+          </View>
         </View>
       </ScrollView>
     </View>
   );
-};
+}
