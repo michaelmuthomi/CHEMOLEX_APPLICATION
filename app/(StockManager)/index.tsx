@@ -248,19 +248,19 @@ export default function Page() {
         </View>
       </View>
 
-      <View className="my-4 gap-4 py-4">
+      <View className="my-4 gap-4 py-4 mt-10">
         <View className="px-2 flex-row items-center justify-between">
-          <H3 className="text-xl w-1/2">Manage Products</H3>
+          <H3 className="text-2xl w-1/2">Manage Products</H3>
           <AddProduct
             sheetTrigger={
-              <TouchableOpacity className="rounded-full px-4 py-2 bg-[#111]">
+              <Button className="rounded-full px-4 py-2 bg-[#111]">
                 <P className="">+ Add Product</P>
-              </TouchableOpacity>
+              </Button>
             }
           />
         </View>
-        <View className="flex-row items-center px-2 bg-white">
-          <Search size={18} color={"#888"} />
+        <View className="flex-row items-center px-4">
+          <Search size={16} color={"#999"} />
           <Input
             className="my-2 mx-2 py-2 border-none border-0 bg-transparent w-full text-black"
             placeholder="Search for a product"
@@ -341,8 +341,8 @@ const ProductItem = ({
             source={{
               uri: product.image_url.replace(/^http:\/\//i, "https://"),
             }}
-            className="w-full h-32 rounded-lg mt-6"
-            style={{ objectFit: "contain" }}
+            className="w-full h-48 rounded-lg mt-6 border"
+            style={{ objectFit: "cover" }}
           />
           <View className="flex-row items-center mt-8">
             {isEditing ? (
@@ -382,7 +382,7 @@ const ProductItem = ({
                   <View className="flex-row items-center gap-2">
                     {isLowStock && <AlertTriangle size={14} color="#ef4444" />}
                     <H4
-                      className={`text-base ${
+                      className={`text-lg ${
                         isLowStock ? "text-red-500" : "text-black"
                       }`}
                     >
