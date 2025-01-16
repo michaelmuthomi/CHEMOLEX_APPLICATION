@@ -23,7 +23,7 @@ export default function SettingsScreen() {
   return (
     <View className=" bg-[#060606] flex-1 p-6 gap-10">
       <ScrollView>
-        <View className="flex-1">
+        <View className="flex-1 mt-2">
           <TouchableOpacity
             className="flex-row w-full items-center gap-2"
             onPress={() => navigation.navigate("profile")}
