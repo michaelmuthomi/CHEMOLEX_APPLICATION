@@ -214,6 +214,22 @@ const generateReceipt = (order: any): Receipt => {
     status: order.status
   };
 };
+const generateServiceReceipt = (order: any): Receipt => {
+  return {
+    orderId: order.serviceDetails.id,
+    date: order.order_date,
+    customerName: order.user_id,
+    items: [
+      {
+        name: order.serviceDetails.name,
+        quantity: order.serviceDetails.quantity,
+        price: order.serviceDetails.price,
+      },
+    ],
+    total: order.serviceDetails.price,
+    status: order.status,
+  };
+};
 
 const downloadReceipt = async (receipt: Receipt) => {
   try {
@@ -568,10 +584,13 @@ export default function Page() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView className="flex-1">
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               {selectedOrder ? (
                 <View className="space-y-4">
-                  <ScrollView className="bg-white p-2 h-full">
+                  <ScrollView
+                    className="bg-white p-2 h-full"
+                    style={{ flex: 1 }}
+                  >
                     <View>
                       <Image
                         source={{
@@ -887,7 +906,7 @@ export default function Page() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView className="flex-1">
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               {selectedProduct ? (
                 <View className="space-y-4">
                   <View className="bg-white p-2 h-full">
@@ -1062,7 +1081,7 @@ export default function Page() {
                 <X size={24} color="#fff" />
               </TouchableOpacity>
             </View>
-
+  
             <ScrollView className="flex-1 p-4 bg-white">
               {services.map((service) => (
                 <View key={service.id} className="mb-4">
@@ -1098,6 +1117,14 @@ export default function Page() {
                           value={`${formatPrice(service.serviceDetails.price)}`}
                         />
                       </View>
+                      {service.completion_status === "complete" && (
+                        <Button
+                          onPress={() => handleDownloadReceipt(service)}
+                          className="mt-4 bg-zinc-800 rounded-full"
+                        >
+                          <P className="text-white">Download Receipt</P>
+                        </Button>
+                      )}
                     </>
                   )}
                 </View>
@@ -1108,6 +1135,11 @@ export default function Page() {
       </View>
     </Modal>
   );
+  
+  const handleDownloadReceipt = (service) => {
+    const receipt = generateServiceReceipt(service);
+    downloadReceipt(receipt);
+  };
 
   const handleViewReceipt = (order: any) => {
     const receipt = generateReceipt(order);
