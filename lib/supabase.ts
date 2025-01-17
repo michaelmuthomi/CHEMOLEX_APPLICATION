@@ -759,3 +759,18 @@ export async function fetchServiceDetails(service_id: number) {
     return data; // Return the fetched service details
   }
 }
+
+// Function to update finance status of a repair
+export async function updateFinanceStatus(repair_id: number, status: string) {
+  const { data, error } = await supabase
+    .from("repairs")
+    .update({ finance_status: status })
+    .eq("id", repair_id)
+    .single();
+
+  if (error) {
+    return `Error: ${error.message || JSON.stringify(error)}`;
+  } else {
+    return `Success: ${JSON.stringify(data)}`;
+  }
+}

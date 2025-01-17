@@ -8,24 +8,22 @@ import {
   Alert,
   RefreshControl,
 } from "react-native";
-import { checkUser, fetchAllFinancialRecords, supabase } from "~/lib/supabase";
+import { checkUser, fetchAllFinancialRecords, supabase, updateFinanceStatus } from "~/lib/supabase";
 import { RepairCard } from "~/components/RepairCard";
 import { useEmail } from "../EmailContext";
 import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { FinanceItem } from "~/components/FinanceItem";
 import {
   ArrowDown,
   ArrowUp,
   CreditCard,
-  GalleryVertical,
   GalleryVerticalEnd,
   ListChecks,
   ListTodo,
-  MessageCircle,
 } from "lucide-react-native";
 import StatsCard from "~/components/StatsCard";
 import { formatBalance } from "~/lib/formatBalance";
 import { OrderCard } from "~/components/OrderCard";
-import { OrderItem } from "~/components/OrderItem";
 import { Button } from "~/components/ui/button";
 import { AssignTechnicianModal } from "~/components/sheets/assignTechnician";
 
@@ -177,7 +175,7 @@ export default function Page() {
 
       const response = await checkUser(emailContext.email);
       if (!response || !response.user_id) {
-        console.error("User  details could not be fetched");
+        console.error("User details could not be fetched");
         return;
       }
 
@@ -199,33 +197,12 @@ export default function Page() {
 
       if (error) throw error;
       setOrders(data || []);
-
-      // Update stats based on fetched orders
-      const assignmentCount = data.filter(
-        (r) => r.status === "assigned"
-      ).length;
-      const pendingCount = data.filter((r) => r.status === "pending").length;
-      const approvedCount = data.filter((r) => r.status === "approved").length;
-      const redoCount = data.filter((r) => r.status === "redo").length;
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleRepairChange = (payload: any) => {
-    fetchAllOrders();
-  };
-
-  const handleViewDetails = (orderId: number) => {
-    const order = orders.find((r) => r.id === orderId);
-    if (order) {
-      console.log("Selected order", order);
-      setSelectedOrder(order);
-      setIsModalVisible(true);
     }
   };
 
@@ -272,7 +249,7 @@ export default function Page() {
   };
 
   const paginatedOrders = sortedOrders.slice(
-    (currentPage - 1) * ORDERS_PER_PAGE,  
+    (currentPage - 1) * ORDERS_PER_PAGE,
     currentPage * ORDERS_PER_PAGE
   );
 
@@ -283,6 +260,74 @@ export default function Page() {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  useEffect(() => {
+    fetchRepairs();
+    const subscription = supabase
+      .channel("repairs")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "repairs" },
+        handleRepairChange
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleRepairChange = (payload: any) => {
+    fetchRepairs();
+  };
+
+  const handleViewDetails = (repairId: number) => {
+    const repair = repairs.find((r) => r.id === repairId);
+    if (repair) {
+      setSelectedRepair(repair);
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleApproveRepair = async (repairId: number) => {
+    try {
+      const { error } = await supabase
+        .from("repairs")
+        .update({ status: "completed" })
+        .eq("id", repairId);
+
+      if (error) throw error;
+
+      Alert.alert(
+        "Success",
+        "Repair has been approved and marked as completed."
+      );
+      setIsModalVisible(false);
+      fetchRepairs();
+    } catch (err) {
+      Alert.alert(
+        "Error",
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const getSortedRepairs = () => {
+    switch (sortBy) {
+      case "pending":
+        return repairs.filter((repair) => repair.status === "pending");
+      case "inprogress":
+        return repairs.filter((repair) => repair.status === "inprogress");
+      case "completed":
+        return repairs.filter((repair) => repair.status === "completed");
+      default:
+        return repairs;
+    }
+  };
+
+  const sortedRepairs = getSortedRepairs();
+
+  const pendingApprovalRepairs = repairs.filter((r) => r.status === "pending");
 
   const fetchRepairs = async () => {
     setError(null);
@@ -304,10 +349,6 @@ export default function Page() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchRepairs();
-  }, []); // Add an empty dependency array to run only once
 
   const filteredRepairs = repairs.filter((order) => {
     if (filterStatus === "All") return true;
@@ -452,18 +493,15 @@ export default function Page() {
               </H1>
             </View>
           ) : (
-            filteredRepairs.map((order, index) => (
-              <AssignTechnicianModal
-                key={index}
-                sheetTrigger={
-                  <OrderItem order={order} onAssign={handleAssign} />
-                }
-                visible={modalVisible && selectedOrderId === order.id}
-                product={order.products}
-                repair={order}
-                technicians={technicians}
-                onAssign={(technicianId) => assignTechnician(technicianId)}
-              />
+            filteredRepairs.map((repair, index) => (
+              <View className="">
+                <FinanceItem
+                  key={repair.id}
+                  repair={repair}
+                  onViewDetails={handleViewDetails}
+                  updateFinanceStatus={() => updateFinanceStatus(repair.id, 'approved')}
+                />
+              </View>
             ))
           )}
         </View>
