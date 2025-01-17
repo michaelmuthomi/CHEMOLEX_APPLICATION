@@ -45,6 +45,9 @@ import { ManageOrders } from "~/components/sheets/manage/orders";
 import { ManageReviews } from "~/components/sheets/manage/review";
 import { Textarea } from "~/components/ui/textarea";
 import { Services } from "~/components/sheets/manage/services";
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import * as Print from 'expo-print';
 
 interface customer {
   full_name: string;
@@ -69,6 +72,19 @@ interface Order {
   total: number;
   items: OrderItem[];
   trackingNumber?: string;
+}
+
+interface Receipt {
+  orderId: string;
+  date: string;
+  customerName: string;
+  items: {
+    name: string;
+    quantity: number;
+    price: number;
+  }[];
+  total: number;
+  status: string;
 }
 
 const personalInformationModalTrigger = [
@@ -172,6 +188,122 @@ const mockOrders: Order[] = [
   },
 ];
 
+const printReceipt = (order: Order) => {
+  console.log("Receipt for Order:", order.id);
+  console.log("Date:", order.date);
+  console.log("Status:", order.status);
+  console.log("Total:", formatPrice(order.total));
+  order.items.forEach((item) => {
+    console.log("Item:", item.name);
+    console.log("Price:", formatPrice(item.price));
+    console.log("Quantity:", item.quantity);
+  });
+};
+
+const generateReceipt = (order: any): Receipt => {
+  return {
+    orderId: order.order_id,
+    date: order.order_date,
+    customerName: order.user_id,
+    items: [{
+      name: order.products.name,
+      quantity: order.quantity,
+      price: order.unit_price
+    }],
+    total: order.total_price,
+    status: order.status
+  };
+};
+
+const downloadReceipt = async (receipt: Receipt) => {
+  try {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+          <style>
+            body { 
+              font-family: -apple-system, sans-serif; 
+              padding: 20px;
+              margin: 0;
+            }
+            .header { 
+              text-align: center; 
+              margin-bottom: 30px;
+              padding: 20px;
+              background-color: #f8f9fa;
+            }
+            .section { 
+              margin: 15px 0; 
+              border-bottom: 1px solid #eee; 
+              padding-bottom: 10px; 
+            }
+            .item-row {
+              display: flex;
+              justify-content: space-between;
+              padding: 10px 0;
+            }
+            .total {
+              font-weight: bold;
+              font-size: 1.2em;
+              margin-top: 20px;
+              padding: 15px;
+              background-color: #f8f9fa;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1 style="margin: 0;">Receipt</h1>
+            <p style="margin: 10px 0 0 0;">Order #${receipt.orderId}</p>
+          </div>
+          
+          <div class="section">
+            <p>Date: ${new Date(receipt.date).toLocaleDateString()}</p>
+            <p>Status: ${receipt.status}</p>
+          </div>
+
+          <div class="section">
+            <h2>Items</h2>
+            ${receipt.items.map(item => `
+              <div class="item-row">
+                <div>
+                  <p style="margin: 0;">${item.name}</p>
+                  <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${item.quantity}</p>
+                </div>
+                <p style="margin: 0;">${formatPrice(item.price * item.quantity)}</p>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="total item-row">
+            <span>Total</span>
+            <span>${formatPrice(receipt.total)}</span>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const { uri } = await Print.printToFileAsync({
+      html: htmlContent,
+      base64: false
+    });
+
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(uri, {
+        UTI: '.pdf',
+        mimeType: 'application/pdf'
+      });
+    } else {
+      displayNotification('Sharing is not available on this device', 'error');
+    }
+  } catch (error) {
+    console.error('Error generating PDF receipt:', error);
+    displayNotification('Failed to generate receipt', 'error');
+  }
+};
+
 export default function Page() {
   const navigation = useNavigation();
   const emailContext = useEmail();
@@ -193,6 +325,8 @@ export default function Page() {
   const [services, setServices] = useState([]);
   const { setEmail } = emailContext!;
   const [refreshing, setRefreshing] = useState(false);
+  const [receiptModalVisible, setReceiptModalVisible] = useState(false);
+  const [currentReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
 
   const handleMenuPress = (screen: any) => {
     setActiveModal(screen);
@@ -221,9 +355,7 @@ export default function Page() {
 
   async function fetchUserServices() {
     if (customer.user_id) {
-      const response: any = await fetchUserRequestedServices(
-        customer.user_id
-      );
+      const response: any = await fetchUserRequestedServices(customer.user_id);
       setServices(response);
     }
   }
@@ -263,6 +395,10 @@ export default function Page() {
   const handleInitiateReturn = (orderId: string) => {
     // TODO: Implement return initiation logic
     displayNotification("Return request initiated", "success");
+    const order = orders.find((order) => order.id === orderId);
+    if (order) {
+      printReceipt(order);
+    }
     setSelectedOrder(null);
   };
 
@@ -283,6 +419,7 @@ export default function Page() {
       setSelectedProduct(null);
       setRating(0);
       setComment("");
+      printReceipt(order);
     }
   };
 
@@ -553,6 +690,24 @@ export default function Page() {
                         <P className="uppercase text-black">Initiate Return</P>
                       </Button>
                     )}
+                    <View className="flex-row gap-4 w-full justify-between mt-4">
+                      <Button
+                        className="rounded-full border-2 border-gray-500 bg-transparent"
+                        size={"lg"}
+                        variant="default"
+                        onPress={() => setSelectedOrder(null)}
+                      >
+                        <H5 className="text-black text-2xl">&larr;</H5>
+                      </Button>
+                      <Button
+                        onPress={() => handleViewReceipt(selectedOrder)}
+                        className="rounded-full flex-1 bg-green-700"
+                        size={"lg"}
+                        variant="default"
+                      >
+                        <H5 className="text-white">View Receipt</H5>
+                      </Button>
+                    </View>
                   </ScrollView>
                 </View>
               ) : (
@@ -625,6 +780,67 @@ export default function Page() {
               )}
             </ScrollView>
           </SafeAreaView>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const renderReceiptModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={receiptModalVisible}
+      onRequestClose={() => setReceiptModalVisible(false)}
+    >
+      <View className="flex-1 bg-black/50 justify-center items-center">
+        <View className="bg-white w-[90%] rounded-xl p-6">
+          <View className="items-center mb-4">
+            <H3>Receipt</H3>
+            <P className="text-gray-500">Order #{currentReceipt?.orderId}</P>
+          </View>
+
+          <View className="border-t border-b border-gray-200 py-4 my-4">
+            <P className="text-gray-600">
+              Date: {formatDate(currentReceipt?.date || "")}
+            </P>
+            <P className="text-gray-600 mt-1">
+              Status: {currentReceipt?.status}
+            </P>
+          </View>
+
+          {currentReceipt?.items.map((item, index) => (
+            <View key={index} className="flex-row justify-between py-2">
+              <View className="flex-1">
+                <P className="text-gray-800">{item.name}</P>
+                <P className="text-gray-500">x{item.quantity}</P>
+              </View>
+              <P className="text-gray-800">
+                {formatPrice(item.price * item.quantity)}
+              </P>
+            </View>
+          ))}
+
+          <View className="border-t border-gray-200 mt-4 pt-4">
+            <View className="flex-row justify-between">
+              <H4>Total</H4>
+              <H4>{formatPrice(currentReceipt?.total || 0)}</H4>
+            </View>
+          </View>
+
+          <View className="flex-row gap-4 mt-6">
+            <Button
+              onPress={() => setReceiptModalVisible(false)}
+              className="flex-1 bg-gray-200"
+            >
+              <P className="text-gray-800">Close</P>
+            </Button>
+            <Button
+              onPress={() => currentReceipt && downloadReceipt(currentReceipt)}
+              className="flex-1 bg-green-700"
+            >
+              <P className="text-white">Download</P>
+            </Button>
+          </View>
         </View>
       </View>
     </Modal>
@@ -876,6 +1092,12 @@ export default function Page() {
     </Modal>
   );
 
+  const handleViewReceipt = (order: any) => {
+    const receipt = generateReceipt(order);
+    setCurrentReceipt(receipt);
+    setReceiptModalVisible(true);
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -1038,6 +1260,7 @@ export default function Page() {
       {renderOrdersModal()}
       {renderReviewsModal()}
       {renderServicesModal()}
+      {renderReceiptModal()}
     </SafeAreaView>
   );
 }
