@@ -71,9 +71,10 @@ export function AssignMaterialsModal({
   onMaterialSelect: (materialId: number) => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-    const [productData, setProductData] = useState(product);
-    const [materials, setMaterials] = useState()
-    console.log('Materials: ', materials)
+  const [productData, setProductData] = useState(product);
+  const [materials, setMaterials] = useState()
+  const [selectedMaterial, setSelectedMaterial] = useState()
+  console.log('Materials: ', materials)
   const fetchMaterials = async () => {
     try {
       const { data, error } = await supabase.from("materials").select("*");
@@ -143,10 +144,9 @@ export function AssignMaterialsModal({
   };
 
   const handleAssignMaterials = () => {
-    const materialIds = selectedMaterials;
     supabase
       .from("repairs")
-      .update({ materials_assigned: materialIds })
+      .update({ materials_assigned: selectedMaterial })
       .eq("id", repair.id)
       .then((response) => {
         if (response.error) {
@@ -195,35 +195,34 @@ export function AssignMaterialsModal({
                   />
                   <DetailItem label="Name" value={productData.name} />
                   <DetailItem label="Category" value={productData.category} />
-                  <H5 className="text-sm text-gray-600 mb-1">{'Select Material'}</H5>
+                  <H5 className="text-sm text-gray-600 mb-1">
+                    {"Select Material"}
+                  </H5>
                   <Select
-                    multiple
-                    value={selectedMaterials}
-                    onChange={onMaterialSelect}
+                    value={selectedMaterial}
+                    onValueChange={setSelectedMaterial}
                   >
                     <SelectTrigger>
                       <SelectValue
-                        placeholder="Select materials"
+                        placeholder="Select material"
                         className="text-white"
                         style={{ fontFamily: "Inter_500Medium" }}
                       />
                     </SelectTrigger>
-                      <ScrollView>
-                    <SelectContent style={{ maxHeight: 200 }}>
+                    <ScrollView>
+                      <SelectContent style={{ maxHeight: 200 }}>
                         <SelectGroup>
                           <SelectLabel>Materials</SelectLabel>
                           {materials?.map((material: any) => (
                             <SelectItem
-                              key={material.id}
+                              key={material.name}
                               value={material.id}
                               label={material.name}
-                            >
-                              {material.name}
-                            </SelectItem>
+                            />
                           ))}
                         </SelectGroup>
-                    </SelectContent>
-                      </ScrollView>
+                      </SelectContent>
+                    </ScrollView>
                   </Select>
                   <View className="flex-row items-center gap-2 w-2/3 pt-4 ml-auto">
                     <Button
@@ -232,7 +231,7 @@ export function AssignMaterialsModal({
                       size={"lg"}
                       variant="default"
                     >
-                      <H5 className=" text-white">{"Assign Materials"}</H5>
+                      <H5 className=" text-white">{"Assign Material"}</H5>
                     </Button>
                   </View>
                 </>
