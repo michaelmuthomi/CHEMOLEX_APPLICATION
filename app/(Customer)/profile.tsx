@@ -870,7 +870,7 @@ export default function Page() {
       visible={activeModal === "review"}
       onRequestClose={() => setActiveModal(null)}
     >
-      <View className="flex-1 bg-black/50">
+      <ScrollView className="flex-1 bg-black/50">
         <View className="flex-1 mt-20 bg-zinc-900 rounded-t-3xl">
           <SafeAreaView className="flex-1">
             <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
@@ -1042,7 +1042,7 @@ export default function Page() {
             </ScrollView>
           </SafeAreaView>
         </View>
-      </View>
+      </ScrollView>
     </Modal>
   );
 
