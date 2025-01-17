@@ -414,6 +414,7 @@ export default function Page() {
                 <Input
                   placeholder="MM/YY"
                   placeholderTextColor="#666"
+                  keyboardType="numeric"
                   value={formatExpiryDate(paymentInfo.expiryDate)}
                   onChangeText={(text) =>
                     setPaymentInfo({ ...paymentInfo, expiryDate: text })
