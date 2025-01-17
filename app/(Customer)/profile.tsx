@@ -233,6 +233,14 @@ const downloadReceipt = async (receipt: Receipt) => {
               margin-bottom: 30px;
               padding: 20px;
               background-color: #f8f9fa;
+              border-bottom: 2px solid #dee2e6;
+            }
+            .company-details {
+              margin-bottom: 15px;
+            }
+            .logo {
+              max-width: 150px;
+              margin-bottom: 10px;
             }
             .section { 
               margin: 15px 0; 
@@ -255,8 +263,17 @@ const downloadReceipt = async (receipt: Receipt) => {
         </head>
         <body>
           <div class="header">
-            <h1 style="margin: 0;">Receipt</h1>
-            <p style="margin: 10px 0 0 0;">Order #${receipt.orderId}</p>
+            <div class="company-details">
+              <h1 style="margin: 0; color: #2d3748;">REFNET</h1>
+              <p style="margin: 5px 0; color: #4a5568;">Your Trusted Electronics Partner</p>
+              <p style="margin: 5px 0; color: #718096;">123 Tech Street, Digital City</p>
+              <p style="margin: 5px 0; color: #718096;">Tel: +1 234 567 8900</p>
+              <p style="margin: 5px 0; color: #718096;">Email: support@refnet.com</p>
+            </div>
+            <div style="margin-top: 20px;">
+              <h2 style="margin: 0; color: #2d3748;">Receipt</h2>
+              <p style="margin: 10px 0 0 0; color: #4a5568;">Order #${receipt.orderId}</p>
+            </div>
           </div>
           
           <div class="section">
