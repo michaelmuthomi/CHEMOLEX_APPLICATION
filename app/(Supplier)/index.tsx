@@ -24,6 +24,7 @@ import {
 } from "lucide-react-native";
 import StatsCard from "~/components/StatsCard";
 import { AssignMaterialsModal } from "~/components/sheets/assignMaterials";
+import { MaterialsItem } from "~/components/MaterialsItem";
 // import { Material } from "~/components/Material";
 
 type Order = {
@@ -329,7 +330,7 @@ export default function Page() {
                 <AssignMaterialsModal
                   key={index}
                   sheetTrigger={
-                    <OrderItem order={order} onAssign={handleAssign} />
+                    <MaterialsItem order={order} onAssign={handleAssign} />
                   }
                   visible={modalVisible && selectedOrderId === order.id}
                   product={order.products}

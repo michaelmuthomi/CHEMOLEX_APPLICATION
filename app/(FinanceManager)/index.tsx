@@ -25,6 +25,9 @@ import {
 import StatsCard from "~/components/StatsCard";
 import { formatBalance } from "~/lib/formatBalance";
 import { OrderCard } from "~/components/OrderCard";
+import { Button } from "~/components/ui/button";
+
+const ORDERS_PER_PAGE = 6;
 
 export default function Page() {
   type OrderStatus = "pending" | "approved";
@@ -76,6 +79,8 @@ export default function Page() {
     },
   ]);
   const [refreshing, setRefreshing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  
 
   useEffect(() => {
     fetchAllOrders();
@@ -246,6 +251,25 @@ export default function Page() {
     setRefreshing(false);
   };
 
+  const paginatedOrders = sortedOrders.slice(
+    (currentPage - 1) * ORDERS_PER_PAGE,  
+    currentPage * ORDERS_PER_PAGE
+  );
+
+  const totalPages = Math.ceil(sortedOrders.length / ORDERS_PER_PAGE);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-100">
@@ -334,13 +358,34 @@ export default function Page() {
         </View>
 
         <View className="p-4">
-          {sortedOrders.map((selectedOrder, index) => (
+          {paginatedOrders.map((selectedOrder, index) => (
             <OrderCard
               key={index}
               order={selectedOrder}
               onViewDetails={handleViewDetails}
             />
           ))}
+          <View className="flex-row items-center justify-between my-4">
+            <Button
+              className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+              onPress={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              <P className="text-white">&larr; Previous</P>
+            </Button>
+
+            <P className="text-white mx-4">
+              Page {currentPage} of {totalPages}
+            </P>
+
+            <Button
+              className="bg-[#111] rounded-full px-4 py-2 disabled:bg-zinc-900"
+              onPress={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              <P className="text-white">Next &rarr;</P>
+            </Button>
+          </View>
         </View>
       </ScrollView>
     </View>

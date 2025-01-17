@@ -114,7 +114,7 @@ export function AssignMaterialsModal({
       // Update technician_status to 'accepted' using repair id
       supabase
         .from("repairs")
-        .update({ technician_status: "accepted" })
+        .update({ technician_status: "accepted", supplier_status: 'assigned' })
         .eq("id", repair.id)
         .then((response) => {
           if (response.error) {
@@ -146,7 +146,7 @@ export function AssignMaterialsModal({
   const handleAssignMaterials = () => {
     supabase
       .from("repairs")
-      .update({ materials_assigned: selectedMaterial })
+      .update({ materials_assigned: selectedMaterial, supplier_status: 'assigned' })
       .eq("id", repair.id)
       .then((response) => {
         if (response.error) {
