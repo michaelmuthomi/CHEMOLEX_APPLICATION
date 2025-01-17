@@ -43,7 +43,7 @@ type Technician = {
 };
 
 export default function Page() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [repairs, setRepairs] = useState<Order[]>([]);
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,13 +56,13 @@ export default function Page() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchOrders();
+    fetchRepairs();
     fetchTechnicians();
     const subscription = supabase
       .channel("repairs")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "orders" },
+        { event: "*", schema: "public", table: "repairs" },
         handleOrderChange
       )
       .subscribe();
@@ -72,7 +72,7 @@ export default function Page() {
     };
   }, []);
 
-  const fetchOrders = async () => {
+  const fetchRepairs = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -84,7 +84,7 @@ export default function Page() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setOrders(data || []);
+      setRepairs(data || []);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -108,7 +108,7 @@ export default function Page() {
   };
 
   const handleOrderChange = (payload: any) => {
-    fetchOrders();
+    fetchRepairs();
   };
 
   const handleAssign = (orderId: number) => {
@@ -141,51 +141,51 @@ export default function Page() {
     }
   };
 
-  const filteredOrders = orders.filter((order) => {
+  const filteredRepairs = repairs.filter((order) => {
     if (filterStatus === "All") return true;
     return order.status === filterStatus;
   });
 
-  const calculateStats = (orders: Order[]) => {
+  const calculateStats = (repairs: Order[]) => {
     return [
       {
         iconBgColor: "bg-blue-600",
         Icon: <GalleryVertical color="white" size={19} />,
-        Title: "Total Orders",
-        Description: `${orders.length} orders`,
+        Title: "Total repairs",
+        Description: `${repairs.length} repairs`,
       },
       {
         iconBgColor: "bg-orange-600",
         Icon: <ListTodo color="white" size={19} />,
         Title: "Pending",
         Description: `${
-          orders.filter((o) => o.status === "pending").length
-        } orders`,
+          repairs.filter((o) => o.status === "pending").length
+        } repairs`,
       },
       {
         iconBgColor: "bg-green-600",
         Icon: <ListChecks color="white" size={19} />,
         Title: "Assigned",
         Description: `${
-          orders.filter((o) => o.status === "assigned").length
-        } orders`,
+          repairs.filter((o) => o.status === "assigned").length
+        } repairs`,
       },
       {
         iconBgColor: "bg-purple-600",
         Icon: <MessageCircle color="white" size={19} />,
         Title: "Completed",
         Description: `${
-          orders.filter((o) => o.status === "completed").length
-        } orders`,
+          repairs.filter((o) => o.status === "completed").length
+        } repairs`,
       },
     ];
   };
 
-  const stats = calculateStats(orders);
+  const stats = calculateStats(repairs);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchOrders();
+    await fetchRepairs();
     setRefreshing(false);
   };
 
@@ -195,7 +195,7 @@ export default function Page() {
         <Text className="text-red-500 text-lg">{error}</Text>
         <TouchableOpacity
           className="mt-4 bg-blue-500 px-4 py-2 rounded-lg"
-          onPress={fetchOrders}
+          onPress={fetchRepairs}
         >
           <Text className="text-white font-bold">Retry</Text>
         </TouchableOpacity>
@@ -283,14 +283,14 @@ export default function Page() {
                   key={index}
                 />
               ))
-            ) : filteredOrders.length === 0 ? (
+            ) : filteredRepairs.length === 0 ? (
               <View className="p-4">
                 <H1 className="text-white !text-[40px]">
                   No results {"\n"}Found
                 </H1>
               </View>
             ) : (
-              filteredOrders.map((order, index) => (
+              filteredRepairs.map((order, index) => (
                 <AssignTechnicianModal
                   key={index}
                   sheetTrigger={

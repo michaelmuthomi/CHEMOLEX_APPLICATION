@@ -11,7 +11,7 @@ import {
 import { checkUser, fetchAllFinancialRecords, supabase } from "~/lib/supabase";
 import { RepairCard } from "~/components/RepairCard";
 import { useEmail } from "../EmailContext";
-import { H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
 import {
   ArrowDown,
   ArrowUp,
@@ -25,7 +25,15 @@ import {
 import StatsCard from "~/components/StatsCard";
 import { formatBalance } from "~/lib/formatBalance";
 import { OrderCard } from "~/components/OrderCard";
+import { OrderItem } from "~/components/OrderItem";
 import { Button } from "~/components/ui/button";
+import { AssignTechnicianModal } from "~/components/sheets/assignTechnician";
+
+type Technician = {
+  id: number;
+  name: string;
+  speciality: string;
+};
 
 const ORDERS_PER_PAGE = 6;
 
@@ -80,7 +88,14 @@ export default function Page() {
   ]);
   const [refreshing, setRefreshing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  
+  const [repairs, setRepairs] = useState<Order[]>([]);
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [filterStatus, setFilterStatus] = useState<
+    "All" | "pending" | "assigned"
+  >("All");
+  const skeletons = [0, 1, 2, 3, 4, 5, 6];
 
   useEffect(() => {
     fetchAllOrders();
@@ -97,6 +112,11 @@ export default function Page() {
       subscription.unsubscribe();
     };
   }, [technicianId]); // Add technicianId as a dependency
+
+  const handleAssign = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setModalVisible(true);
+  };
 
   useEffect(() => {
     async function fetchFinanceRecords() {
@@ -264,6 +284,36 @@ export default function Page() {
     }
   };
 
+  const fetchRepairs = async () => {
+    setError(null);
+    try {
+      const { data, error } = await supabase
+        .from("repairs")
+        .select(
+          "*, services(*), users:customer_id(full_name), products:product_id(*), technicians:technician_id(full_name)"
+        )
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setRepairs(data || []);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRepairs();
+  }, []); // Add an empty dependency array to run only once
+
+  const filteredRepairs = repairs.filter((order) => {
+    if (filterStatus === "All") return true;
+    return order.status === filterStatus;
+  });
+
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -386,6 +436,36 @@ export default function Page() {
               <P className="text-white">Next &rarr;</P>
             </Button>
           </View>
+        </View>
+        <View className="gap-4">
+          {isLoading ? (
+            skeletons.map((skeleton, index) => (
+              <View
+                className="w-full h-32 bg-zinc-900 animate-pulse rounded-lg"
+                key={index}
+              />
+            ))
+          ) : filteredRepairs.length === 0 ? (
+            <View className="p-4">
+              <H1 className="text-white !text-[40px]">
+                No results {"\n"}Found
+              </H1>
+            </View>
+          ) : (
+            filteredRepairs.map((order, index) => (
+              <AssignTechnicianModal
+                key={index}
+                sheetTrigger={
+                  <OrderItem order={order} onAssign={handleAssign} />
+                }
+                visible={modalVisible && selectedOrderId === order.id}
+                product={order.products}
+                repair={order}
+                technicians={technicians}
+                onAssign={(technicianId) => assignTechnician(technicianId)}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
     </View>
