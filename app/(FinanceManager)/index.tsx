@@ -493,16 +493,21 @@ export default function Page() {
               </H1>
             </View>
           ) : (
-            filteredRepairs.map((repair, index) => (
-              <View className="">
-                <FinanceItem
-                  key={repair.id}
-                  repair={repair}
-                  onViewDetails={handleViewDetails}
-                  updateFinanceStatus={() => updateFinanceStatus(repair.id, 'approved')}
-                />
-              </View>
-            ))
+            <>
+              <H2 className="text-xl p-4">Approve repairs</H2>
+              {filteredRepairs.map((repair, index) => (
+                <View className="">
+                  <FinanceItem
+                    key={repair.id}
+                    repair={repair}
+                    onViewDetails={handleViewDetails}
+                    updateFinanceStatus={() =>
+                      updateFinanceStatus(repair.id, "approved")
+                    }
+                  />
+                </View>
+              ))}
+            </>
           )}
         </View>
       </ScrollView>
