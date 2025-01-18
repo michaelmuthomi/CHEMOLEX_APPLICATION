@@ -114,3 +114,29 @@ We welcome contributions to improve the REFNET application. Please follow these 
 ## Contact
 
 For any questions or support, please contact us at support@refnet.com.
+
+## Todo
+
+### Customer Module
+- [ ] Registration approved by admin
+- [ ] Change state in registration form to country
+- [ ] M-PESA as a payment method
+- [ ] Credit Card validation
+- [ ] Notifications
+- [ ] Shipping fees
+- [ ] Receipt improvement
+- [ ] Accept/Reject Delivered product
+- [ ] Product and Service review
+
+### Database Module
+- [ ] Use real world price for products
+- [ ] Add more technicians
+
+### Shipping Module
+- [ ] Categorize into pending and approved
+
+### Driver Module
+- [ ] Accept assignment and mark as delivered
+
+### Finance module
+- [ ] Remove service payment approval
