@@ -301,11 +301,11 @@ export default function Page() {
             </View>
           </View>
           <View className="gap-2 flex-1">
-            <H5>State</H5>
+            <H5>Country</H5>
             <View className="flex-row items-center rounded-md">
               <Earth size={16} color={"#aaaaaa"} />
               <Input
-                placeholder="State"
+                placeholder="Country"
                 placeholderTextColor="#666"
                 value={customer.state}
                 required={true}
