@@ -239,17 +239,20 @@ const downloadReceipt = async (receipt: Receipt) => {
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
           <style>
-            body { 
-              font-family: -apple-system, sans-serif; 
+            .container{
+              width: 350px;
+            }
+            body {
+              font-family: -apple-system, sans-serif;
               padding: 20px;
               margin: 0;
+              color: #2d3748;
+              background-color: #f8f9fa
             }
-            .header { 
-              text-align: center; 
+            .header {
               margin-bottom: 30px;
               padding: 20px;
-              background-color: #f8f9fa;
-              border-bottom: 2px solid #dee2e6;
+
             }
             .company-details {
               margin-bottom: 15px;
@@ -258,10 +261,10 @@ const downloadReceipt = async (receipt: Receipt) => {
               max-width: 150px;
               margin-bottom: 10px;
             }
-            .section { 
-              margin: 15px 0; 
-              border-bottom: 1px solid #eee; 
-              padding-bottom: 10px; 
+            .section {
+              margin: 15px 0;
+              border-block: 1px solid #eee;
+              padding-block: 10px;
             }
             .item-row {
               display: flex;
@@ -272,47 +275,59 @@ const downloadReceipt = async (receipt: Receipt) => {
               font-weight: bold;
               font-size: 1.2em;
               margin-top: 20px;
-              padding: 15px;
               background-color: #f8f9fa;
             }
           </style>
         </head>
         <body>
-          <div class="header">
-            <div class="company-details">
-              <h1 style="margin: 0; color: #2d3748;">REFNET</h1>
-              <p style="margin: 5px 0; color: #4a5568;">Your Trusted Electronics Partner</p>
-              <p style="margin: 5px 0; color: #718096;">123 Tech Street, Digital City</p>
-              <p style="margin: 5px 0; color: #718096;">Tel: +1 234 567 8900</p>
-              <p style="margin: 5px 0; color: #718096;">Email: support@refnet.com</p>
+          <div class='container'>
+            <div class="header">
+              <h1 style="margin: 0; color: #2d3748; text-align: center;">REFNET</h1>
             </div>
-            <div style="margin-top: 20px;">
-              <h2 style="margin: 0; color: #2d3748;">Receipt</h2>
-              <p style="margin: 10px 0 0 0; color: #4a5568;">Order #${receipt.orderId}</p>
-            </div>
-          </div>
-          
-          <div class="section">
+            <p>Hello <b>${receipt.orderId},</b></p>
+            <p>You have successfully paid for the order #${receipt.orderId}</p>
+
+            <!-- <div class="section">
             <p>Date: ${new Date(receipt.date).toLocaleDateString()}</p>
             <p>Status: ${receipt.status}</p>
-          </div>
+          </div> -->
 
-          <div class="section">
-            <h2>Items</h2>
-            ${receipt.items.map(item => `
+            <div class="section">
+              <p><b>Items</b></p>
+              ${receipt.items
+                .map(
+                  (item) => `
               <div class="item-row">
                 <div>
                   <p style="margin: 0;">${item.name}</p>
-                  <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${item.quantity}</p>
+                  <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${
+                    item.quantity
+                  }</p>
                 </div>
-                <p style="margin: 0;">${formatPrice(item.price * item.quantity)}</p>
+                <p style="margin: 0;">${formatPrice(
+                  item.price * item.quantity
+                )}</p>
               </div>
-            `).join('')}
-          </div>
+              `
+                )
+                .join("")}
+              <div class="item-row">
+                <div>
+                  <p style="margin: 0;">Tax</p>
+                  <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${
+                    item.quantity
+                  }</p>
+                </div>
+                <p style="margin: 0;">${formatPrice(
+                  item.price * item.quantity
+                )}</p>
+              </div>
+            </div>
 
-          <div class="total item-row">
-            <span>Total</span>
-            <span>${formatPrice(receipt.total)}</span>
+            <div class="total item-row">
+              <span>Total</span>
+              <span>${formatPrice(receipt.total)}</span>
+            </div>
           </div>
         </body>
       </html>
