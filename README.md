@@ -130,7 +130,7 @@ For any questions or support, please contact us at support@refnet.com.
 
 ### Database Module
 - [ ] Use real world price for products
-- [ ] Add more technicians
+- [x] Add more technicians
 
 ### Shipping Module
 - [ ] Categorize into pending and approved
