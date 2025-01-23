@@ -90,7 +90,7 @@ export default function Screen() {
     }
   };
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-4 pt-6">
+    <View className="flex-1 justify-between items-center gap-5 px-2 pt-6">
       <ScrollView>
         <View className="w-full mb-4">
           <H1>Create an account</H1>

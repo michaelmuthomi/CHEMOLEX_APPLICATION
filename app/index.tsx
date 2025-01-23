@@ -67,6 +67,17 @@ export default function LoginScreen() {
       const user_role = isValid["role"];
       console.log(user_role);
 
+      const user_status = isValid["status"];
+      console.log("User status: ", user_status);
+      if (user_status === "inactive") {
+        displayNotification(
+          "Account not active, Please contact admin",
+          "danger"
+        );
+        setLoading(false)
+        return;
+      }
+
       if (user_role === "customer") {
         console.log("User is a Customer");
         setEmailContext(email);

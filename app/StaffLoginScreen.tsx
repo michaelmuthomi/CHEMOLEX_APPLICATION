@@ -44,6 +44,15 @@ export default function Screen() {
         return;
       }
       const isValid = await validateUserCredentials(email, password);
+      const user_status = isValid["status"];
+      console.log("User status: ", user_status);
+      if (user_status === "inactive") {
+        displayNotification(
+          "Account not active, Please contact admin",
+          "danger"
+        );
+        return;
+      }
       if (isValid["role"]) {
         const user_role = isValid["role"];
         console.log("Role:", user_role);

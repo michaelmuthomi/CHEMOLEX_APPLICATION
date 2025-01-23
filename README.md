@@ -118,7 +118,7 @@ For any questions or support, please contact us at support@refnet.com.
 ## Todo
 
 ### Customer Module
-- [ ] Registration approved by admin
+- [x] Registration approved by admin
 - [x] Change state in checkout to country
 - [ ] M-PESA as a payment method
 - [ ] Credit Card validation
