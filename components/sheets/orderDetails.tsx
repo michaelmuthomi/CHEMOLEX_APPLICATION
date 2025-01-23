@@ -32,6 +32,7 @@ import { fetchSuppliers, insertNewProductToDB, supabase } from "~/lib/supabase";
 import { Value } from "@rn-primitives/select";
 import { formatPrice } from "~/lib/format-price";
 import { formatDate } from "~/lib/format-date";
+import { formatTime } from "~/lib/format-time";
 
 interface Supplier {
   user_id: Number;
@@ -180,32 +181,50 @@ export function OrderDetailsModal({
                 <>
                   <Image
                     source={{
-                      uri: productData.image_url.replace(/^http:\/\//i, "https://"),
+                      uri: productData.products.image_url.replace(
+                        /^http:\/\//i,
+                        "https://"
+                      ),
                     }}
                     className="w-full h-48 rounded-lg mb-4"
                   />
-                  <DetailItem label="Name" value={productData.name} />
+                  <DetailItem label="Name" value={productData.products.name} />
                   <DetailItem
                     label="Description"
-                    value={productData.description}
+                    value={productData.products.description}
                   />
                   <View className="flex-row w-full">
                     <View className="w-1/2">
                       <DetailItem
                         label="Price"
-                        value={`${formatPrice(productData.price.toFixed(2))}`}
+                        value={`${formatPrice(
+                          productData.products.price.toFixed(2)
+                        )}`}
                       />
                     </View>
                     <DetailItem
                       label="Amount Paid"
-                      value={productData.status || "N/A"}
+                      value={`${formatPrice(
+                        productData.products.price.toFixed(2)
+                      )}`}
                     />
                   </View>
+                  <View className="mb-4 ">
+                    <H5 className="text-sm text-gray-600 mb-1">
+                      {"Payment Status"}
+                    </H5>
+                    <H5 className="text-base w-1/3 text-center text-green-900 p-2 px-4 bg-green-50 rounded-full">
+                      {productData.payment_status || "N/A"}
+                    </H5>
+                  </View>
                   <DetailItem
-                    label="Payment Status"
-                    value={productData.status || "N/A"}
+                    label="Delivery Address"
+                    value={productData.delivery_address || "N/A"}
                   />
-
+                  <DetailItem
+                    label="Order Placed ON"
+                    value={`${formatDate(productData.created_at)} • ${formatTime(productData.created_at)}`}
+                  />
                   <View className="border-t-[1px] border-zinc-900 py-4">
                     <View className="flex-row items-center rounded-md w-full gap-2">
                       <Button
@@ -216,17 +235,17 @@ export function OrderDetailsModal({
                         disabled={updating}
                       >
                         <H4 className="text-lg text-slate-400">
-                          {updating ? "Updating" : "Decline"}
+                          &larr; {updating ? "Updating" : "Cancel"}
                         </H4>
                       </Button>
                       <Button
                         onPress={() => handleOrderApproval()}
-                        className="rounded-full flex-1 bg-green-700"
+                        className="rounded-full flex-1"
                         size={"lg"}
                         variant="default"
                         disabled={updating}
                       >
-                        <H4 className="text-lg">
+                        <H4 className="text-lg text-black">
                           {updating ? "Updating" : "Approve"}
                         </H4>
                       </Button>

@@ -81,7 +81,7 @@ export const OrderCard = ({
                 <H5 className=" text-white">{"Details"}</H5>
               </Button>
             }
-            product={order.products}
+            product={order}
             order={order}
             visible={modalVisible && selectedOrderId === order.id}
           />
