@@ -478,38 +478,6 @@ export default function Page() {
             </Button>
           </View>
         </View>
-        <View className="gap-4">
-          {isLoading ? (
-            skeletons.map((skeleton, index) => (
-              <View
-                className="w-full h-32 bg-zinc-900 animate-pulse rounded-lg"
-                key={index}
-              />
-            ))
-          ) : filteredRepairs.length === 0 ? (
-            <View className="p-4">
-              <H1 className="text-white !text-[40px]">
-                No results {"\n"}Found
-              </H1>
-            </View>
-          ) : (
-            <>
-              <H2 className="text-xl p-4">Approve repairs</H2>
-              {filteredRepairs.map((repair, index) => (
-                <View className="">
-                  <FinanceItem
-                    key={repair.id}
-                    repair={repair}
-                    onViewDetails={handleViewDetails}
-                    updateFinanceStatus={() =>
-                      updateFinanceStatus(repair.id, "approved")
-                    }
-                  />
-                </View>
-              ))}
-            </>
-          )}
-        </View>
       </ScrollView>
     </View>
   );

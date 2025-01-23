@@ -51,6 +51,7 @@ export default function Screen() {
           "Account not active, Please contact admin",
           "danger"
         );
+        setLoading(false)
         return;
       }
       if (isValid["role"]) {

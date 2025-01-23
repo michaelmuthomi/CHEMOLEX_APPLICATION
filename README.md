@@ -139,4 +139,4 @@ For any questions or support, please contact us at support@refnet.com.
 - [ ] Accept assignment and mark as delivered
 
 ### Finance module
-- [ ] Remove service payment approval
+- [x] Remove service payment approval
