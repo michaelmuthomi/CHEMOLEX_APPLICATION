@@ -140,3 +140,4 @@ For any questions or support, please contact us at support@refnet.com.
 
 ### Finance module
 - [x] Remove service payment approval
+- [x] Should have all order details
