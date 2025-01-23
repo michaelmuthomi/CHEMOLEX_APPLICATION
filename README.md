@@ -123,7 +123,7 @@ For any questions or support, please contact us at support@refnet.com.
 - [ ] M-PESA as a payment method
 - [ ] Credit Card validation
 - [ ] Notifications
-- [ ] Shipping fees
+- [x] Shipping fees
 - [ ] Receipt improvement
 - [ ] Accept/Reject Delivered product
 - [ ] Product and Service review
