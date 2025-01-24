@@ -136,7 +136,7 @@ For any questions or support, please contact us at support@refnet.com.
 - [ ] Categorize into pending and approved
 
 ### Driver Module
-- [ ] Accept assignment and mark as delivered
+- [x] Accept assignment and mark as delivered
 
 ### Finance module
 - [x] Remove service payment approval
