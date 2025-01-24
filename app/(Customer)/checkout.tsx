@@ -18,6 +18,9 @@ import { useEmail } from "~/app/EmailContext";
 import { checkUser, placeAnOrder } from "~/lib/supabase";
 import displayNotification from "~/lib/Notification";
 import { useNavigation } from 'expo-router';
+import {
+  LiteCreditCardInput,
+} from "react-native-credit-card-input";
 
 interface ValidationError {
   field: string;
@@ -38,6 +41,25 @@ interface PaymentInfo {
   expiryDate: string;
   cvv: string;
   cardHolderName: string;
+}
+
+interface CreditCardValues {
+  number: string;
+  expiry: string;
+  cvc: string;
+  type: "visa" | "master-card" | "american-express" | "diners-club" | "discover" | "jcb" | "unionpay" | "maestro" | null;
+}
+
+interface CreditCardStatus {
+  number: "incomplete" | "invalid" | "valid";
+  expiry: "incomplete" | "invalid" | "valid";
+  cvc: "incomplete" | "invalid" | "valid";
+}
+
+interface CreditCardForm {
+  valid: boolean;
+  values: CreditCardValues;
+  status: CreditCardStatus;
 }
 
 const validateShippingInfo = (info: ShippingInfo): ValidationError[] => {
@@ -108,7 +130,7 @@ export default function Page() {
     state: "",
     zipCode: 30100,
     phone: "",
-  });
+  })
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: "",
     expiryDate: "",
@@ -238,6 +260,19 @@ export default function Page() {
       setCurrentStep("shipping");
     } else if (currentStep === "review") {
       setCurrentStep("payment");
+    }
+  };
+
+  const handleCreditCardChange = (form: CreditCardForm) => {
+    console.log(form); // For debugging
+    if (form.values) {
+      setPaymentInfo(prevState => ({
+        ...prevState,
+        cardNumber: form.values.number || '',
+        expiryDate: form.values.expiry || '',
+        cvv: form.values.cvc || '',
+        // Keep existing cardHolderName
+      }));
     }
   };
 
@@ -389,60 +424,17 @@ export default function Page() {
           </View>
         </View>
         <View className="gap-2">
-          <H5>Card Number</H5>
-          <View className="flex-row items-center rounded-md w-full">
-            <CreditCard size={16} color={"#aaaaaa"} />
-            <Input
-              placeholder="Card Number"
-              placeholderTextColor="**** **** **** ****"
-              keyboardType="numeric"
-              value={formatCardNumber(paymentInfo.cardNumber)}
-              onChangeText={(text) =>
-                setPaymentInfo({ ...paymentInfo, cardNumber: text })
-              }
-              {...getFieldError("cardNumber")}
-              className="border-0 flex-1"
-            />
-          </View>
-        </View>
-        <View className="flex-row gap-2">
-          <View className="gap-2 w-1/2">
-            <H5>Expiration date</H5>
-            <View className="flex-row items-center rounded-md w-full">
-              <CalendarRange size={16} color={"#aaaaaa"} />
-              <View className="flex-row gap-2">
-                <Input
-                  placeholder="MM/YY"
-                  placeholderTextColor="#666"
-                  keyboardType="numeric"
-                  value={formatExpiryDate(paymentInfo.expiryDate)}
-                  onChangeText={(text) =>
-                    setPaymentInfo({ ...paymentInfo, expiryDate: text })
-                  }
-                  {...getFieldError("expiryDate")}
-                  className="border-0 flex-1"
-                />
-              </View>
-            </View>
-          </View>
-          <View className="gap-2 flex-1">
-            <H5>Security code</H5>
-            <View className="flex-row items-center rounded-md w-full">
-              <Barcode size={16} color={"#aaaaaa"} />
-              <Input
-                placeholder="CVV"
-                placeholderTextColor="#666"
-                keyboardType="numeric"
-                secureTextEntry
-                value={paymentInfo.cvv}
-                onChangeText={(text) =>
-                  setPaymentInfo({ ...paymentInfo, cvv: text.slice(0, 4) })
-                }
-                {...getFieldError("cvv")}
-                className="border-0 flex-1"
-              />
-            </View>
-          </View>
+          <H5>Card Details</H5>
+          <LiteCreditCardInput
+            onChange={handleCreditCardChange}
+            inputStyle={{
+              fontSize: 16,
+              color: '#fff',
+            }}
+            validColor="#fff"
+            invalidColor="#ef4444"
+            placeholderColor="#666"
+          />
         </View>
       </View>
       <View className="flex-row gap-4 w-full justify-between">
@@ -753,3 +745,4 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
 });
+

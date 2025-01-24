@@ -121,7 +121,7 @@ For any questions or support, please contact us at support@refnet.com.
 - [x] Registration approved by admin
 - [x] Change state in checkout to country
 - [ ] M-PESA as a payment method
-- [ ] Credit Card validation
+- [x] Credit Card validation
 - [ ] Notifications
 - [x] Shipping fees
 - [ ] Receipt improvement
