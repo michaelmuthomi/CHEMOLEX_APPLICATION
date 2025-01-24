@@ -514,7 +514,7 @@ export default function Page() {
           </View>
           <View style={styles.orderReviewTotalItem}>
             <P>Shipping</P>
-            <P>10,000</P>
+            <P>KSH 10,000</P>
           </View>
           <View style={styles.orderReviewTotalItem}>
             <H4>Total</H4>
