@@ -120,7 +120,7 @@ For any questions or support, please contact us at support@refnet.com.
 ### Customer Module
 - [x] Registration approved by admin
 - [x] Change state in checkout to country
-- [ ] M-PESA as a payment method
+- [x] M-PESA as a payment method
 - [x] Credit Card validation
 - [ ] Notifications
 - [x] Shipping fees

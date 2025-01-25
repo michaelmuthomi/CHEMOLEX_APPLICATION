@@ -200,11 +200,11 @@ const printReceipt = (order: Order) => {
   });
 };
 
-const generateReceipt = (order: any): Receipt => {
+const generateReceipt = (order: any, customer: any): Receipt => {
   return {
     orderId: order.order_id,
     date: order.order_date,
-    customerName: order.user_id,
+    customerName: customer.full_name,
     items: [{
       name: order.products.name,
       quantity: order.quantity,
@@ -214,11 +214,11 @@ const generateReceipt = (order: any): Receipt => {
     status: order.status
   };
 };
-const generateServiceReceipt = (order: any): Receipt => {
+const generateServiceReceipt = (order: any, customer: any): Receipt => {
   return {
     orderId: order.serviceDetails.id,
     date: order.order_date,
-    customerName: order.user_id,
+    customerName: customer.customer_name,
     items: [
       {
         name: order.serviceDetails.name,
@@ -1152,12 +1152,12 @@ export default function Page() {
   );
   
   const handleDownloadReceipt = (service) => {
-    const receipt = generateServiceReceipt(service);
+    const receipt = generateServiceReceipt(service, customer);
     downloadReceipt(receipt);
   };
 
   const handleViewReceipt = (order: any) => {
-    const receipt = generateReceipt(order);
+    const receipt = generateReceipt(order, customer);
     setCurrentReceipt(receipt);
     setReceiptModalVisible(true);
   };
