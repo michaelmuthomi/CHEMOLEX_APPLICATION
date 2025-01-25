@@ -396,16 +396,37 @@ export default function Page() {
     </View>
   );
 
-  const renderPaymentForm = () => (
-    <View className="gap-10">
-      <View className="flex-row items-center gap-2">
-        <View>
-          <H3>Choose a Payment Method</H3>
-          <P className="text-gray-500">
-            You will not be charged untill you complete the transaction
-          </P>
-        </View>
+const [paymentMethod, setPaymentMethod] = useState("card"); // Add state for payment method
+
+const renderPaymentForm = () => (
+  <View className="gap-10">
+    <View className="flex-row items-center gap-2">
+      <View>
+        <H3>Choose a Payment Method</H3>
+        <P className="text-gray-500">
+          You will not be charged until you complete the transaction
+        </P>
       </View>
+    </View>
+    <View className="flex-row gap-4">
+      <Button
+        onPress={() => setPaymentMethod("card")}
+        className={`rounded-full ${
+          paymentMethod === "card" ? "bg-blue-500" : "bg-gray-300"
+        }`}
+      >
+        <H5 className="text-white">Card</H5>
+      </Button>
+      <Button
+        onPress={() => setPaymentMethod("mpesa")}
+        className={`rounded-full ${
+          paymentMethod === "mpesa" ? "bg-blue-500" : "bg-gray-300"
+        }`}
+      >
+        <H5 className="text-white">Mpesa</H5>
+      </Button>
+    </View>
+    {paymentMethod === "card" ? (
       <View className="gap-6">
         <View className="gap-2">
           <H5>Name on Card</H5>
@@ -429,7 +450,7 @@ export default function Page() {
             onChange={handleCreditCardChange}
             inputStyle={{
               fontSize: 16,
-              color: '#fff',
+              color: "#fff",
             }}
             validColor="#fff"
             invalidColor="#ef4444"
@@ -437,26 +458,46 @@ export default function Page() {
           />
         </View>
       </View>
-      <View className="flex-row gap-4 w-full justify-between">
-        <Button
-          onPress={handleBackStep}
-          className="rounded-full border-[1px] border-white bg-transparent"
-          size={"lg"}
-          variant="default"
-        >
-          <H5 className="text-white">&larr; {" Back"}</H5>
-        </Button>
-        <Button
-          onPress={handlePaymentSubmit}
-          className="rounded-full flex-1"
-          size={"lg"}
-          variant="default"
-        >
-          <H5 className=" text-black">{"Review Order"}</H5>
-        </Button>
+    ) : (
+      <View className="gap-6">
+        <View className="gap-2">
+          <H5>Mpesa Number</H5>
+          <View className="flex-row items-center rounded-md w-full">
+            <ClipboardEdit size={16} color={"#aaaaaa"} />
+            <Input
+              placeholder="Mpesa Number"
+              placeholderTextColor="#666"
+              value={paymentInfo.mpesaNumber}
+              onChangeText={(text) =>
+                setPaymentInfo({ ...paymentInfo, mpesaNumber: text })
+              }
+              {...getFieldError("mpesaNumber")}
+              className="border-0 flex-1"
+            />
+          </View>
+        </View>
       </View>
+    )}
+    <View className="flex-row gap-4 w-full justify-between">
+      <Button
+        onPress={handleBackStep}
+        className="rounded-full border-[1px] border-white bg-transparent"
+        size={"lg"}
+        variant="default"
+      >
+        <H5 className="text-white">&larr; {" Back"}</H5>
+      </Button>
+      <Button
+        onPress={handlePaymentSubmit}
+        className="rounded-full flex-1"
+        size={"lg"}
+        variant="default"
+      >
+        <H5 className=" text-black">{"Review Order"}</H5>
+      </Button>
     </View>
-  );
+  </View>
+);
 
   const renderOrderReview = () => (
     <View className="gap-10">
