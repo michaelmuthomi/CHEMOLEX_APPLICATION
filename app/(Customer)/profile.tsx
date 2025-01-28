@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -45,9 +45,9 @@ import { ManageOrders } from "~/components/sheets/manage/orders";
 import { ManageReviews } from "~/components/sheets/manage/review";
 import { Textarea } from "~/components/ui/textarea";
 import { Services } from "~/components/sheets/manage/services";
-import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
-import * as Print from 'expo-print';
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import * as Print from "expo-print";
 
 interface customer {
   full_name: string;
@@ -200,33 +200,19 @@ const printReceipt = (order: Order) => {
   });
 };
 
-const generateReceipt = (order: any, customer: any): Receipt => {
+const generateReceipt = (order: any): Receipt => {
   return {
     orderId: order.order_id,
     date: order.order_date,
-    customerName: customer.full_name,
-    items: [{
-      name: order.products.name,
-      quantity: order.quantity,
-      price: order.unit_price
-    }],
-    total: order.total_price,
-    status: order.status
-  };
-};
-const generateServiceReceipt = (order: any, customer: any): Receipt => {
-  return {
-    orderId: order.serviceDetails.id,
-    date: order.order_date,
-    customerName: customer.customer_name,
+    customerName: order.user_id,
     items: [
       {
-        name: order.serviceDetails.name,
-        quantity: order.serviceDetails.quantity,
-        price: order.serviceDetails.price,
+        name: order.products.name,
+        quantity: order.quantity,
+        price: order.unit_price,
       },
     ],
-    total: order.serviceDetails.price,
+    total: order.total_price,
     status: order.status,
   };
 };
@@ -240,7 +226,8 @@ const downloadReceipt = async (receipt: Receipt) => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
           <style>
             .container{
-              width: 350px;
+              padding-block: 40px;
+              padding-inline: 20px;
             }
             body {
               font-family: -apple-system, sans-serif;
@@ -284,11 +271,13 @@ const downloadReceipt = async (receipt: Receipt) => {
             <div class="header">
               <h1 style="margin: 0; color: #2d3748; text-align: center;">REFNET</h1>
             </div>
-            <p>Hello <b>${receipt.orderId},</b></p>
-            <p>You have successfully paid for the order #${receipt.orderId}</p>
+            <p>Hello <b>${receipt.orderId || ""},</b></p>
+            <p>You have successfully paid for the order #${
+              receipt.orderId || ""
+            }</p>
 
             <!-- <div class="section">
-            <p>Date: ${new Date(receipt.date).toLocaleDateString()}</p>
+            <p>Date: ${new Date(receipt.date).toLocaleDateString() || ""}</p>
             <p>Status: ${receipt.status}</p>
           </div> -->
 
@@ -299,14 +288,14 @@ const downloadReceipt = async (receipt: Receipt) => {
                   (item) => `
               <div class="item-row">
                 <div>
-                  <p style="margin: 0;">${item.name}</p>
+                  <p style="margin: 0;">${item.name || ""}</p>
                   <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${
-                    item.quantity
+                    item.quantity || ""
                   }</p>
                 </div>
-                <p style="margin: 0;">${formatPrice(
-                  item.price * item.quantity
-                )}</p>
+                <p style="margin: 0;">${
+                  formatPrice(item.price * item.quantity) || ""
+                }</p>
               </div>
               `
                 )
@@ -315,18 +304,26 @@ const downloadReceipt = async (receipt: Receipt) => {
                 <div>
                   <p style="margin: 0;">Tax</p>
                   <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${
-                    item.quantity
+                    receipt.items.reduce(
+                      (acc, item) => acc + item.quantity,
+                      0
+                    ) || ""
                   }</p>
                 </div>
-                <p style="margin: 0;">${formatPrice(
-                  item.price * item.quantity
-                )}</p>
+                <p style="margin: 0;">${
+                  formatPrice(
+                    receipt.items.reduce(
+                      (acc, item) => acc + item.price * item.quantity,
+                      0
+                    )
+                  ) || ""
+                }</p>
               </div>
             </div>
 
             <div class="total item-row">
               <span>Total</span>
-              <span>${formatPrice(receipt.total)}</span>
+              <span>${formatPrice(receipt.total) || ""}</span>
             </div>
           </div>
         </body>
@@ -335,20 +332,20 @@ const downloadReceipt = async (receipt: Receipt) => {
 
     const { uri } = await Print.printToFileAsync({
       html: htmlContent,
-      base64: false
+      base64: false,
     });
 
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(uri, {
-        UTI: '.pdf',
-        mimeType: 'application/pdf'
+        UTI: ".pdf",
+        mimeType: "application/pdf",
       });
     } else {
-      displayNotification('Sharing is not available on this device', 'error');
+      displayNotification("Sharing is not available on this device", "error");
     }
   } catch (error) {
-    console.error('Error generating PDF receipt:', error);
-    displayNotification('Failed to generate receipt', 'error');
+    console.error("Error generating PDF receipt:", error);
+    displayNotification("Failed to generate receipt", "error");
   }
 };
 
@@ -599,13 +596,10 @@ export default function Page() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className="flex-1">
               {selectedOrder ? (
                 <View className="space-y-4">
-                  <ScrollView
-                    className="bg-white p-2 h-full"
-                    style={{ flex: 1 }}
-                  >
+                  <ScrollView className="bg-white p-2 h-full">
                     <View>
                       <Image
                         source={{
@@ -906,7 +900,7 @@ export default function Page() {
     >
       <View className="flex-1 bg-black/50">
         <View className="flex-1 mt-20 bg-zinc-900 rounded-t-3xl">
-          <View className="flex-1">
+          <SafeAreaView className="flex-1">
             <View className="flex-row justify-between items-center p-4 border-b border-zinc-800">
               <H3 className="text-white">Product Reviews</H3>
               <TouchableOpacity
@@ -921,7 +915,7 @@ export default function Page() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className="flex-1">
               {selectedProduct ? (
                 <View className="space-y-4">
                   <View className="bg-white p-2 h-full">
@@ -1074,7 +1068,7 @@ export default function Page() {
                 </View>
               )}
             </ScrollView>
-          </View>
+          </SafeAreaView>
         </View>
       </View>
     </Modal>
@@ -1096,7 +1090,7 @@ export default function Page() {
                 <X size={24} color="#fff" />
               </TouchableOpacity>
             </View>
-  
+
             <ScrollView className="flex-1 p-4 bg-white">
               {services.map((service) => (
                 <View key={service.id} className="mb-4">
@@ -1132,14 +1126,6 @@ export default function Page() {
                           value={`${formatPrice(service.serviceDetails.price)}`}
                         />
                       </View>
-                      {service.completion_status === "complete" && (
-                        <Button
-                          onPress={() => handleDownloadReceipt(service)}
-                          className="mt-4 bg-zinc-800 rounded-full"
-                        >
-                          <P className="text-white">Download Receipt</P>
-                        </Button>
-                      )}
                     </>
                   )}
                 </View>
@@ -1150,14 +1136,9 @@ export default function Page() {
       </View>
     </Modal>
   );
-  
-  const handleDownloadReceipt = (service) => {
-    const receipt = generateServiceReceipt(service, customer);
-    downloadReceipt(receipt);
-  };
 
   const handleViewReceipt = (order: any) => {
-    const receipt = generateReceipt(order, customer);
+    const receipt = generateReceipt(order);
     setCurrentReceipt(receipt);
     setReceiptModalVisible(true);
   };
