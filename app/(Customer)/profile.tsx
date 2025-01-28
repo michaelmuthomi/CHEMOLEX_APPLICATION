@@ -1042,7 +1042,13 @@ export default function Page() {
                                 <H5 className="text-sm text-gray-600">
                                   In Transit
                                 </H5>
-                                <H5 className="text-base text-gray-900 capitalize p-2 px-4 bg-green-300 text-green-900">
+                                <H5
+                                  className={`text-base text-gray-900 capitalize p-2 px-4 ${
+                                    order.status === "pending"
+                                      ? "bg-orange-300 text-orange-900"
+                                      : "bg-green-300 text-green-900"
+                                  }`}
+                                >
                                   Delivery Status: {order.status}
                                 </H5>
                               </View>
