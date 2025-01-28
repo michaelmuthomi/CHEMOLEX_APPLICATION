@@ -796,15 +796,15 @@ export default function Page() {
                           </View>
                           <DetailItem label="Quantity" value={order.quantity} />
                         </View>
-                        <View className="flex-row gap-4 w-full justify-between">
+                        <View className="flex-row gap-4 w-full justify-between mt-4">
                           <Button
                             className="rounded-full p-0 bg-transparent"
                             size={"lg"}
                             variant="default"
                           >
-                            <H5 className="text-gray-700 capitalize">
+                            <H5 className="text-gray-400 capitalize">
                               Payment:{" "}
-                              <H5 className="text-gray-900">
+                              <H5 className="text-gray-400">
                                 {order.payment_status}
                               </H5>
                             </H5>
