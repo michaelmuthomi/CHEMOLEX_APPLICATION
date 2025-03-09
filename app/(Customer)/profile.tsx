@@ -1162,6 +1162,34 @@ export default function Page() {
     }
   };
 
+  const renderShippingForm = () => (
+    <View className="gap-10 my-4">
+      {/* ...existing form fields... */}
+      
+      <View className="flex-row gap-4 w-full justify-between">
+        <Button
+          onPress={handleBackStep}
+          className={`rounded-full border-[1px] border-white bg-transparent ${
+            currentStep === "shipping" ? "opacity-50" : ""
+          }`}
+          size={"lg"}
+          variant="default"
+          disabled={currentStep === "shipping"}
+        >
+          <H5 className="text-white">&larr; {" Back"}</H5>
+        </Button>
+        <Button
+          onPress={handleShippingSubmit}
+          className="rounded-full flex-1"
+          size={"lg"}
+          variant="default"
+        >
+          <H5 className="text-black">{"Continue"}</H5>
+        </Button>
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1">
       <ScrollView

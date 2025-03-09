@@ -12,7 +12,7 @@ import { useCart } from '~/lib/cart-context';
 import { formatPrice } from '~/lib/format-price';
 import { H3, H4, H5, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
-import { Barcode, CalendarRange, ChevronLeft, ClipboardEdit, CreditCard, Earth, LocateFixedIcon, MapPin, MapPinned, PhoneCallIcon, User, WalletCards } from "lucide-react-native";
+import { Barcode, CalendarRange, ChevronLeft, ClipboardEdit, CreditCard, Earth, LocateFixedIcon, MapPin, MapPinned, PhoneCallIcon, Smartphone, User, WalletCards } from "lucide-react-native";
 import { Input } from "~/components/ui/input";
 import { useEmail } from "~/app/EmailContext";
 import { checkUser, placeAnOrder } from "~/lib/supabase";
@@ -159,16 +159,57 @@ export default function Page() {
     setCurrentStep("payment");
   };
 
-  const handlePaymentSubmit = () => {
-    const validationErrors = validatePaymentInfo(paymentInfo);
-    setErrors(validationErrors);
-
-    if (validationErrors.length > 0) {
-      displayNotification(validationErrors[0].message, "warning");
-      return;
+  const [isProcessing, setIsProcessing] = useState(false);
+  const handlePaymentSubmit = async (paymentMethod: 'mpesa' | 'card') => {
+    // Set loading state if needed
+    
+    try {
+      setIsProcessing(true);
+      
+      if (paymentMethod === 'mpesa') {
+        // Validate Mpesa number
+        if (!paymentInfo.mpesaNumber || paymentInfo.mpesaNumber.length < 10) {
+          displayNotification("Please enter a valid Mpesa number", "warning");
+          return;
+        }
+        
+        console.log('Processing Mpesa payment...');
+        // Simulate Mpesa payment processing
+        // In a real implementation, you would call your payment API here
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Successful Mpesa payment
+        displayNotification("Mpesa payment initiated successfully", "success");
+      } else if (paymentMethod === 'card') {
+        // Validate card details
+        if (!paymentInfo.cardNumber || !paymentInfo.expiryDate || 
+            !paymentInfo.cvv || !paymentInfo.cardHolderName) {
+          displayNotification("Please fill in all card details", "warning");
+          return;
+        }
+        
+        console.log('Processing card payment...');
+        // Simulate card payment processing
+        // In a real implementation, you would call your payment gateway API here
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Successful card payment
+        displayNotification("Card payment processed successfully", "success");
+      } else {
+        console.error('Invalid payment method');
+        displayNotification("Invalid payment method selected", "danger");
+        return;
+      }
+      
+      // Move to the next step (review) after successful payment
+      setCurrentStep("review");
+      
+    } catch (error) {
+      console.error("Payment processing error:", error);
+      displayNotification("Payment processing failed. Please try again.", "danger");
+    } finally {
+      setIsProcessing(false);
     }
-
-    setCurrentStep("review");
   };
 
   const formatCardNumber = (text: string) => {
@@ -228,7 +269,7 @@ export default function Page() {
         const details = {
           total_amount: total,
           user_id: customer.user_id,
-          payment_method: "credit_card",
+          payment_method: paymentMethod,
           payment_status: "completed",
           delivery_address: customer.address,
           product_id: item.product_id,
@@ -463,9 +504,9 @@ const renderPaymentForm = () => (
         <View className="gap-2">
           <H5>Mpesa Number</H5>
           <View className="flex-row items-center rounded-md w-full">
-            <ClipboardEdit size={16} color={"#aaaaaa"} />
+            <Smartphone size={16} color={"#aaaaaa"} />
             <Input
-              placeholder="Mpesa Number"
+              placeholder="Phone number"
               placeholderTextColor="#666"
               value={paymentInfo.mpesaNumber}
               onChangeText={(text) =>
@@ -473,6 +514,7 @@ const renderPaymentForm = () => (
               }
               {...getFieldError("mpesaNumber")}
               className="border-0 flex-1"
+              maxLength={10}
             />
           </View>
         </View>
@@ -488,12 +530,15 @@ const renderPaymentForm = () => (
         <H5 className="text-white">&larr; {" Back"}</H5>
       </Button>
       <Button
-        onPress={handlePaymentSubmit}
+        onPress={() => handlePaymentSubmit(paymentMethod)}
         className="rounded-full flex-1"
         size={"lg"}
         variant="default"
+        disabled={isProcessing}
       >
-        <H5 className=" text-black">{"Review Order"}</H5>
+        <H5 className="text-black">
+          {isProcessing ? "Processing..." : "Review Order"}
+        </H5>
       </Button>
     </View>
   </View>
