@@ -200,11 +200,12 @@ const printReceipt = (order: Order) => {
   });
 };
 
-const generateReceipt = (order: any): Receipt => {
+const generateReceipt = (order: any, customerData: any): Receipt => {
   return {
     orderId: order.order_id,
     date: order.order_date,
-    customerName: order.user_id,
+    customerName: customerData?.full_name || "Valued Customer",
+    paymentMethod: order.payment_method || "Card/Mpesa",
     items: [
       {
         name: order.products.name,
@@ -213,7 +214,7 @@ const generateReceipt = (order: any): Receipt => {
       },
     ],
     total: order.total_price,
-    status: order.status,
+    status: order.payment_status,
   };
 };
 
@@ -225,105 +226,186 @@ const downloadReceipt = async (receipt: Receipt) => {
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
           <style>
-            .container{
-              padding-block: 40px;
-              padding-inline: 20px;
-            }
             body {
               font-family: -apple-system, sans-serif;
-              padding: 20px;
+              padding: 0;
               margin: 0;
               color: #2d3748;
-              background-color: #f8f9fa
+              background-color: #f8f9fa;
+            }
+            .container {
+              padding: 40px 20px;
+              max-width: 800px;
+              margin: 0 auto;
             }
             .header {
+              text-align: center;
               margin-bottom: 30px;
               padding: 20px;
-
-            }
-            .company-details {
-              margin-bottom: 15px;
+              border-bottom: 2px solid #eaeaea;
             }
             .logo {
-              max-width: 150px;
-              margin-bottom: 10px;
+              font-size: 28px;
+              font-weight: bold;
+              color: #2d3748;
+            }
+            .receipt-details {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 20px;
+            }
+            .customer-info, .order-info {
+              flex: 1;
             }
             .section {
-              margin: 15px 0;
-              border-block: 1px solid #eee;
-              padding-block: 10px;
+              margin: 25px 0;
+              border-bottom: 1px solid #eee;
+              padding-bottom: 15px;
+            }
+            .section-title {
+              font-size: 16px;
+              font-weight: bold;
+              margin-bottom: 10px;
             }
             .item-row {
               display: flex;
               justify-content: space-between;
-              padding: 10px 0;
+              padding: 12px 0;
+              border-bottom: 1px solid #f0f0f0;
+            }
+            .item-details {
+              flex: 3;
+            }
+            .item-price {
+              flex: 1;
+              text-align: right;
+            }
+            .item-name {
+              font-weight: 500;
+              margin: 0;
+            }
+            .item-quantity {
+              color: #666;
+              margin: 5px 0 0 0;
+              font-size: 14px;
+            }
+            .summary-row {
+              display: flex;
+              justify-content: space-between;
+              padding: 8px 0;
             }
             .total {
               font-weight: bold;
-              font-size: 1.2em;
+              font-size: 18px;
               margin-top: 20px;
               background-color: #f8f9fa;
+              padding: 15px;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 40px;
+              text-align: center;
+              color: #666;
+              font-size: 14px;
+              padding-top: 20px;
+              border-top: 1px solid #eee;
             }
           </style>
         </head>
         <body>
           <div class='container'>
             <div class="header">
-              <h1 style="margin: 0; color: #2d3748; text-align: center;">REFNET</h1>
+              <div class="logo-container">
+                <div class="logo">REFNET</div>
+                <p>Promiso Plaza, Nairobi</p>
+                <p>Jogoo Rd, Nairobi</p>
+                <p>Tel: +254 739 960 055 || Email: support@refnet.com</p>
+              </div>
+              <b class="receipt-title">Official Purchase Receipt</>
+              <div class="company-details">
+              </div>
             </div>
-            <p>Hello <b>${receipt.orderId || ""},</b></p>
-            <p>You have successfully paid for the order #${
-              receipt.orderId || ""
-            }</p>
-
-            <!-- <div class="section">
-            <p>Date: ${new Date(receipt.date).toLocaleDateString() || ""}</p>
-            <p>Status: ${receipt.status}</p>
-          </div> -->
+            
+            <div class="receipt-details">
+              <div class="customer-info">
+                <p><strong>Customer:</strong> ${
+                  receipt.customerName || "Valued Customer"
+                }</p>
+                <p><strong>Order ID:</strong> #${receipt.orderId || ""}</p>
+                <p><strong>Date:</strong> ${new Date(
+                  receipt.date
+                ).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}</p>
+              </div>
+              <div class="order-info">
+                <p><strong>Payment Status:</strong> ${
+                  receipt.status || "Completed"
+                }</p>
+                <p><strong>Payment Method:</strong> ${
+                  receipt.paymentMethod || "Card/Mpesa"
+                }</p>
+              </div>
+            </div>
 
             <div class="section">
-              <p><b>Items</b></p>
+              <div class="section-title">PURCHASED ITEMS</div>
               ${receipt.items
                 .map(
                   (item) => `
               <div class="item-row">
-                <div>
-                  <p style="margin: 0;">${item.name || ""}</p>
-                  <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${
+                <div class="item-details">
+                  <p class="item-name">${item.name || ""}</p>
+                  <p class="item-quantity">Quantity: ${
                     item.quantity || ""
-                  }</p>
+                  } × ${formatPrice(item.price)}</p>
                 </div>
-                <p style="margin: 0;">${
-                  formatPrice(item.price * item.quantity) || ""
-                }</p>
+                <div class="item-price">
+                  <p>${formatPrice(item.price * item.quantity) || ""}</p>
+                </div>
               </div>
               `
                 )
                 .join("")}
-              <div class="item-row">
-                <div>
-                  <p style="margin: 0;">Tax</p>
-                  <p style="margin: 5px 0 0 0; color: #666;">Quantity: ${
-                    receipt.items.reduce(
-                      (acc, item) => acc + item.quantity,
-                      0
-                    ) || ""
-                  }</p>
-                </div>
-                <p style="margin: 0;">${
+            </div>
+
+            <div class="section">
+              <div class="section-title">ORDER SUMMARY</div>
+              <div class="summary-row">
+                <div>Subtotal</div>
+                <div>${
                   formatPrice(
                     receipt.items.reduce(
                       (acc, item) => acc + item.price * item.quantity,
                       0
                     )
                   ) || ""
-                }</p>
+                }</div>
+              </div>
+              <div class="summary-row">
+                <div>Tax</div>
+                <div>${
+                  formatPrice(
+                    receipt.items.reduce(
+                      (acc, item) => acc + item.price * item.quantity,
+                      0
+                    ) * 0.16
+                  ) || ""
+                }</div>
               </div>
             </div>
 
-            <div class="total item-row">
-              <span>Total</span>
-              <span>${formatPrice(receipt.total) || ""}</span>
+            <div class="total summary-row">
+              <div>Total</div>
+              <div>${formatPrice(receipt.total) || ""}</div>
+            </div>
+            
+            <div class="footer">
+              <p>Thank you for shopping with REFNET!</p>
             </div>
           </div>
         </body>
@@ -1144,7 +1226,7 @@ export default function Page() {
   );
 
   const handleViewReceipt = (order: any) => {
-    const receipt = generateReceipt(order);
+    const receipt = generateReceipt(order, customer);
     setCurrentReceipt(receipt);
     setReceiptModalVisible(true);
   };
