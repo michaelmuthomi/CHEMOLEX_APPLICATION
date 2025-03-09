@@ -129,11 +129,12 @@ For any questions or support, please contact us at support@refnet.com.
 - [ ] Product and Service review
 
 ### Database Module
-- [ ] Use real world price for products
+- [x] Use real world price for products
 - [x] Add more technicians
 
 ### Shipping Module
 - [ ] Categorize into pending and approved
+- [ ] Variable Delivery fees based on location
 
 ### Driver Module
 - [x] Accept assignment and mark as delivered
