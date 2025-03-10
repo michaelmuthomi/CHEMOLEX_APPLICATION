@@ -399,7 +399,7 @@ export default function Page() {
         </View>
         <View className="gap-2">
           <H5>Phone Number</H5>
-          <View className="flex-row items-center rounded-md w-full">
+            <View className="flex-row items-center rounded-md w-full">
             <PhoneCallIcon size={16} color={"#aaaaaa"} />
             <Input
               placeholder="Phone"
@@ -407,12 +407,14 @@ export default function Page() {
               keyboardType="phone-pad"
               value={customer.phone_number}
               onChangeText={(text) =>
-                setShippingInfo({ ...customer, phone_number: text })
+              setShippingInfo({ ...customer, phone_number: text })
               }
               {...getFieldError("phone")}
               className="border-0 flex-1"
+              minLength={10}
+              maxLength={10}
             />
-          </View>
+            </View>
         </View>
       </View>
       <View className="flex-row gap-4 w-full justify-between">
