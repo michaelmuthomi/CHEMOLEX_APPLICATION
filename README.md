@@ -124,7 +124,7 @@ For any questions or support, please contact us at support@refnet.com.
 - [x] Credit Card validation
 - [ ] Notifications
 - [x] Shipping fees
-- [ ] Receipt improvement
+- [x] Receipt improvement
 - [ ] Accept/Reject Delivered product
 - [ ] Product and Service review
 
