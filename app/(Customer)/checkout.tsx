@@ -113,6 +113,35 @@ const validatePaymentInfo = (info: PaymentInfo): ValidationError[] => {
   return errors;
 };
 
+const calculateShippingCost = (location: string): number => {
+  // Define shipping rates for different locations
+  const shippingRates: Record<string, number> = {
+    nairobi: 500,
+    mombasa: 1200,
+    kisumu: 1000,
+    nakuru: 800,
+    eldoret: 900,
+    thika: 600,
+    kitengela: 700,
+    "athi river": 700,
+    syokimau: 600,
+  };
+
+  // Default shipping rate for locations not specifically listed
+  const defaultRate = 1500;
+
+  // Check if location exists in our rates (case insensitive)
+  const locationLower = location?.toLowerCase() || "";
+  for (const city in shippingRates) {
+    if (locationLower.includes(city)) {
+      return shippingRates[city];
+    }
+  }
+
+  // Return default rate if location not found
+  return defaultRate;
+};
+
 export default function Page() {
   const navigation = useNavigation()
   const emailContext = useEmail();
@@ -602,11 +631,15 @@ const renderPaymentForm = () => (
           </View>
           <View style={styles.orderReviewTotalItem}>
             <P>Shipping</P>
-            <P>KSH 10,000</P>
+            <P>{formatPrice(calculateShippingCost(customer?.city || ""))}</P>
           </View>
           <View style={styles.orderReviewTotalItem}>
             <H4>Total</H4>
-            <H4>{formatPrice(getCartTotal())}</H4>
+            <H4>
+              {formatPrice(
+                getCartTotal() + calculateShippingCost(customer?.city || "")
+              )}
+            </H4>
           </View>
         </View>
         <View className="flex-row gap-4 w-full justify-between">
