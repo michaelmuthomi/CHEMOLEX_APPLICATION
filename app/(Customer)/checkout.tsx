@@ -483,19 +483,19 @@ const renderPaymentForm = () => (
     <View className="flex-row gap-4">
       <Button
         onPress={() => setPaymentMethod("card")}
-        className={`rounded-full ${
-          paymentMethod === "card" ? "bg-blue-500" : "bg-gray-300"
+        className={`rounded-full w-1/2 ${
+          paymentMethod === "card" ? "bg-green-500" : "bg-[#2c2c2c]"
         }`}
       >
-        <H5 className="text-white">Card</H5>
+        <H5 className="text-white mt-[2px]">Card</H5>
       </Button>
       <Button
         onPress={() => setPaymentMethod("mpesa")}
-        className={`rounded-full ${
-          paymentMethod === "mpesa" ? "bg-blue-500" : "bg-gray-300"
+        className={`rounded-full flex-1 ${
+          paymentMethod === "mpesa" ? "bg-green-500" : "bg-[#2c2c2c]"
         }`}
       >
-        <H5 className="text-white">Mpesa</H5>
+        <H5 className="text-white mt-[2px]">Mpesa</H5>
       </Button>
     </View>
     {paymentMethod === "card" ? (

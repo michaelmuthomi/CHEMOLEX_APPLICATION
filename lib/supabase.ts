@@ -774,3 +774,53 @@ export async function updateFinanceStatus(repair_id: number, status: string) {
     return `Success: ${JSON.stringify(data)}`;
   }
 }
+
+// Add a new notification to the database
+export async function addNotification(user_id: string, title: string, message: string) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .insert([
+      {
+        user_id,
+        title,
+        message,
+        created_at: new Date().toISOString(),
+        read: false
+      }
+    ]);
+
+  if (error) {
+    console.error('Error adding notification:', error);
+    return null;
+  }
+  return data;
+}
+
+// Fetch notifications for a user
+export async function fetchNotifications(user_id: string) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', user_id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching notifications:', error);
+    return [];
+  }
+  return data;
+}
+
+// Mark a notification as read
+export async function markNotificationAsRead(notification_id: number) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .update({ read: true })
+    .eq('id', notification_id);
+
+  if (error) {
+    console.error('Error marking notification as read:', error);
+    return false;
+  }
+  return true;
+}

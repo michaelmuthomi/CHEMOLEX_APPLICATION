@@ -66,6 +66,18 @@ export default function Layout() {
             }}
           />
           <Tabs.Screen
+            name="notifications"
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Ionicons
+                  name={color === "#fff" ? "notifications" : "notifications-outline"}
+                  size={28}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tabs.Screen
             name="cart"
             options={{
               tabBarIcon: ({ color }) => (
