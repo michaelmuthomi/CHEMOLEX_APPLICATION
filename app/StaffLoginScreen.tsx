@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { P, H1, H5 } from "~/components/ui/typography";
+import { P, H1, H5, H4 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
 import { checkUser, validateUserCredentials } from "~/lib/supabase";
 import { useEmail } from "~/app/EmailContext";
@@ -138,7 +138,7 @@ export default function Screen() {
         className="mt-14 w-1/3 h-8 absolute top-4 left-6"
         resizeMode="cover"
       />
-      <View className="w-full mb-auto mt-auto gap-10 bg-zinc-950">
+      <View className="w-full mb-auto mt-auto gap-10 bg-white">
         <View className="gap-2">
           <H1 className="text-3xl">Staff Login Page</H1>
           <P
@@ -157,7 +157,7 @@ export default function Screen() {
               onChangeText={onEmailInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="email"
               textContentType="emailAddress"
               keyboardType="email-address"
@@ -172,7 +172,7 @@ export default function Screen() {
               onChangeText={onPasswordInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="password"
               textContentType="password"
               secureTextEntry
@@ -185,15 +185,21 @@ export default function Screen() {
         <View className="gap-6">
           <Button
             onPress={handleLogin}
-            className="w-full rounded-full"
+            className="w-full rounded-full bg-green-600"
             size={"lg"}
             disabled={loading}
           >
-            <H5 className="text-black">
+            <H5 className="">
               {loading ? "Logging In" : "Login and continue"}
             </H5>
           </Button>
         </View>
+        <TouchableOpacity
+          className="w-max"
+          onPress={() => router.push("/LoginScreen")}
+        >
+          <H4 className="text-center uppercase text-lg">Customer Login</H4>
+        </TouchableOpacity>
       </View>
       <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center overflow-auto">
         <TouchableOpacity
@@ -201,12 +207,6 @@ export default function Screen() {
           onPress={() => router.push("/SignupScreen")}
         >
           <P className="text-white text-center">Create an account</P>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="w-1/2 rounded-full bg-[#111] !py-4 !border-none"
-          onPress={() => router.push("/LoginScreen")}
-        >
-          <P className="text-white text-center">Customer Login</P>
         </TouchableOpacity>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row"></View>

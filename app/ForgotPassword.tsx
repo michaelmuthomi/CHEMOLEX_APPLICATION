@@ -68,7 +68,7 @@ export default function Screen() {
         className="w-1/3 h-8 absolute top-4 left-6"
         resizeMode="cover"
       />
-      <View className="w-full space-y-4 mt-20 gap-6 bg-zinc-950">
+      <View className="w-full space-y-4 mt-20 gap-6">
         <View className="gap-2">
           <H1 className="">Reset Password</H1>
           <P className=" text-muted-foreground">
@@ -81,7 +81,7 @@ export default function Screen() {
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
-            className="bg-[#131313] border-0 !h-14 text-white"
+            className="bg-white border border-zinc-400 !h-14 text-white"
             autoComplete="email"
             textContentType="emailAddress"
             keyboardType="email-address"
@@ -92,7 +92,7 @@ export default function Screen() {
             placeholder="New Password"
             value={newPassword}
             onChangeText={setNewPassword}
-            className="bg-[#131313] border-0 !h-14 text-white"
+            className="bg-white border border-zinc-400 !h-14 text-white"
             autoComplete="password"
             textContentType="password"
             secureTextEntry
@@ -101,7 +101,7 @@ export default function Screen() {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            className="bg-[#131313] border-0 !h-14 text-white"
+            className="bg-white border border-zinc-400 !h-14 text-white"
             autoComplete="password"
             textContentType="password"
             secureTextEntry

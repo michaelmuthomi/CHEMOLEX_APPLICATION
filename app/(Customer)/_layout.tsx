@@ -34,7 +34,7 @@ export default function Layout() {
               borderTopColor: "#f1f1f1",
               paddingBottom: 0,
             },
-            tabBarActiveTintColor: "#fff",
+            tabBarActiveTintColor: "#000",
             tabBarInactiveTintColor: "#555555",
             headerShown: false,
             tabBarLabelStyle: { display: "none" },
@@ -58,7 +58,7 @@ export default function Layout() {
             options={{
               tabBarIcon: ({ color }) => (
                 <Ionicons
-                  name={color === "#fff" ? "search" : "search-outline"}
+                  name={color === "#000" ? "search" : "search-outline"}
                   size={28}
                   color={color}
                 />
@@ -70,7 +70,7 @@ export default function Layout() {
             options={{
               tabBarIcon: ({ color }) => (
                 <Ionicons
-                  name={color === "#fff" ? "notifications" : "notifications-outline"}
+                  name={color === "#000" ? "notifications" : "notifications-outline"}
                   size={28}
                   color={color}
                 />

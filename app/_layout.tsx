@@ -95,11 +95,11 @@ export default function RootLayout({navigation}: any) {
     return null;
   }
 
-  const theme = DARK_THEME ;
+  const theme = LIGHT_THEME ;
 
   return (
     <ThemeProvider value={theme}>
-      <StatusBar style={"light"} />
+      <StatusBar style={"dark"} />
       <EmailProvider>
         <CartProvider>
           <Stack screenOptions={{ headerShown: false }}>

@@ -379,7 +379,7 @@ export default function Page() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
+    <SafeAreaView className="flex-1 text-black">
       <ScrollView className="flex-1">
         <View className="pt-16">
           <View className="px-6">

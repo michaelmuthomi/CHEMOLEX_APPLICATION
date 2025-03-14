@@ -482,7 +482,7 @@ const renderPaymentForm = () => (
     </View>
     <View className="flex-row gap-4">
       <Button
-        onPress={() => setPaymentMethod("card")}
+        onPress={() => setPaymentMethod("credit_card")}
         className={`rounded-full w-1/2 ${
           paymentMethod === "card" ? "bg-green-500" : "bg-[#2c2c2c]"
         }`}
@@ -521,6 +521,7 @@ const renderPaymentForm = () => (
           <LiteCreditCardInput
             onChange={handleCreditCardChange}
             inputStyle={{
+              fontFamily: "Inter_400Regular",
               fontSize: 16,
               color: "#fff",
             }}

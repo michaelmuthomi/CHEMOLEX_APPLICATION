@@ -12,7 +12,7 @@ const H1 = React.forwardRef<TextRef, SlottableTextProps>(
         role="heading"
         aria-level="1"
         className={cn(
-          "web:scroll-m-20 text-3xl text-white tracking-tight lg:text-5xl web:select-text",
+          "web:scroll-m-20 text-3xl tracking-tight lg:text-5xl web:select-text",
           className
         )}
         ref={ref}
@@ -75,7 +75,7 @@ const H4 = React.forwardRef<TextRef, SlottableTextProps>(
         role="heading"
         aria-level="4"
         className={cn(
-          "web:scroll-m-20 text-xl text-white font-semibold tracking-tight web:select-text",
+          "web:scroll-m-20 text-xl font-semibold tracking-tight web:select-text",
           className
         )}
         ref={ref}
@@ -135,7 +135,7 @@ const P = React.forwardRef<TextRef, SlottableTextProps>(
     const Component = asChild ? Slot.Text : RNText;
     return (
       <Component
-        className={cn("text-white web:select-text", className)}
+        className={cn("web:select-text", className)}
         ref={ref}
         {...props}
         style={{ fontFamily: "Inter_400Regular" }}

@@ -110,7 +110,7 @@ export default function Screen() {
               onChangeText={onUserNameInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="username"
               textContentType="name"
             />
@@ -120,7 +120,7 @@ export default function Screen() {
               onChangeText={onFullNameInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="name"
               textContentType="name"
             />
@@ -130,7 +130,7 @@ export default function Screen() {
               onChangeText={onPhoneNumberInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="tel"
               textContentType="telephoneNumber"
               keyboardType="number-pad"
@@ -142,7 +142,7 @@ export default function Screen() {
               onChangeText={onEmailInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="email"
               textContentType="emailAddress"
               keyboardType="email-address"
@@ -154,7 +154,7 @@ export default function Screen() {
               onChangeText={onPasswordInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-[#131313] border-0 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-white"
               autoComplete="password"
               textContentType="password"
               secureTextEntry
@@ -162,18 +162,18 @@ export default function Screen() {
             <Dropdown
               style={{
                 height: 56,
-                backgroundColor: "#131313",
+                backgroundColor: "#fff",
                 borderRadius: 8,
                 padding: 12,
                 marginBottom: 16,
               }}
               placeholderStyle={{
-                color: "#9ca3af",
+                color: "black",
                 fontSize: 14,
                 fontFamily: "Inter_400Regular",
               }}
               selectedTextStyle={{
-                color: "white",
+                color: "black",
                 fontSize: 14,
                 fontFamily: "Inter_400Regular",
               }}
