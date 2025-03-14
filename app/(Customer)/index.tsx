@@ -41,6 +41,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { formatBalance } from "~/lib/formatBalance";
 import { LinearGradient } from "expo-linear-gradient";
 import {ServiceModal} from "~/components/sheets/ServiceModal"; // Import the ServiceModal
+import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 
 const { width } = Dimensions.get("window");
 
@@ -381,20 +382,26 @@ export default function Page() {
   return (
     <SafeAreaView className="flex-1 text-black">
       <ScrollView className="flex-1">
-        <View className="pt-16">
-          <View className="px-6">
-            <H2 className="text-2xl border-b-0 leading-0">
-              Hi there, {customer.username} 👋
-            </H2>
-            <H2 className="text-zinc-400 text-sm border-b-0">
-              Welcome to Refnet
-            </H2>
+        <View className="">
+          <View className="pt-14 pb-4 mb-4 px-4 flex flex-row gap-2 bg-neutral-200">
+            <Avatar alt="Customer's Avatar">
+              <AvatarFallback>
+                <P className="text-white">
+                  {customer.username &&
+                    customer.username
+                      .split(" ")
+                      .map((name: string) => name[0])
+                      .join("")}
+                </P>
+              </AvatarFallback>
+            </Avatar>
+            <View>
+              <H2 className="text-xl border-b-0 leading-0">
+                Hi there,{"\n"}
+                {customer.username} 👋
+              </H2>
+            </View>
           </View>
-          {/* <Image
-            source={require("~/assets/images/Background.png")}
-            className="w-full h-48 rounded-t-lg"
-            resizeMode="cover"
-          /> */}
           {renderFeaturedCategories()}
           {/* {renderPromotions()} */}
           {renderProducts()}

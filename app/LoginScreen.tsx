@@ -98,7 +98,7 @@ export default function LoginScreen() {
         className="mt-14 w-1/3 h-8 absolute top-4 left-6"
         resizeMode="cover"
       />
-      <View className="w-full mb-auto mt-auto gap-10">
+      <View className="w-full mb-auto mt-auto gap-10 bg-white">
         <View className="gap-2">
           <H1 className="text-3xl">Sign in to your Account</H1>
           <P
