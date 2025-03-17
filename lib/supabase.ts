@@ -57,16 +57,17 @@ export async function addUserToDB(
   role: string
 ) {
   // Check If user is in the databse
-  const user = await checkUser(email);
-  if (user["email"]) {
-    return "Exists: User already exists";
-  }
+  // const user = await checkUser(email);
+  // if (user["email"]) {
+  //   return "Exists: User already exists";
+  // }
   const { data, error } = await supabase
     .from("users")
-    .insert([{ username, full_name, email, password_hash, phone_number, role }])
+    .insert([{ name: username, email, password: password_hash, role, phonenumber: phone_number }])
     .single();
 
   if (error) {
+    console.log("Error adding user: >> ", error)
     return "Error:" + error;
   } else {
     return "Success:" + data;

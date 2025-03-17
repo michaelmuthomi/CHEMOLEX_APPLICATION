@@ -78,7 +78,7 @@ export default function LoginScreen() {
         return;
       }
 
-      if (user_role === "customer") {
+      if (user_role === "Customer") {
         console.log("User is a Customer");
         setEmailContext(email);
         router.push("/(Customer)");

@@ -82,6 +82,7 @@ export default function Screen() {
         setLoading(false)
         return;
       }
+      console.log("Create account log: >> ", response)
       displayNotification("User already exists", "danger");
       setLoading(false);
     } else {
@@ -110,7 +111,7 @@ export default function Screen() {
               onChangeText={onUserNameInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="username"
               textContentType="name"
             />
@@ -120,7 +121,7 @@ export default function Screen() {
               onChangeText={onFullNameInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="name"
               textContentType="name"
             />
@@ -130,7 +131,7 @@ export default function Screen() {
               onChangeText={onPhoneNumberInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="tel"
               textContentType="telephoneNumber"
               keyboardType="number-pad"
@@ -142,7 +143,7 @@ export default function Screen() {
               onChangeText={onEmailInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="email"
               textContentType="emailAddress"
               keyboardType="email-address"
@@ -154,7 +155,7 @@ export default function Screen() {
               onChangeText={onPasswordInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="password"
               textContentType="password"
               secureTextEntry
@@ -178,15 +179,15 @@ export default function Screen() {
                 fontFamily: "Inter_400Regular",
               }}
               data={[
-                { label: "Customer", value: "customer" },
-                { label: "Stock Manager", value: "stock_manager" },
-                { label: "Finance Controller", value: "finance_controller" },
-                { label: "Dispatch Manager", value: "dispatch_manager" },
-                { label: "Service Manager", value: "service_manager" },
-                { label: "Supervisor", value: "supervisor" },
-                { label: "Technician", value: "technician" },
-                { label: "Supplier", value: "supplier" },
-                { label: "Driver", value: "driver" },
+                { label: "Customer", value: "Customer" },
+                { label: "Waste Collector", value: "WasteCollector" },
+                { label: "Recycler", value: "Recycler" },
+                { label: "Inventory Manager", value: "InventoryManager" },
+                { label: "Finance Manager", value: "FinanceManager" },
+                { label: "Supplier Manager", value: "SupplierManager" },
+                { label: "Service Manager", value: "ServiceManager" },
+                { label: "Trainer", value: "Trainer" },
+                { label: "Trainee", value: "Trainee" },
               ]}
               maxHeight={300}
               labelField="label"
@@ -200,17 +201,17 @@ export default function Screen() {
           </View>
           <Button
             onPress={handleSignup}
-            className="w-full rounded-full"
+            className="w-full rounded-full bg-green-600"
             size={"lg"}
             variant="default"
           >
             {loading ? (
               <View className="flex flex-row items-center gap-2">
                 <ActivityIndicator size="small" color="#000" />
-                <P className="text-center text-black">Create account</P>
+                <P className="text-center text-white">Create account</P>
               </View>
             ) : (
-              <P className="text-center text-black">Create account</P>
+              <P className="text-center text-white">Create account</P>
             )}
           </Button>
           <P
