@@ -61,20 +61,20 @@ export default function Screen() {
 
         // Route to appropriate screen based on role
         switch (user_role) {
-          case "customer":
+          case "Customer":
             displayNotification(
               "Customer Detected. Go to user login page",
               "danger"
             );
             setLoading(false);
             break;
-          case "stock_manager":
+          case "InventoryManager":
             router.push({
               pathname: "/(StockManager)",
               params: { email: email },
             });
             break;
-          case "finance_controller":
+          case "FinanceManager":
             router.push({
               pathname: "/(FinanceManager)",
               params: { email: email },
@@ -86,7 +86,7 @@ export default function Screen() {
               params: { email: email },
             });
             break;
-          case "service_manager":
+          case "ServiceManager":
             router.push({
               pathname: "/(ServiceManager)",
               params: { email: email },
@@ -104,7 +104,7 @@ export default function Screen() {
               params: { email: email },
             });
             break;
-          case "supplier":
+          case "SupplierManager":
             router.push({
               pathname: "/(Supplier)",
               params: { email: email },
