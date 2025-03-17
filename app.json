@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Chemolex",
-    "slug": "chemolexapplication",
+    "slug": "refnetapplication",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/Logo.png",
