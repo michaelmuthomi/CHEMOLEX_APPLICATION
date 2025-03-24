@@ -110,7 +110,7 @@ export default function Page() {
           </View>
         </View>
       </ScrollView>
-      <View className="flex-row items-center justify-between gap-4 p-4 w-full">
+      <View className="flex-row items-center justify-between gap-4 p-4 w-full border-t-[1px] border-zinc-200">
         <Button
           className="w-auto p-0 rounded-full bg-transparent"
           size={"lg"}
