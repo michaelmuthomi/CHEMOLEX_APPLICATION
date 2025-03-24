@@ -360,7 +360,7 @@ export default function Page() {
           <View className="flex-row items-center rounded-md">
             <User size={16} color={"#aaaaaa"} />
             <Input
-              placeholder="Full Name"
+              placeholder="e.g John Doe"
               placeholderTextColor="#666"
               value={customer.full_name}
               onChangeText={(text) =>
@@ -376,7 +376,7 @@ export default function Page() {
           <View className="flex-row items-center rounded-md">
             <MapPin size={16} color={"#aaaaaa"} />
             <Input
-              placeholder="Address"
+              placeholder="e.g CBD, Nairobi"
               placeholderTextColor="#666"
               value={customer.address}
               onChangeText={(text) =>
@@ -393,7 +393,7 @@ export default function Page() {
             <View className="flex-row items-center rounded-md">
               <MapPinned size={16} color={"#aaaaaa"} />
               <Input
-                placeholder="City"
+                placeholder="e.g Nairobi"
                 placeholderTextColor="#666"
                 value={customer.city}
                 onChangeText={(text) =>
@@ -410,7 +410,7 @@ export default function Page() {
             <View className="flex-row items-center rounded-md">
               <Earth size={16} color={"#aaaaaa"} />
               <Input
-                placeholder="Country"
+                placeholder="e.g Kenya"
                 placeholderTextColor="#666"
                 value={customer.state}
                 required={true}
@@ -431,7 +431,7 @@ export default function Page() {
             <View className="flex-row items-center rounded-md w-full">
             <PhoneCallIcon size={16} color={"#aaaaaa"} />
             <Input
-              placeholder="Phone"
+              placeholder="0712-345-678"
               placeholderTextColor="#666"
               keyboardType="phone-pad"
               value={customer.phone_number}
@@ -458,11 +458,11 @@ export default function Page() {
         </Button>
         <Button
           onPress={handleShippingSubmit}
-          className="rounded-full flex-1"
+          className="rounded-full flex-1 bg-green-900"
           size={"lg"}
           variant="default"
         >
-          <H5 className=" text-black">{"Continue"}</H5>
+          <H5 className=" text-white">{"Continue"} &rarr;</H5>
         </Button>
       </View>
     </View>
@@ -484,7 +484,7 @@ const renderPaymentForm = () => (
       <Button
         onPress={() => setPaymentMethod("credit_card")}
         className={`rounded-full w-1/2 ${
-          paymentMethod === "card" ? "bg-green-500" : "bg-[#2c2c2c]"
+          paymentMethod === "card" ? "bg-green-900" : "bg-gray-900"
         }`}
       >
         <H5 className="text-white mt-[2px]">Card</H5>
@@ -492,7 +492,7 @@ const renderPaymentForm = () => (
       <Button
         onPress={() => setPaymentMethod("mpesa")}
         className={`rounded-full flex-1 ${
-          paymentMethod === "mpesa" ? "bg-green-500" : "bg-[#2c2c2c]"
+          paymentMethod === "mpesa" ? "bg-green-900" : "bg-gray-900"
         }`}
       >
         <H5 className="text-white mt-[2px]">Mpesa</H5>
@@ -672,14 +672,14 @@ const renderPaymentForm = () => (
           <View className="flex-row items-center gap-2">
             <View
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep === "shipping" ? "bg-green-500" : "!bg-[#2c2c2c]"
+                currentStep === "shipping" ? "bg-green-900" : "!bggray-900]"
               }`}
             >
               <P> 1 </P>
             </View>
             <H4
               className={`text-base ${
-                currentStep === "shipping" ? "text-white" : "text-zinc-400"
+                currentStep === "shipping" ? "text-black" : "text-zinc-500"
               }`}
             >
               Shipping
@@ -688,14 +688,14 @@ const renderPaymentForm = () => (
           <View className="flex-row items-center gap-2">
             <View
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep === "payment" ? "bg-green-500" : "!bg-[#2c2c2c]"
+                currentStep === "payment" ? "bg-green-900" : "!bggray-900]"
               }`}
             >
               <P> 2 </P>
             </View>
             <H4
               className={`text-base ${
-                currentStep === "payment" ? "text-white" : "text-zinc-400"
+                currentStep === "payment" ? "text-black" : "text-zinc-500"
               }`}
             >
               Payment
@@ -704,14 +704,14 @@ const renderPaymentForm = () => (
           <View className="flex-row items-center gap-2">
             <View
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep === "review" ? "bg-green-500" : "!bg-[#2c2c2c]"
+                currentStep === "review" ? "bg-green-900" : "!bggray-900]"
               }`}
             >
               <P> 3 </P>
             </View>
             <H4
               className={`text-base ${
-                currentStep === "review" ? "text-white" : "text-zinc-400"
+                currentStep === "review" ? "text-black" : "text-zinc-500"
               }`}
             >
               Review

@@ -69,7 +69,7 @@ export default function LoginScreen() {
 
       const user_status = isValid["status"];
       console.log("User status: ", user_status);
-      if (user_status === "inactive") {
+      if (user_status !== "active") {
         displayNotification(
           "Account not active, Please contact admin",
           "danger"
