@@ -28,7 +28,7 @@ interface ValidationError {
 }
 
 interface ShippingInfo {
-  full_name: string;
+  name: string;
   address: string;
   city: string;
   state: string;
@@ -153,7 +153,7 @@ export default function Page() {
   >("shipping");
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({
-    full_name: "",
+    name: "",
     address: "",
     city: "",
     state: "",
@@ -170,7 +170,7 @@ export default function Page() {
   useEffect(() => {
     async function fetchUserDetails() {
       const response = await checkUser(emailContext?.email);
-      console.log("Username", response.full_name);
+      console.log("Username", response.name);
       setCustomerDetails(response);
     }
     fetchUserDetails();
@@ -362,11 +362,11 @@ export default function Page() {
             <Input
               placeholder="e.g John Doe"
               placeholderTextColor="#666"
-              value={customer.full_name}
+              value={customer.name}
               onChangeText={(text) =>
-                setShippingInfo({ ...customer, full_name: text })
+                setShippingInfo({ ...customer, name: text })
               }
-              {...getFieldError("full_name")}
+              {...getFieldError("name")}
               className="border-0 flex-1"
             />
           </View>
@@ -434,9 +434,9 @@ export default function Page() {
               placeholder="0712-345-678"
               placeholderTextColor="#666"
               keyboardType="phone-pad"
-              value={customer.phone_number}
+              value={customer.phonenumber}
               onChangeText={(text) =>
-              setShippingInfo({ ...customer, phone_number: text })
+              setShippingInfo({ ...customer, phonenumber: text })
               }
               {...getFieldError("phone")}
               className="border-0 flex-1"
@@ -594,7 +594,7 @@ const renderPaymentForm = () => (
           <View className="gap-2">
             <View className="flex-row justify-between items-center">
               <P className="w-1/2">Name</P>
-              <H5 className="text-right">{customer.full_name}</H5>
+              <H5 className="text-right">{customer.name}</H5>
             </View>
             <View className="flex-row justify-between items-center">
               <P className="w-1/2">Address</P>
