@@ -18,7 +18,7 @@ import {
 } from "lucide-react-native";
 import { useCart } from "~/lib/cart-context";
 import { formatPrice } from "~/lib/format-price";
-import { H1, H2, H3, H4, H5, P } from "~/components/ui/typography";
+import { H1, H2, H3, H4, H5, H6, P } from "~/components/ui/typography";
 import { Button } from "~/components/ui/button";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -98,7 +98,7 @@ export default function Page() {
                 >
                   <Minus size={18} color="#fff" />
                 </TouchableOpacity>
-                <P className="color-white text-2xl">{quantity}</P>
+                <P className="text-2xl">{quantity}</P>
                 <TouchableOpacity
                   className="bg-zinc-900 p-2 rounded-full"
                   onPress={() => handleQuantityChange(1)}
@@ -123,11 +123,11 @@ export default function Page() {
         </Button>
         <Button
           onPress={handleAddToCart}
-          className="flex-1 rounded-full"
+          className="flex-1 rounded-full bg-black"
           size={"lg"}
           variant="default"
         >
-          <H5 className=" text-black">{"Add to Cart"}</H5>
+          <H4 className="text-white text-lg leading-0">{"Add to Cart"}</H4>
         </Button>
       </View>
     </SafeAreaView>
@@ -139,7 +139,7 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({
   value,
 }) => (
   <View className="mb-4">
-    <H5 className="text-sm text-gray-600">{label}</H5>
-    <P className="text-lg text-white">{value}</P>
+    <H5 className="text-sm uppercase text-gray-400">{label}</H5>
+    <H4 className="text-lg text-gray-900">{value}</H4>
   </View>
 );

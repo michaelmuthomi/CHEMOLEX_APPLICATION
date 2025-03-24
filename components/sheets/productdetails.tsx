@@ -36,7 +36,7 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({
 }) => (
   <View className="mb-4">
     <H5 className="text-sm text-gray-600 mb-1">{label}</H5>
-    <H5 className="text-base text-white">{value}</H5>
+    <H5 className="text-base text-black">{value}</H5>
   </View>
 );
 
