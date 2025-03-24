@@ -35,9 +35,9 @@ export function ManageDetails({
   const inputRef = useRef<Textarea>(null);
   const [loading, setLoading] = React.useState(false);
   const [customer, setCustomerDetails] = React.useState<{
-    full_name?: string;
+    name?: string;
     email?: string;
-    phone_number?: string;
+    phonenumber?: string;
     address?: string;
   }>({});
   const emailContext = useEmail();
@@ -81,7 +81,9 @@ export function ManageDetails({
         <BottomSheetView className="p-6 gap-6">
           {/* Title and Subtitle */}
           <View className=" mb-8">
-            <H3 className="text-2xl mb-2 ">Manage Personal details</H3>
+            <H3 className="text-2xl mb-2 text-white">
+              Manage Personal details
+            </H3>
             <P className="text-gray-500 ">Edit your profile details below</P>
           </View>
           <View className="py-2">
@@ -89,7 +91,7 @@ export function ManageDetails({
               <View className="gap-4">
                 <View className="flex-row">
                   <View className="gap-2 w-1/2 pr-2">
-                    <H5>First Name</H5>
+                    <H5 className="text-white">First Name</H5>
                     <View
                       className={`
                   flex-row items-center rounded-md
@@ -99,33 +101,29 @@ export function ManageDetails({
                       <User size={14} color={isEditing ? "white" : "gray"} />
                       <Input
                         placeholder="First Name"
-                        value={
-                          customer.full_name
-                            ? customer.full_name.split(" ")[0]
-                            : ""
-                        }
+                        value={customer.name ? customer.name.split(" ")[0] : ""}
                         onChangeText={(text) => {
-                          const lastName = customer.full_name
+                          const lastName = customer.name
                             .split(" ")
                             .slice(1)
                             .join(" ");
                           setCustomerDetails({
                             ...customer,
-                            full_name: text + (lastName ? " " + lastName : ""),
+                            name: text + (lastName ? " " + lastName : ""),
                           });
                         }}
                         editable={isEditing}
                         className={
                           !isEditing
-                            ? "bg-transparent border-0 flex-1"
-                            : "border-0 flex-1"
+                            ? "bg-transparent border-0 flex-1 text-white"
+                            : "border-0 flex-1 text-white"
                         }
                       />
                     </View>
                   </View>
 
                   <View className="gap-2 w-1/2">
-                    <H5>Last Name</H5>
+                    <H5 className="text-white">Last Name</H5>
                     <View
                       className={`
                   flex-row items-center rounded-md
@@ -136,22 +134,22 @@ export function ManageDetails({
                       <Input
                         placeholder="Last Name"
                         value={
-                          customer.full_name
-                            ? customer.full_name.split(" ").slice(1).join(" ")
+                          customer.name
+                            ? customer.name.split(" ").slice(1).join(" ")
                             : ""
                         }
                         onChangeText={(text) => {
-                          const firstName = customer.full_name.split(" ")[0];
+                          const firstName = customer.name.split(" ")[0];
                           setCustomerDetails({
                             ...customer,
-                            full_name: firstName + (text ? " " + text : ""),
+                            name: firstName + (text ? " " + text : ""),
                           });
                         }}
                         editable={isEditing}
                         className={
                           !isEditing
-                            ? "bg-transparent border-0 flex-1"
-                            : "border-0 flex-1"
+                            ? "bg-transparent border-0 flex-1 text-white"
+                            : "border-0 flex-1 text-white"
                         }
                       />
                     </View>
@@ -159,7 +157,7 @@ export function ManageDetails({
                 </View>
 
                 <View className="gap-2">
-                  <H5>Email</H5>
+                  <H5 className="text-white">Email</H5>
                   <View
                     className={`
                   flex-row items-center rounded-md
@@ -177,15 +175,15 @@ export function ManageDetails({
                       editable={isEditing}
                       className={
                         !isEditing
-                          ? "bg-transparent border-0 flex-1"
-                          : "border-0 flex-1"
+                          ? "bg-transparent border-0 flex-1 text-white"
+                          : "border-0 flex-1 text-white"
                       }
                     />
                   </View>
                 </View>
 
                 <View className="gap-2">
-                  <H5>Phone Number</H5>
+                  <H5 className="text-white">Phone Number</H5>
                   <View
                     className={`
                   flex-row items-center rounded-md
@@ -195,23 +193,23 @@ export function ManageDetails({
                     <Phone size={14} color={isEditing ? "white" : "gray"} />
                     <Input
                       placeholder="Phone"
-                      value={customer.phone_number}
+                      value={customer.phonenumber}
                       onChangeText={(text) =>
-                        setCustomerDetails({ ...customer, phone_number: text })
+                        setCustomerDetails({ ...customer, phonenumber: text })
                       }
                       keyboardType="phone-pad"
                       editable={isEditing}
                       className={
                         !isEditing
-                          ? "bg-transparent border-0 flex-1"
-                          : "border-0 flex-1"
+                          ? "bg-transparent border-0 flex-1 text-white"
+                          : "border-0 flex-1 text-white"
                       }
                     />
                   </View>
                 </View>
 
                 <View className="gap-2">
-                  <H5>Address</H5>
+                  <H5 className="text-white">Address</H5>
                   <View
                     className={`
                   flex-row items-center rounded-md
@@ -231,8 +229,8 @@ export function ManageDetails({
                       editable={isEditing}
                       className={
                         !isEditing
-                          ? "bg-transparent border-0 flex-1"
-                          : "border-0 flex-1"
+                          ? "bg-transparent border-0 flex-1 text-white"
+                          : "border-0 flex-1 text-white"
                       }
                     />
                   </View>
@@ -240,24 +238,24 @@ export function ManageDetails({
 
                 <View className="space-y-4 pt-4">
                   {isEditing ? (
-                    <View className="flex-row w-full justify-between">
-                      <Button
-                        variant="outline"
-                        onPress={handleSavecustomer}
-                        size={"lg"}
-                        className="w-2/3 rounded-full bg-white !py-4 !border-none"
-                      >
-                        <H5 className="!leading-none text-black ">
-                          Save Changes
-                        </H5>
-                      </Button>
+                    <View className="flex-row w-full gap-4 justify-between">
                       <Button
                         variant="outline"
                         onPress={() => setIsEditing(false)}
                         size={"lg"}
-                        className="rounded-full bg-red-400 !py-4 !border-none flex-1"
+                        className="rounded-full bg-red-400 !py-4 !border-none w-max"
                       >
-                        <H5 className="!leading-0 text-black">Cancel</H5>
+                        <H5 className="!leading-0 text-black">&larr; Cancel</H5>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onPress={handleSavecustomer}
+                        size={"lg"}
+                        className="rounded-full bg-white !py-4 !border-none flex-1"
+                      >
+                        <H5 className="!leading-none text-black ">
+                          Save Changes
+                        </H5>
                       </Button>
                     </View>
                   ) : (
