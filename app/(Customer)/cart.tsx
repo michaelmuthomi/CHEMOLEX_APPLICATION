@@ -27,7 +27,7 @@ export default function Page() {
         <ArrowLeft size={20} color={"#fff"} />
         <P className="text-white">Back</P>
       </Button>
-      <ScrollView className="p-4 ">
+      <ScrollView className="">
         {items.map((item) => (
           <View className="bg-white mb-4 py-4 px-4 flex-row relative rounded-lg">
             <View className="w-full relative overflow-clip">
@@ -40,26 +40,17 @@ export default function Page() {
                   style={{ objectFit: "cover" }}
                 />
               </View>
-              <View className="flex-row justify-between items-center mb-2">
-                <H3 className="text-lg text-gray-800">{item.name}</H3>
+              <View>
+                <H4 className="text-lg text-gray-800">{item.name}</H4>
               </View>
-              <H5 className=" text-zinc-500">
-                Total: {formatPrice(item.price * item.quantity)}
-              </H5>
               <View className="flex-row items-center gap-4 mt-4 w-full">
+                <H4 className="text-xl text-gray-400 text-right">
+                  Total: {formatPrice(item.price * item.quantity)}
+                </H4>
                 <Button
                   variant="outline"
                   size="sm"
-                  onPress={() => removeFromCart(item.product_id)}
-                  className="border rounded-full bg-transparent flex-row gap-2"
-                >
-                  <Trash size={14} color="#000" />
-                  <P className="text-black">Remove</P>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border rounded-full bg-transparent ml-auto"
+                  className="border rounded-md bg-transparent ml-auto"
                   onPress={() =>
                     updateQuantity(item.product_id, item.quantity - 1)
                   }
@@ -70,7 +61,7 @@ export default function Page() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border rounded-full bg-transparent"
+                  className="border rounded-md bg-transparent"
                   onPress={() =>
                     updateQuantity(item.product_id, item.quantity + 1)
                   }
@@ -96,12 +87,12 @@ export default function Page() {
               </H5>
             </Button>
             <Button
-              className="rounded-full flex-1"
+              className="rounded-full flex-1 bg-green-900"
               size={"lg"}
               variant="default"
               onPress={() => navigation.navigate("checkout")}
             >
-              <H5 className=" text-black">{"Checkout"} &rarr;</H5>
+              <H5 className="leading-0 text-white">{"Checkout"} &rarr;</H5>
             </Button>
           </View>
         </View>
