@@ -68,17 +68,15 @@ export default function Layout() {
           <Tabs.Screen
             name="cart"
             options={{
-              href: null,
-              headerShown: true,
-              headerLeft: () => (
-                <TouchableOpacity
-                  className="px-4"
-                  onPress={() => router.back()}
-                >
-                  <ArrowLeft size={19} color="black" />
-                </TouchableOpacity>
+              tabBarIcon: ({ color }) => (
+                <Ionicons
+                  name={cartQuantity > 0 ? "bag" : "bag-outline"}
+                  size={28}
+                  color={color}
+                />
               ),
               tabBarStyle: { display: "none" },
+              headerShown: true,
               tabBarBadge: cartQuantity || undefined,
               tabBarBadgeStyle: {
                 backgroundColor: "#6366f1",
