@@ -192,7 +192,7 @@ export default function Page() {
       <View className="flex-row items-center justify-between">
         <H3 className="flex-1 text-xl">Featured Products</H3>
         <Link href="/(Customer)/search" className="">
-          <H4 className="text-white text-sm">View More &rarr;</H4>
+          <H4 className="text-sm">View More &rarr;</H4>
         </Link>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -200,7 +200,7 @@ export default function Page() {
           {products.slice(0, 4).map((product) => (
             <TouchableOpacity
               key={product.product_id}
-              className="w-[250px] h-48 rounded-md shadow relative"
+              className="w-[250px] h-48 rounded-lg shadow relative"
               onPress={() =>
                 navigation.navigate("product", {
                   product: JSON.stringify(product),
@@ -211,7 +211,7 @@ export default function Page() {
                 source={{
                   uri: product.image_url.replace(/^http:\/\//i, "https://"),
                 }}
-                className="w-full h-full rounded-sm mb-2"
+                className="w-full h-full mb-2"
                 resizeMode="cover"
               />
               <LinearGradient
@@ -219,13 +219,13 @@ export default function Page() {
                 className="absolute bottom-0 left-0 h-36 w-full"
               />
               <View className="absolute bottom-0 flex-row items-end justify-between w-full px-2 pb-2">
-                <H6 numberOfLines={1} className="text-base w-3/4">
+                <H6 numberOfLines={1} className="text-base w-3/4 text-white">
                   {product.name}
                 </H6>
 
                 <H5
                   numberOfLines={1}
-                  className="text-base flex-row gap-2 h-max"
+                  className="text-base flex-row gap-2 h-max text-white"
                 >
                   {formatBalance(product.price)}
                 </H5>
@@ -387,8 +387,8 @@ export default function Page() {
             <Avatar alt="Customer's Avatar">
               <AvatarFallback>
                 <P className="text-white">
-                  {customer.username &&
-                    customer.username
+                  {customer.name &&
+                    customer.name
                       .split(" ")
                       .map((name: string) => name[0])
                       .join("")}
@@ -398,11 +398,11 @@ export default function Page() {
             <View>
               <H2 className="text-xl border-b-0 leading-0">
                 Hi there,{"\n"}
-                {customer.username} 👋
+                {customer.name} 👋
               </H2>
             </View>
           </View>
-          {renderFeaturedCategories()}
+          {/* {renderFeaturedCategories()} */}
           {/* {renderPromotions()} */}
           {renderProducts()}
           {renderAllProducts()}

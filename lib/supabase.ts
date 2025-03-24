@@ -35,7 +35,7 @@ export async function validateUserCredentials(email: string, password: string) {
     .from("users")
     .select("*")
     .eq("email", email)
-    .eq("password_hash", password)
+    .eq("password", password)
     .single();
 
   if (error) {
@@ -52,7 +52,7 @@ export async function addUserToDB(
   username: string,
   full_name: string,
   email: string,
-  password_hash: string,
+  password: string,
   phone_number: number,
   role: string
 ) {
@@ -63,7 +63,7 @@ export async function addUserToDB(
   // }
   const { data, error } = await supabase
     .from("users")
-    .insert([{ name: username, email, password: password_hash, role, phonenumber: phone_number }])
+    .insert([{ name: username, email, password: password, role, phonenumber: phone_number }])
     .single();
 
   if (error) {
@@ -99,12 +99,12 @@ export async function updateUserDetails(
   username: string,
   full_name: string,
   email: string,
-  password_hash: string,
+  password: string,
   phone_number: number
 ) {
   const { data, error } = await supabase
     .from("users")
-    .update({ username, full_name, email, password_hash, phone_number })
+    .update({ username, full_name, email, password, phone_number })
     .eq("email", email)
     .single();
 
@@ -116,10 +116,10 @@ export async function updateUserDetails(
 }
 
 // Reset user password
-export async function resetUserPassword(email: string, password_hash: string) {
+export async function resetUserPassword(email: string, password: string) {
   const { data, error } = await supabase
     .from("users")
-    .update({ password_hash })
+    .update({ password })
     .eq("email", email);
 
   if (error) {
@@ -141,7 +141,7 @@ export async function resetPassword(email: string, newPassword: string) {
     // Update the password
     const { data, error } = await supabase
       .from("users")
-      .update({ password_hash: newPassword })
+      .update({ password: newPassword })
       .eq("email", email);
 
     if (error) {

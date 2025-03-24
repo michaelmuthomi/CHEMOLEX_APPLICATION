@@ -157,7 +157,7 @@ export default function Screen() {
               onChangeText={onEmailInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="email"
               textContentType="emailAddress"
               keyboardType="email-address"
@@ -172,7 +172,7 @@ export default function Screen() {
               onChangeText={onPasswordInput}
               aria-labelledby="inputLabel"
               aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-white"
+              className="bg-white border border-zinc-400 !h-14 text-black"
               autoComplete="password"
               textContentType="password"
               secureTextEntry
@@ -206,7 +206,7 @@ export default function Screen() {
           className="w-3/4 rounded-full bg-[#111] !py-4 !border-none"
           onPress={() => router.push("/SignupScreen")}
         >
-          <P className="text-white text-center">Create an account</P>
+          <P className="text-black text-center">Create an account</P>
         </TouchableOpacity>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row"></View>
