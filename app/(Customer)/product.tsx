@@ -68,7 +68,7 @@ export default function Page() {
               uri: product.image_url.replace(/^http:\/\//i, "https://"),
             }}
             className="w-full h-80 bg-white z-0"
-            resizeMode="contain"
+            resizeMode="cover"
             style={{ zIndex: -1 }}
           />
         </View>
