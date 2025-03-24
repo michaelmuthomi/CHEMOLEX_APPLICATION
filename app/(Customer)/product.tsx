@@ -123,11 +123,11 @@ export default function Page() {
         </Button>
         <Button
           onPress={handleAddToCart}
-          className="flex-1 rounded-full bg-black"
+          className="flex-1 rounded-full bg-green-900"
           size={"lg"}
           variant="default"
         >
-          <H4 className="text-white text-lg leading-0">{"Add to Cart"}</H4>
+          <H5 className="leading-0 text-white">{"Add to Cart"} &rarr;</H5>
         </Button>
       </View>
     </SafeAreaView>

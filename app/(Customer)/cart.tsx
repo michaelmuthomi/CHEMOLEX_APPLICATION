@@ -20,17 +20,10 @@ export default function Page() {
     
   return (
     <SafeAreaView className="flex-1">
-      <Button
-        onPress={() => navigation.goBack()}
-        className="w-1/3 mt-14 mb-4 mx-4 bg-zinc-900 rounded-full z-10 flex-row gap-2"
-      >
-        <ArrowLeft size={20} color={"#fff"} />
-        <P className="text-white">Back</P>
-      </Button>
-      <ScrollView className="">
+      <ScrollView className="divide-y-2">
         {items.map((item) => (
           <View className="bg-white mb-4 py-4 px-4 flex-row relative rounded-lg">
-            <View className="w-full relative overflow-clip">
+            <View className="w-full relative overflow-clip flex-1">
               <View className={`rounded-md h-48`}>
                 <Image
                   source={{

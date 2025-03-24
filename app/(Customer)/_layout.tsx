@@ -68,15 +68,17 @@ export default function Layout() {
           <Tabs.Screen
             name="cart"
             options={{
-              tabBarIcon: ({ color }) => (
-                <Ionicons
-                  name={cartQuantity > 0 ? "bag" : "bag-outline"}
-                  size={28}
-                  color={color}
-                />
+              href: null,
+              headerShown: true,
+              headerLeft: () => (
+                <TouchableOpacity
+                  className="px-4"
+                  onPress={() => router.back()}
+                >
+                  <ArrowLeft size={19} color="black" />
+                </TouchableOpacity>
               ),
               tabBarStyle: { display: "none" },
-              headerShown: false,
               tabBarBadge: cartQuantity || undefined,
               tabBarBadgeStyle: {
                 backgroundColor: "#6366f1",
@@ -87,7 +89,7 @@ export default function Layout() {
                   className="px-4"
                   onPress={() => router.back()}
                 >
-                  <ArrowLeft size={19} color="white" />
+                  <ArrowLeft size={19} color="black" />
                 </TouchableOpacity>
               ),
               headerTitle: () => (
@@ -139,7 +141,7 @@ export default function Layout() {
                   className="px-4"
                   onPress={() => router.back()}
                 >
-                  <ArrowLeft size={19} color="white" />
+                  <ArrowLeft size={19} color="black" />
                 </TouchableOpacity>
               ),
               headerTitle: () => (
