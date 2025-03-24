@@ -22,7 +22,7 @@ export default function Page() {
     <SafeAreaView className="flex-1">
       <ScrollView className="divide-y-2">
         {items.map((item) => (
-          <View className="bg-white mb-4 py-4 px-4 flex-row relative rounded-lg">
+          <View className="bg-white mb-4 py-4 px-4 flex-row relative rounded-lg divide-y-2">
             <View className="w-full relative overflow-clip flex-1">
               <View className={`rounded-md h-48`}>
                 <Image
@@ -68,7 +68,7 @@ export default function Page() {
       </ScrollView>
       {items.length > 0 ? (
         <View>
-          <View className="flex-row items-center justify-between gap-4 p-4 w-full">
+          <View className="flex-row items-center justify-between gap-4 p-4 w-full border-t-[1px] border-zinc-200">
             <Button
               className="w-auto p-0 rounded-full bg-transparent"
               size={"lg"}
