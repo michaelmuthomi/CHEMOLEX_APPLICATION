@@ -484,7 +484,7 @@ const renderPaymentForm = () => (
       <Button
         onPress={() => setPaymentMethod("credit_card")}
         className={`rounded-full w-1/2 ${
-          paymentMethod === "card" ? "bg-green-900" : "bg-gray-900"
+          paymentMethod === "card" ? "bg-green-900" : "bg-[#2c2c2c]"
         }`}
       >
         <H5 className="text-white mt-[2px]">Card</H5>
@@ -492,7 +492,7 @@ const renderPaymentForm = () => (
       <Button
         onPress={() => setPaymentMethod("mpesa")}
         className={`rounded-full flex-1 ${
-          paymentMethod === "mpesa" ? "bg-green-900" : "bg-gray-900"
+          paymentMethod === "mpesa" ? "bg-green-900" : "bg-[#2c2c2c]"
         }`}
       >
         <H5 className="text-white mt-[2px]">Mpesa</H5>
@@ -535,49 +535,50 @@ const renderPaymentForm = () => (
       <View className="gap-6">
         <View className="gap-2">
           <H5>Mpesa Number</H5>
-          <View className="flex-row items-center rounded-md w-full">
+            <View className="flex-row items-center rounded-md w-full">
             <Smartphone size={16} color={"#aaaaaa"} />
             <Input
               placeholder="Phone number"
               placeholderTextColor="#666"
               value={paymentInfo.mpesaNumber}
               onChangeText={(text) =>
-                setPaymentInfo({ ...paymentInfo, mpesaNumber: text })
+              setPaymentInfo({ ...paymentInfo, mpesaNumber: text })
               }
               {...getFieldError("mpesaNumber")}
               className="border-0 flex-1"
               maxLength={10}
+              keyboardType="number-pad"
             />
-          </View>
+            </View>
         </View>
       </View>
     )}
     <View className="flex-row gap-4 w-full justify-between">
       <Button
         onPress={handleBackStep}
-        className="rounded-full border-[1px] border-white bg-transparent"
+        className="rounded-full border-[1px] border-black bg-transparent"
         size={"lg"}
         variant="default"
       >
-        <H5 className="text-white">&larr; {" Back"}</H5>
+        <H5 className="">&larr; {" Back"}</H5>
       </Button>
       <Button
         onPress={() => handlePaymentSubmit(paymentMethod)}
-        className="rounded-full flex-1"
+        className="rounded-full flex-1 bg-green-900"
         size={"lg"}
         variant="default"
         disabled={isProcessing}
       >
-        <H5 className="text-black">
-          {isProcessing ? "Processing..." : "Review Order"}
-        </H5>
+        <H4 className="text-white text-base">
+          {isProcessing ? "Processing..." : "Review Order"} &rarr;
+        </H4>
       </Button>
     </View>
   </View>
 );
 
   const renderOrderReview = () => (
-    <View className="gap-10">
+    <ScrollView className="gap-10">
       <View className="flex-row items-center gap-2">
         <View>
           <H3>Please confirm and submit order</H3>
@@ -646,23 +647,23 @@ const renderPaymentForm = () => (
         <View className="flex-row gap-4 w-full justify-between">
           <Button
             onPress={handleBackStep}
-            className="rounded-full border-[1px] border-white bg-transparent"
+            className="rounded-full border-[1px] border-black bg-transparent"
             size={"lg"}
             variant="default"
           >
-            <H5 className=" text-white">&larr; {" Back"}</H5>
+            <H5 className=" text-black">&larr; {" Back"}</H5>
           </Button>
           <Button
             onPress={handlePlaceOrder}
-            className="rounded-full flex-1"
+            className="rounded-full flex-1 bg-green-900"
             size={"lg"}
             variant="default"
           >
-            <H5 className="text-black">{"Place Order"}</H5>
+            <H4 className="text-white text-base">{"Place Order "} &rarr;</H4>
           </Button>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 
   return (
@@ -672,14 +673,14 @@ const renderPaymentForm = () => (
           <View className="flex-row items-center gap-2">
             <View
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep === "shipping" ? "bg-green-900" : "!bggray-900]"
+                currentStep === "shipping" ? "bg-green-900" : "!bg-gray-600"
               }`}
             >
-              <P> 1 </P>
+              <P className='text-white'> 1 </P>
             </View>
             <H4
               className={`text-base ${
-                currentStep === "shipping" ? "text-black" : "text-zinc-500"
+                currentStep === "shipping" ? "text-green-900" : "text-zinc-500"
               }`}
             >
               Shipping
@@ -688,14 +689,14 @@ const renderPaymentForm = () => (
           <View className="flex-row items-center gap-2">
             <View
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep === "payment" ? "bg-green-900" : "!bggray-900]"
+                currentStep === "payment" ? "bg-green-900" : "!bg-gray-600"
               }`}
             >
-              <P> 2 </P>
+              <P className='text-white'> 2 </P>
             </View>
             <H4
               className={`text-base ${
-                currentStep === "payment" ? "text-black" : "text-zinc-500"
+                currentStep === "payment" ? "text-green-900" : "text-zinc-500"
               }`}
             >
               Payment
@@ -704,14 +705,14 @@ const renderPaymentForm = () => (
           <View className="flex-row items-center gap-2">
             <View
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep === "review" ? "bg-green-900" : "!bggray-900]"
+                currentStep === "review" ? "bg-green-900" : "!bg-gray-600"
               }`}
             >
-              <P> 3 </P>
+              <P className='text-white'> 3 </P>
             </View>
             <H4
               className={`text-base ${
-                currentStep === "review" ? "text-black" : "text-zinc-500"
+                currentStep === "review" ? "text-green-900" : "text-zinc-500"
               }`}
             >
               Review
