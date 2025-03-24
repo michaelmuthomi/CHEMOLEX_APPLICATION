@@ -50,7 +50,7 @@ import * as FileSystem from "expo-file-system";
 import * as Print from "expo-print";
 
 interface customer {
-  full_name: string;
+  name: string;
   email: string;
   phone: string;
   address: string;
@@ -204,7 +204,7 @@ const generateReceipt = (order: any, customerData: any): Receipt => {
   return {
     orderId: order.order_id,
     date: order.order_date,
-    customerName: customerData?.full_name || "Valued Customer",
+    customerName: customerData?.name || "Valued Customer",
     paymentMethod: order.payment_method || "Card/Mpesa",
     items: [
       {
@@ -436,7 +436,7 @@ export default function Page() {
   const emailContext = useEmail();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [customer, setCustomerDetails] = useState<customer>({
-    full_name: "",
+    name: "",
     email: "",
     phone: "",
     address: "",
@@ -585,9 +585,9 @@ export default function Page() {
               <View className="space-y-4">
                 <Input
                   placeholder="First Name"
-                  value={customer.full_name}
+                  value={customer.name}
                   onChangeText={(text) =>
-                    setCustomerDetails({ ...customer, full_name: text })
+                    setCustomerDetails({ ...customer, name: text })
                   }
                   editable={isEditing}
                   className={!isEditing ? "bg-zinc-950 text-white" : ""}
@@ -1281,20 +1281,20 @@ export default function Page() {
         }
       >
         {/* Profile Header */}
-        <View className="items-center justify-center py-8 bg-zinc-900 pt-16">
+        <View className="items-center justify-center py-8 shadow drop-shadow-sm pt-16">
           <View className="relative">
             <TouchableOpacity
               className="p-2 rounded-full shadow-sm border border-zinc-200"
               onPress={() => handleMenuPress("personal")}
             >
-              <User size={24} color="#fff" />
+              <User size={24} color="#000" />
             </TouchableOpacity>
           </View>
-          <H3 className="mt-4 text-white">
+          <H3 className="mt-4 ">
             {customer === "" ? (
               <View className="animate-pulse w-10 h-10 bg-slate-900" />
             ) : (
-              customer.full_name
+              customer.name
             )}
           </H3>
           <P className="text-zinc-500">{customer.email}</P>
@@ -1305,10 +1305,7 @@ export default function Page() {
           {personalInformationModalTrigger.map((item, index) => (
             <ManageDetails
               sheetTrigger={
-                <TouchableOpacity
-                  key={index}
-                  className="bg-zinc-950 rounded-2xl gap-2"
-                >
+                <TouchableOpacity key={index} className="rounded-2xl gap-2">
                   <View className="flex items-start">
                     <TouchableOpacity
                       className={`p-2 rounded-full w-auto ${item.iconBgColor}`}
@@ -1318,7 +1315,7 @@ export default function Page() {
                   </View>
                   <View className="flex-row items-center">
                     <View className="flex-1">
-                      <H4 className="text-white">{item.title}</H4>
+                      <H4 className="text-black">{item.title}</H4>
                       <P className="text-sm text-zinc-500 w-3/4">
                         {item.description}
                       </P>
@@ -1333,7 +1330,7 @@ export default function Page() {
             <TouchableOpacity
               key={index}
               onPress={() => setActiveModal("orders")}
-              className="bg-zinc-950 rounded-2xl gap-2"
+              className="rounded-2xl gap-2"
             >
               <View className="flex items-start">
                 <TouchableOpacity
@@ -1344,7 +1341,7 @@ export default function Page() {
               </View>
               <View className="flex-row items-center">
                 <View className="flex-1">
-                  <H4 className="text-white">{item.title}</H4>
+                  <H4 className="text-black">{item.title}</H4>
                   <P className="text-sm text-zinc-500 w-3/4">
                     {item.description}
                   </P>
@@ -1357,7 +1354,7 @@ export default function Page() {
             <TouchableOpacity
               key={index}
               onPress={() => setActiveModal("services")}
-              className="bg-zinc-950 rounded-2xl gap-2"
+              className="rounded-2xl gap-2"
             >
               <View className="flex items-start">
                 <TouchableOpacity
@@ -1368,7 +1365,7 @@ export default function Page() {
               </View>
               <View className="flex-row items-center">
                 <View className="flex-1">
-                  <H4 className="text-white">{item.title}</H4>
+                  <H4 className="text-black">{item.title}</H4>
                   <P className="text-sm text-zinc-500 w-3/4">
                     {item.description}
                   </P>
@@ -1381,7 +1378,7 @@ export default function Page() {
             <TouchableOpacity
               key={index}
               onPress={() => setActiveModal("review")}
-              className="bg-zinc-950 rounded-2xl gap-2"
+              className="rounded-2xl gap-2"
             >
               <View className="flex items-start">
                 <TouchableOpacity
@@ -1392,7 +1389,7 @@ export default function Page() {
               </View>
               <View className="flex-row items-center">
                 <View className="flex-1">
-                  <H4 className="text-white">{item.title}</H4>
+                  <H4 className="text-black">{item.title}</H4>
                   <P className="text-sm text-zinc-500 w-3/4">
                     {item.description}
                   </P>
@@ -1405,14 +1402,16 @@ export default function Page() {
 
         {/* Logout Button */}
         <TouchableOpacity
-          className="flex-row items-center p-4 mt-auto bg-red-200"
+          className="w-full last:flex-row items-center p-4 py-6 mt-auto bg-red-950"
           onPress={() => {
             setEmail("");
             navigation.navigate("LoginScreen");
           }}
         >
-          <H3 className="text-sm text-[#555]">Log out</H3>
-          <ArrowRight size={15} color="#555" className="ml-auto" />
+          <View className="flex-row w-full items-center justify-between">
+            <H4 className="text-lg text-white">Log out</H4>
+            <ArrowRight size={20} color="#fff" className="ml-auto" />
+          </View>
         </TouchableOpacity>
       </ScrollView>
 
