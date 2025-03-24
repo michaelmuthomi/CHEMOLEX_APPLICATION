@@ -151,17 +151,17 @@ export function ServiceModal({
       >
         <BottomSheetView className="p-6 gap-6">
           <View>
-            <H3 className="text-2xl">{serviceDetails?.name}</H3>
-            <P className="text-base text-gray-400">
+            <H4 className="text-2xl text-white">{serviceDetails?.name}</H4>
+            <P className="text-base text-gray-400 line-clamp-6">
               {serviceDetails?.description}
             </P>
             <View className="flex-row w-full gap-4 mt-6">
-              <View className="w-1/2">
+              {/* <View className="w-1/2">
                 <H5 className="text-sm text-white mb-2">{"Service type"}</H5>
                 <H3 className="text-base text-center rounded-full w-2/3 p-2 px-4 bg-green-300 text-green-900 leading-0 capitalize">
                   {serviceDetails?.service_type}
                 </H3>
-              </View>
+              </View> */}
               <DetailItem
                 label="Price"
                 value={formatPrice(serviceDetails?.price)}
@@ -203,7 +203,7 @@ export function ServiceModal({
                 size={"lg"}
                 variant="default"
               >
-                <H5 className=" text-black">{"Book Now"}</H5>
+                <H5 className=" text-black">{"Book Now "} &rarr;</H5>
               </Button>
             </View>
           </View>

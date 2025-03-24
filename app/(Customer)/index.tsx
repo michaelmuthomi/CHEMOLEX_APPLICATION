@@ -346,7 +346,7 @@ export default function Page() {
   const renderServiceBooking = () => (
     <View className="mt-10 px-2 gap-4 bg-zinc-950">
       <View className="flex-row items-center justify-between px-2 py-6">
-        <H3 className="flex-1 text-xl">Book a Service</H3>
+        <H4 className="flex-1 text-2xl text-white">Book a Service</H4>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-4">
@@ -367,7 +367,7 @@ export default function Page() {
                   </View>
                   <View>
                     <H4 className="text-white">{service.name}</H4>
-                    <P className="text-zinc-400">{service.description}</P>
+                    <P className="text-zinc-400 line-clamp-6">{service.description}</P>
                   </View>
                 </TouchableOpacity>
               }
