@@ -2,7 +2,7 @@ import * as React from "react";
 import { ActivityIndicator, Image, ScrollView, View } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { P, H1 } from "~/components/ui/typography";
+import { P, H1, H4, H5 } from "~/components/ui/typography";
 import { Link, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { addUserToDB } from "~/lib/supabase";
@@ -21,7 +21,7 @@ export default function Screen() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState("");
-  const [userName, setUserName] = React.useState("");
+  const [address, setaddress] = React.useState("");
   const [fullName, setFullName] = React.useState("");
   const [role, setRole] = React.useState("customer");
   const [loading, setLoading] = React.useState(false);
@@ -35,8 +35,8 @@ export default function Screen() {
   const onPhoneNumberInput = (text: string) => {
     setPhoneNumber(text);
   };
-  const onUserNameInput = (text: string) => {
-    setUserName(text);
+  const onaddressInput = (text: string) => {
+    setaddress(text);
   };
   const onFullNameInput = (text: string) => {
     setFullName(text);
@@ -45,7 +45,7 @@ export default function Screen() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phonePattern = /^[0-9]{10}$/;
 
-    if (!userName || !fullName || !email || !phoneNumber || !password) {
+    if (!address || !fullName || !email || !phoneNumber || !password) {
       return "Please fill in all the fields";
     }
     if (!emailPattern.test(email)) {
@@ -65,9 +65,9 @@ export default function Screen() {
       setLoading(false)
       return;
     }
-    if (userName && fullName && email && phoneNumber && password && role) {
+    if (address && fullName && email && phoneNumber && password && role) {
       const response = await addUserToDB(
-        userName,
+        address,
         fullName,
         email,
         password,
@@ -94,72 +94,83 @@ export default function Screen() {
     <View className="flex-1 justify-between items-center gap-5 px-2 pt-6">
       <ScrollView>
         <View className="w-full mb-4">
-          <H1>Create an account</H1>
-          <P
-            className="text-lg color-[#b3b3b3]"
-            style={{ fontFamily: "Inter_400Regular" }}
-          >
-            Welcome to refnet create an account and start managing your air
+          <H4 className="text-lg color-[#b3b3b3]">
+            Welcome to Chemolex, create an account and start managing your air
             conditioning solutions
-          </P>
+          </H4>
         </View>
         <View className="w-full mb-auto mt-auto gap-6">
           <View className="w-full gap-4">
-            <Input
-              placeholder="Username"
-              value={userName}
-              onChangeText={onUserNameInput}
-              aria-labelledby="inputLabel"
-              aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-black"
-              autoComplete="username"
-              textContentType="name"
-            />
-            <Input
-              placeholder="Full Name"
-              value={fullName}
-              onChangeText={onFullNameInput}
-              aria-labelledby="inputLabel"
-              aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-black"
-              autoComplete="name"
-              textContentType="name"
-            />
-            <Input
-              placeholder="Phone number"
-              value={phoneNumber}
-              onChangeText={onPhoneNumberInput}
-              aria-labelledby="inputLabel"
-              aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-black"
-              autoComplete="tel"
-              textContentType="telephoneNumber"
-              keyboardType="number-pad"
-              maxLength={10}
-            />
-            <Input
-              placeholder="Email address"
-              value={email}
-              onChangeText={onEmailInput}
-              aria-labelledby="inputLabel"
-              aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-black"
-              autoComplete="email"
-              textContentType="emailAddress"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <Input
-              placeholder="Password"
-              value={password}
-              onChangeText={onPasswordInput}
-              aria-labelledby="inputLabel"
-              aria-errormessage="inputError"
-              className="bg-white border border-zinc-400 !h-14 text-black"
-              autoComplete="password"
-              textContentType="password"
-              secureTextEntry
-            />
+            <View className="gap-2">
+              <H5 className="color-[#888888]">Full Name</H5>
+              <Input
+                placeholder="eg. John Doe"
+                value={fullName}
+                onChangeText={onFullNameInput}
+                aria-labelledby="inputLabel"
+                aria-errormessage="inputError"
+                className="bg-white border border-zinc-400 !h-14 text-black"
+                autoComplete="name"
+                textContentType="name"
+              />
+            </View>
+            <View className="gap-2">
+              <H5 className="color-[#888888]">Phone Number</H5>
+              <Input
+                placeholder="eg. 0712-345-678"
+                value={phoneNumber}
+                onChangeText={onPhoneNumberInput}
+                aria-labelledby="inputLabel"
+                aria-errormessage="inputError"
+                className="bg-white border border-zinc-400 !h-14 text-black"
+                autoComplete="tel"
+                textContentType="telephoneNumber"
+                keyboardType="number-pad"
+                maxLength={10}
+              />
+            </View>
+            <View className="gap-2">
+              <H5 className="color-[#888888]">Address</H5>
+              <Input
+                placeholder="eg. Nairobi, Kenya"
+                value={address}
+                onChangeText={onaddressInput}
+                aria-labelledby="inputLabel"
+                aria-errormessage="inputError"
+                className="bg-white border border-zinc-400 !h-14 text-black"
+                autoComplete="address"
+                textContentType="name"
+              />
+            </View>
+            <View className="gap-2">
+              <H5 className="color-[#888888]">Email Address</H5>
+              <Input
+                placeholder="eg. xxx@gmail.com"
+                value={email}
+                onChangeText={onEmailInput}
+                aria-labelledby="inputLabel"
+                aria-errormessage="inputError"
+                className="bg-white border border-zinc-400 !h-14 text-black"
+                autoComplete="email"
+                textContentType="emailAddress"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+            <View className="gap-2">
+              <H5 className="color-[#888888]">Password</H5>
+              <Input
+                placeholder="xxxxxxxx"
+                value={password}
+                onChangeText={onPasswordInput}
+                aria-labelledby="inputLabel"
+                aria-errormessage="inputError"
+                className="bg-white border border-zinc-400 !h-14 text-black"
+                autoComplete="password"
+                textContentType="password"
+                secureTextEntry
+              />
+            </View>
             <Dropdown
               style={{
                 height: 56,
@@ -201,7 +212,7 @@ export default function Screen() {
           </View>
           <Button
             onPress={handleSignup}
-            className="w-full rounded-full bg-green-600"
+            className="w-full rounded-full bg-green-900"
             size={"lg"}
             variant="default"
           >
@@ -214,13 +225,10 @@ export default function Screen() {
               <P className="text-center text-white">Create account</P>
             )}
           </Button>
-          <P
-            className="text-center text-lg pt-4 color-[#b3b3b3]"
-            style={{ fontFamily: "Inter_400Regular" }}
-          >
+          <H4 className="text-center text-lg pt-4 color-[#b3b3b3]">
             Create your account and start managing {"\n"} your air conditioning
             solutions
-          </P>
+          </H4>
         </View>
       </ScrollView>
     </View>

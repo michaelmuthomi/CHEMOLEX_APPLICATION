@@ -110,7 +110,7 @@ export default function LoginScreen() {
         </View>
         <View className="w-full gap-6">
           <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Email Address</H5>
+            <H5 className="color-[#888888]">Email Address</H5>
             <Input
               placeholder="example@gmail.com"
               value={email}
@@ -125,7 +125,7 @@ export default function LoginScreen() {
             />
           </View>
           <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Password</H5>
+            <H5 className="color-[#888888]">Password</H5>
             <Input
               placeholder="password123"
               value={password}

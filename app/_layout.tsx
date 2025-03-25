@@ -5,7 +5,7 @@ import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from '@react-navigation
 import { SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { NAV_THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { PortalHost } from '@rn-primitives/portal';
@@ -43,7 +43,8 @@ import {
   Inter_800ExtraBold,
   Inter_900Black,
 } from "@expo-google-fonts/inter"
-import { P } from '~/components/ui/typography';
+import { H4, P } from "~/components/ui/typography";
+import { ArrowLeft } from "lucide-react-native";
 
 export default function RootLayout({navigation}: any) {
   let [fontsLoaded] = useFonts({
@@ -113,15 +114,15 @@ export default function RootLayout({navigation}: any) {
               // options={{ headerShown: true, headerTitle: "" }}
             />
 
-            <Stack.Screen
-              name="(Customer)"
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="(Customer)" options={{ headerShown: false }} />
             <Stack.Screen
               name="(DispatchManager)"
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="(Technician)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(Technician)"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="(FinanceManager)"
               options={{ headerShown: false }}
@@ -134,7 +135,10 @@ export default function RootLayout({navigation}: any) {
               name="(StockManager)"
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="(Supervisor)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(Supervisor)"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen name="(Driver)" options={{ headerShown: false }} />
             <Stack.Screen name="(Supplier)" options={{ headerShown: false }} />
             <Stack.Screen
@@ -146,14 +150,26 @@ export default function RootLayout({navigation}: any) {
               options={{
                 headerShown: true,
                 headerTitleAlign: "left",
-                headerTitle: () => (
-                  <P
-                    onPress={() => router.push("/LoginScreen")}
-                    className="text-white"
+                tabBarBadgeStyle: {
+                  backgroundColor: "#6366f1",
+                  fontFamily: "Inter_500Medium",
+                },
+                headerLeft: () => (
+                  <TouchableOpacity
+                    className="px-4"
+                    onPress={() => router.back()}
                   >
-                    Back
-                  </P>
+                    <ArrowLeft size={19} color="black" />
+                  </TouchableOpacity>
                 ),
+                headerTitle: () => (
+                  <View className="flex items-center justify-center">
+                    <H4 className="text-xl text-center border-b-0 leading-0">
+                      Create an account
+                    </H4>
+                  </View>
+                ),
+                headerTitleAlign: "center",
               }}
             />
 
