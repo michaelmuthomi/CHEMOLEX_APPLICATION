@@ -91,8 +91,8 @@ export default function Screen() {
     }
   };
   return (
-    <View className="flex-1 justify-between items-center gap-5 px-2 pt-6">
-      <ScrollView>
+    <View className="">
+      <ScrollView className="flex gap-10 px-2 pt-">
         <View className="w-full mb-4">
           <H4 className="text-lg color-[#b3b3b3]">
             Welcome to Chemolex, create an account and start managing your air
