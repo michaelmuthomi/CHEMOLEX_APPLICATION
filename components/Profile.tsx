@@ -34,7 +34,7 @@ export default function ProfileScreen() {
   const handleSavecustomer = async () => {
     try {
       const updates = {
-        full_name: customer.full_name,
+        name: customer.name,
         username: customer.username,
         phone_number: customer.phone_number,
         address: customer.address,
@@ -49,24 +49,24 @@ export default function ProfileScreen() {
     }
   };
   return (
-    <ScrollView className="bg-[#060606] flex-1 gap-10">
-      <View className="py-8 px-6 bg-[#090909]">
+    <ScrollView className="bg-[#fff] flex-1 gap-10">
+      <View className="py-8 px-6 bg-[#fff]">
         <View className="relative">
           <TouchableOpacity className="p-2 w-12 rounded-full items-center border border-zinc-100">
-            <User size={24} color="#fff" />
+            <User size={24} color="#000" />
           </TouchableOpacity>
         </View>
         <View>
-          <H3 className="mt-4 text-white">
+          <H3 className="mt-4 text-black">
             {customer === "" ? (
-              <View className="w-24 h-6 rounded-sm animate-pulse bg-zinc-800"></View>
+              <View className="w-24 h-6 rounded-sm animate-pulse bg-white"></View>
             ) : (
-              customer.full_name
+              customer.name
             )}
           </H3>
           <P className="text-zinc-500">
             {customer === "" ? (
-              <View className="w-52 h-6 rounded-sm animate-pulse bg-zinc-800"></View>
+              <View className="w-52 h-6 rounded-sm animate-pulse bg-white"></View>
             ) : (
               customer.email
             )}
@@ -89,16 +89,16 @@ export default function ProfileScreen() {
                   <Input
                     placeholder="First Name"
                     value={
-                      customer.full_name ? customer.full_name.split(" ")[0] : ""
+                      customer.name ? customer.name.split(" ")[0] : ""
                     }
                     onChangeText={(text) => {
-                      const lastName = customer.full_name
+                      const lastName = customer.name
                         .split(" ")
                         .slice(1)
                         .join(" ");
                       setCustomerDetails({
                         ...customer,
-                        full_name: text + (lastName ? " " + lastName : ""),
+                        name: text + (lastName ? " " + lastName : ""),
                       });
                     }}
                     editable={isEditing}
@@ -123,15 +123,15 @@ export default function ProfileScreen() {
                   <Input
                     placeholder="Last Name"
                     value={
-                      customer.full_name
-                        ? customer.full_name.split(" ").slice(1).join(" ")
+                      customer.name
+                        ? customer.name.split(" ").slice(1).join(" ")
                         : ""
                     }
                     onChangeText={(text) => {
-                      const firstName = customer.full_name.split(" ")[0];
+                      const firstName = customer.name.split(" ")[0];
                       setCustomerDetails({
                         ...customer,
-                        full_name: firstName + (text ? " " + text : ""),
+                        name: firstName + (text ? " " + text : ""),
                       });
                     }}
                     editable={isEditing}

@@ -11,11 +11,12 @@ import {
 } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { H2, H3, H5 } from "~/components/ui/typography";
+import { H2, H3, H5, P } from "~/components/ui/typography";
 import { View } from "react-native";
 import { checkUser } from "~/lib/supabase";
 import { useEffect, useState } from "react";
 import { useEmail } from "~/app/EmailContext";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 export default function TabsLayout() {
   const [customer, setCustomerDetails] = useState({});
@@ -42,7 +43,7 @@ export default function TabsLayout() {
               borderTopColor: "#f1f1f1",
               paddingBottom: 0,
             },
-            tabBarActiveTintColor: "#fff",
+            tabBarActiveTintColor: "#000",
             tabBarInactiveTintColor: "#555555",
             headerShown: false,
             tabBarLabelStyle: { display: "none" },
@@ -53,23 +54,24 @@ export default function TabsLayout() {
             name="index"
             options={{
               headerTitle: () => (
-                <View>
-                  <H2 className="text-2xl border-b-0 leading-0">
-                    Hi there,
-                    {customer.username ? (
-                      customer.username
-                    ) : (
-                      <View className="animate-pulse w-20 h-4 rounded-sm bg-zinc-800" />
-                    )}
-                    👋
-                  </H2>
-                  <H5 className="text-zinc-400 text-sm border-b-0 capitalize">
-                    {customer.role ? (
-                      customer.role.replace("_", " ")
-                    ) : (
-                      <View className="animate-pulse w-36 h-4 rounded-sm bg-zinc-800" />
-                    )}
-                  </H5>
+                <View className="flex-row gap-4 items-center">
+                  <Avatar alt="Customer's Avatar">
+                    <AvatarFallback>
+                      <P className="text-white">
+                        {customer.name &&
+                          customer.name
+                            .split(" ")
+                            .map((name: string) => name[0])
+                            .join("")}
+                      </P>
+                    </AvatarFallback>
+                  </Avatar>
+                  <View>
+                    <H2 className="text-xl border-b-0 leading-0">
+                      Hi there,{"\n"}
+                      {customer.name} 👋
+                    </H2>
+                  </View>
                 </View>
               ),
               tabBarIcon: ({ color }) => (
@@ -80,7 +82,7 @@ export default function TabsLayout() {
                 />
               ),
               headerShown: true,
-              headerStyle: { backgroundColor: "#111" },
+              headerStyle: { backgroundColor: "#fff" },
             }}
           />
           <Tabs.Screen
@@ -91,7 +93,7 @@ export default function TabsLayout() {
                 <FontAwesome size={28} name="cog" color={color} />
               ),
               headerShown: true,
-              headerStyle: { backgroundColor: "#111" },
+              headerStyle: { backgroundColor: "#fff" },
             }}
           />
           <Tabs.Screen
@@ -102,7 +104,7 @@ export default function TabsLayout() {
                 <Feather name="user" size={28} color={color} />
               ),
               headerShown: true,
-              headerStyle: { backgroundColor: "#111" },
+              headerStyle: { backgroundColor: "#fff" },
             }}
           />
         </Tabs>
