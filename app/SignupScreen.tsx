@@ -196,6 +196,8 @@ export default function Screen() {
                 { label: "Inventory Manager", value: "InventoryManager" },
                 { label: "Finance Manager", value: "FinanceManager" },
                 { label: "Supplier Manager", value: "SupplierManager" },
+                { label: "Dispatch Manager", value: "DispatchManager" },
+                { label: "Driver", value: "Driver" },
                 { label: "Service Manager", value: "ServiceManager" },
                 { label: "Trainer", value: "Trainer" },
                 { label: "Trainee", value: "Trainee" },

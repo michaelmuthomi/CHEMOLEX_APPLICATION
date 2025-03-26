@@ -80,7 +80,7 @@ export default function Screen() {
               params: { email: email },
             });
             break;
-          case "dispatch_manager":
+          case "DispatchManager":
             router.push({
               pathname: "/(DispatchManager)",
               params: { email: email },
