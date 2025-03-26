@@ -100,9 +100,9 @@ export default function LoginScreen() {
       />
       <View className="w-full mb-auto mt-auto gap-10 bg-white">
         <View className="gap-2">
-          <H1 className="text-3xl">Sign in to your Account</H1>
+          <H1 className="text-3xl">Hey there, welcome back</H1>
           <P
-            className=" color-[#b3b3b3] pr-6"
+            className="color-[#b3b3b3] pr-6"
             style={{ fontFamily: "Inter_500Medium" }}
           >
             Enter your email and password to login to your account
@@ -110,7 +110,7 @@ export default function LoginScreen() {
         </View>
         <View className="w-full gap-6">
           <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Email Address</H5>
+            <H5 className="color-[#888888]">Email Address</H5>
             <Input
               placeholder="example@gmail.com"
               value={email}
@@ -125,7 +125,7 @@ export default function LoginScreen() {
             />
           </View>
           <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Password</H5>
+            <H5 className="color-[#888888]">Password</H5>
             <Input
               placeholder="password123"
               value={password}
@@ -138,34 +138,36 @@ export default function LoginScreen() {
               secureTextEntry
             />
           </View>
-          <H5 className="text-left text-blue-400">
+          <H4 className="text-left text-base text-blue-900">
             <Link href="/ForgotPassword">Forgot Password ?</Link>
-          </H5>
-        </View>
-        <Button
-          onPress={handleLogin}
-          className="w-full rounded-full bg-green-600"
-          size={"lg"}
-          variant="default"
-          disabled={loading}
-        >
-          <H4 className="text-lg">
-            {loading ? "Logging In" : "Login and continue"}
           </H4>
-        </Button>
-        <TouchableOpacity
-          className="w-max"
-          onPress={() => router.push("/StaffLoginScreen")}
-        >
-          <H4 className="text-center uppercase text-lg">Staff Login </H4>
-        </TouchableOpacity>
+        </View>
+        <View className="flex-row items-center">
+          <TouchableOpacity
+            className="w-max"
+            onPress={() => router.push("/StaffLoginScreen")}
+          >
+            <H4 className="text-center px-4 text-md">Staff Login </H4>
+          </TouchableOpacity>
+          <Button
+            onPress={handleLogin}
+            className="w-max ml-auto px-12 rounded-full bg-green-900"
+            size={"lg"}
+            variant="default"
+            disabled={loading}
+          >
+            <H4 className="text-lg text-white">
+              {loading ? "Logging In" : "Login and continue"}
+            </H4>
+          </Button>
+        </View>
       </View>
       <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center overflow-auto">
         <TouchableOpacity
-          className="w-3/4 rounded-full bg-[#111] !py-4 !border-none"
+          className="rounded-full  !py-4 !border-none"
           onPress={() => router.push("/SignupScreen")}
         >
-          <P className="text-white text-center">Create an account</P>
+          <H4 className="text-black text-center text-md">Don't have an account? <H4 className="text-md text-blue-800">Create Now</H4></H4>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

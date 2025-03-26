@@ -150,7 +150,7 @@ export default function Screen() {
         </View>
         <View className="w-full gap-4">
           <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Email Address</H5>
+            <H5 className="color-[#888888]">Email Address</H5>
             <Input
               placeholder="Email address"
               value={email}
@@ -165,7 +165,7 @@ export default function Screen() {
             />
           </View>
           <View className="gap-2">
-            <H5 className="color-[#888888] px-2">Password</H5>
+            <H5 className="color-[#888888]">Password</H5>
             <Input
               placeholder="Password"
               value={password}
@@ -182,31 +182,31 @@ export default function Screen() {
             <Link href="/ForgotPassword">Forgot Password ?</Link>
           </H5>
         </View>
-        <View className="gap-6">
+        <View className="flex-row items-center">
+          <TouchableOpacity
+            className="w-max"
+            onPress={() => router.push("/LoginScreen")}
+          >
+            <H4 className="text-center text-lg">Customer Login</H4>
+          </TouchableOpacity>
           <Button
             onPress={handleLogin}
-            className="w-full rounded-full bg-green-600"
+            className="w-max ml-auto px-10 rounded-full bg-green-900"
             size={"lg"}
             disabled={loading}
           >
-            <H5 className="">
+            <H5 className="text-white">
               {loading ? "Logging In" : "Login and continue"}
             </H5>
           </Button>
         </View>
-        <TouchableOpacity
-          className="w-max"
-          onPress={() => router.push("/LoginScreen")}
-        >
-          <H4 className="text-center uppercase text-lg">Customer Login</H4>
-        </TouchableOpacity>
       </View>
       <View className="gap-4 divide-x-2 divide-solid divide-gray-50 flex flex-row items-center overflow-auto">
         <TouchableOpacity
-          className="w-3/4 rounded-full bg-[#111] !py-4 !border-none"
+          className="rounded-full  !py-4 !border-none"
           onPress={() => router.push("/SignupScreen")}
         >
-          <P className="text-black text-center">Create an account</P>
+          <H4 className="text-black text-center text-md">Don't have an account? <H4 className="text-md text-blue-800">Create Now</H4></H4>
         </TouchableOpacity>
       </View>
       <View className="gap-4 divide-x-2 flex flex-row"></View>
