@@ -85,20 +85,20 @@ export function OrderDetailsModal({
 
   const [newStock, setNewStock] = useState("");
 
-  const handleOrderApproval = async () => {
+  const handleOrderApproval = async (orderId: any) => {
     setUpdating(true);
     const { data, error } = await supabase
       .from("orders")
       .update({ finance_approval: "approved" })
-      .eq("order_id", order.order_id);
+      .eq("order_id", orderId);
 
     if (error) {
-      displayNotification(error.message, 'danger');
+      displayNotification(error.message, "danger");
     } else {
+      console.log('User details bfore dispatch: >> ', order.user_id)
       const { error: dispatchError } = await supabase
         .from("dispatches")
         .insert([{ order_id: order.order_id, user_id: order.user_id }]);
-
       if (dispatchError) {
         displayNotification(dispatchError.message, "danger");
       } else {
@@ -209,22 +209,41 @@ export function OrderDetailsModal({
                       )}`}
                     />
                   </View>
-                  <View className="mb-4 ">
-                    <H5 className="text-sm text-gray-600 mb-1">
-                      {"Payment Status"}
-                    </H5>
-                    <H5 className="text-base w-1/3 text-center text-green-900 p-2 px-4 bg-green-50 rounded-full">
-                      {productData.payment_status || "N/A"}
-                    </H5>
+                  <View className="flex-row w-full">
+                    <View className="w-1/2">
+                      <View className="mb-4 ">
+                        <H5 className="text-sm text-gray-600 mb-1">
+                          {"Payment Status"}
+                        </H5>
+                        <H5 className="text-base w-3/4 text-center text-green-900 p-2 px-4 bg-green-50 rounded-full">
+                          {productData.payment_status || "N/A"}
+                        </H5>
+                      </View>
+                    </View>
+                    <View className="mb-4 ">
+                      <H5 className="text-sm text-gray-600 mb-1">
+                        {"Approval Status"}
+                      </H5>
+                      <H5 className="text-base text-center text-green-900 p-2 px-4 bg-green-50 rounded-full">
+                        {productData.finance_approval || "N/A"}
+                      </H5>
+                    </View>
                   </View>
-                  <DetailItem
-                    label="Delivery Address"
-                    value={productData.delivery_address || "N/A"}
-                  />
-                  <DetailItem
-                    label="Order Placed ON"
-                    value={`${formatDate(productData.created_at)} • ${formatTime(productData.created_at)}`}
-                  />
+
+                  <View className="flex-row w-full">
+                    <View className="w-1/2">
+                      <DetailItem
+                        label="Delivery Address"
+                        value={productData.delivery_address || "N/A"}
+                      />
+                    </View>
+                    <DetailItem
+                      label="Order Placed ON"
+                      value={`${formatDate(
+                        productData.created_at
+                      )} • ${formatTime(productData.created_at)}`}
+                    />
+                  </View>
                   <View className="border-t-[1px] border-zinc-900 py-4">
                     <View className="flex-row items-center rounded-md w-full gap-2">
                       <Button
@@ -239,7 +258,7 @@ export function OrderDetailsModal({
                         </H4>
                       </Button>
                       <Button
-                        onPress={() => handleOrderApproval()}
+                        onPress={() => handleOrderApproval(order.order_id)}
                         className="rounded-full flex-1"
                         size={"lg"}
                         variant="default"
