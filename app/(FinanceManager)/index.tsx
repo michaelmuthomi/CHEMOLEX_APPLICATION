@@ -172,15 +172,15 @@ export default function Page() {
         console.error("Email context is not available");
         return;
       }
-
+      console.log("Error message:", emailContext.email);
       const response = await checkUser(emailContext.email);
-      if (!response || !response.user_id) {
+      if (!response || !response.userid) {
         console.error("User details could not be fetched");
         return;
       }
 
-      console.log("Username", response.full_name);
-      const userId = response.user_id;
+      console.log("Username", response.name);
+      const userId = response.userid;
 
       setTechnicianId(userId);
     }
@@ -193,7 +193,7 @@ export default function Page() {
     try {
       const { data, error } = await supabase
         .from("orders")
-        .select("*, products:product_id(*), users:user_id(*)");
+        .select("*, products:product_id(*), users:userid(*)");
 
       if (error) throw error;
       setOrders(data || []);
@@ -201,6 +201,8 @@ export default function Page() {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
+      console.log("Error message:", err.message)
+
     } finally {
       setIsLoading(false);
     }
@@ -335,7 +337,7 @@ export default function Page() {
       const { data, error } = await supabase
         .from("repairs")
         .select(
-          "*, services(*), users:customer_id(full_name), products:product_id(*), technicians:technician_id(full_name)"
+          "*, services(*), users:userid(name), products:product_id(*), technicians:technician_id(name)"
         )
         .order("created_at", { ascending: false });
 
@@ -345,6 +347,7 @@ export default function Page() {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
+      console.log("Error message:", err.message)
     } finally {
       setIsLoading(false);
     }
