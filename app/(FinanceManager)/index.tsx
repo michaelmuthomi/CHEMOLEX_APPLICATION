@@ -193,7 +193,7 @@ export default function Page() {
     try {
       const { data, error } = await supabase
         .from("orders")
-        .select("*, products:product_id(*), users:userid(*)");
+        .select("*, products:product_id(*)");
 
       if (error) throw error;
       setOrders(data || []);
