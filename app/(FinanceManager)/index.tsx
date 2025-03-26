@@ -419,29 +419,29 @@ export default function Page() {
               <TouchableOpacity
                 key={index}
                 className={`px-3 pb-2 border-b-2 flex-row items-center ${
-                  sortBy === sort ? "border-white" : "border-zinc-900"
+                  sortBy === sort ? "border-zinc-900" : "border-zinc-200"
                 }`}
                 onPress={() => setSortBy(sort)}
               >
                 {sort === "all-orders" ? (
                   <GalleryVerticalEnd
                     size={16}
-                    color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    color={sortBy === sort ? "#000" : "#c4c4c4"}
                   />
                 ) : sort === "pending" ? (
                   <ListTodo
                     size={16}
-                    color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    color={sortBy === sort ? "#000" : "#c4c4c4"}
                   />
                 ) : (
                   <ListChecks
                     size={16}
-                    color={sortBy === sort ? "#fff" : "#3f3f46"}
+                    color={sortBy === sort ? "#000" : "#c4c4c4"}
                   />
                 )}
                 <H4
                   className={`capitalize text-lg px-2 ${
-                    sortBy === sort ? "text-white" : "text-zinc-700"
+                    sortBy === sort ? "text-black" : "text-zinc-700"
                   }`}
                 >
                   {sort.replace("-", " ")}
